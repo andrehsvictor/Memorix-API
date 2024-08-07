@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres
+    container_name: memorix-db
     environment:
       POSTGRES_DB: ${DB_NAME:-memorix}
       POSTGRES_USER: ${DB_USER:-postgres}
