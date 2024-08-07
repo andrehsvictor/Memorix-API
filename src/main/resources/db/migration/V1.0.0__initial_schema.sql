@@ -7,6 +7,7 @@ CREATE TABLE users (
     password   varchar(255) NOT NULL,
     avatar_url varchar(255),
     deleted    boolean      NOT NULL DEFAULT FALSE,
+    enabled    boolean      NOT NULL DEFAULT FALSE,
     created_at timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -35,7 +36,7 @@ CREATE TABLE cards (
     created_at  timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at  timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (deck_id) REFERENCES decks (id)
+    FOREIGN KEY (deck_id) REFERENCES decks (id) ON DELETE CASCADE
 );
 
 CREATE TABLE reviews (
