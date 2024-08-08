@@ -12,6 +12,7 @@ import lombok.Data;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseBody<T> {
+    private String message;
     private T data;
     private Integer page;
     private Integer size;
