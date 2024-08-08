@@ -3,6 +3,7 @@ package andrehsvictor.memorix.service;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -68,9 +69,9 @@ public class RefreshTokenService {
 
     private String generateToken() {
         SecureRandom random = new SecureRandom();
-        byte[] bytes = new byte[256];
+        byte[] bytes = new byte[64];
         random.nextBytes(bytes);
-        return bytes.toString();
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
 }
