@@ -16,8 +16,25 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    private static final String EMAIL_IS_ALREADY_TAKEN = "Email is already taken";
+    private static final String USERNAME_IS_ALREADY_TAKEN = "Username is already taken";
     private static final String USER_NOT_FOUND = "User not found with username or email: %s. Please sign up.";
     private static final String USER_NOT_AUTHENTICATED = "User not authenticated. Please sign in.";
+
+    public User create(User user) {
+        validateUser(user);
+        return userRepository.save(user);
+    }
+
+    public void delete(User user) {
+        user.delete();
+        userRepository.save(user);
+    }
+
+    public User restore(User user) {
+        user.setDeleted(false);
+        return userRepository.save(user);
+    }
 
     public User findByUsernameOrEmail(String usernameOrEmail) {
         return userRepository.findByUsernameOrEmail(usernameOrEmail)
@@ -32,5 +49,15 @@ public class UserService {
         }
         UserDetailsImpl userDetails = (UserDetailsImpl) principal;
         return userDetails.getUser();
+    }
+
+    private void validateUser(User user) {
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new MemorixException(HttpStatus.BAD_REQUEST, USERNAME_IS_ALREADY_TAKEN);
+        }
+
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new MemorixException(HttpStatus.BAD_REQUEST, EMAIL_IS_ALREADY_TAKEN);
+        }
     }
 }
