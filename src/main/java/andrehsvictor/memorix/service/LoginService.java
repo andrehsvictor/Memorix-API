@@ -9,11 +9,11 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class LoginService {
 
     private final AuthenticationManager authenticationManager;
 
-    public Authentication authenticate(String usernameOrEmail, String password) {
+    public Authentication login(String usernameOrEmail, String password) {
         Authentication token = new UsernamePasswordAuthenticationToken(usernameOrEmail, password);
         return authenticationManager.authenticate(token);
     }
