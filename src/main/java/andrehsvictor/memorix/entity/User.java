@@ -1,11 +1,14 @@
 package andrehsvictor.memorix.entity;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -53,6 +56,10 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private ActivationCode activationCode;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user")
+    private Set<Deck> decks = new HashSet<>();
 
     public void delete() {
         this.deleted = true;
