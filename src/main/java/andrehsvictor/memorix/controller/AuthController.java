@@ -1,7 +1,6 @@
 package andrehsvictor.memorix.controller;
 
-import java.util.Map;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -9,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import andrehsvictor.memorix.dto.ResponseBody;
@@ -28,36 +29,50 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
-        private final LoginService loginService;
-        private final SignupService signupService;
-        private final AccessTokenService accessTokenService;
-        private final RefreshTokenService refreshTokenService;
-        private final TokenPresenter tokenPresenter;
+    private final LoginService loginService;
+    private final SignupService signupService;
+    private final AccessTokenService accessTokenService;
+    private final RefreshTokenService refreshTokenService;
+    private final TokenPresenter tokenPresenter;
 
-        @PostMapping("/login")
-        public ResponseBody<TokenResponseDTO> login(@RequestBody LoginRequestDTO request) {
-                Authentication authentication = loginService.login(request.getUsernameOrEmail(), request.getPassword());
-                Jwt accessToken = accessTokenService.generate(authentication);
-                RefreshToken refreshToken = refreshTokenService.generate(authentication);
+    @PostMapping("/login")
+    public ResponseBody<TokenResponseDTO> login(@RequestBody LoginRequestDTO request) {
+        Authentication authentication = loginService.login(request.getUsernameOrEmail(), request.getPassword());
+        Jwt accessToken = accessTokenService.generate(authentication);
+        RefreshToken refreshToken = refreshTokenService.generate(authentication);
 
-                return tokenPresenter.present(accessToken, refreshToken);
-        }
+        return tokenPresenter.present(accessToken, refreshToken);
+    }
 
-        @PostMapping("/refresh")
-        public ResponseBody<TokenResponseDTO> refresh(@RequestHeader("X-Refresh-Token") String refreshToken) {
-                RefreshToken token = refreshTokenService.refresh(refreshToken);
-                Authentication authentication = new UsernamePasswordAuthenticationToken(token.getUser().getUsername(),
-                                "");
-                Jwt accessToken = accessTokenService.generate(authentication);
+    @PostMapping("/refresh")
+    public ResponseBody<TokenResponseDTO> refresh(@RequestHeader("X-Refresh-Token") String refreshToken) {
+        RefreshToken token = refreshTokenService.refresh(refreshToken);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(token.getUser().getUsername(),
+                "");
+        Jwt accessToken = accessTokenService.generate(authentication);
 
-                return tokenPresenter.present(accessToken, token);
-        }
+        return tokenPresenter.present(accessToken, token);
+    }
 
-        @PostMapping("/signup")
-        public ResponseBody<Map<String, String>> signup(@RequestBody SignupRequestDTO request) {
-                signupService.signup(request.toUser());
-                Map<String, String> response = Map.of("message",
-                                "User registered successfully. Check your email for the activation code.");
-                return ResponseBody.<Map<String, String>>builder().data(response).build();
-        }
+    @PostMapping("/signup")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseBody<Void> signup(@RequestBody SignupRequestDTO request) {
+        signupService.signup(request.toUser());
+        String message = "User registered successfully. A activation code has been sent to your email.";
+        return ResponseBody.<Void>builder().message(message).build();
+    }
+
+    @PostMapping("/activate")
+    public ResponseBody<Void> activate(@RequestHeader("X-Activation-Code") String activationCode) {
+        signupService.activate(activationCode);
+        String message = "User activated successfully. You can now log in.";
+        return ResponseBody.<Void>builder().message(message).build();
+    }
+
+    @PostMapping("/resend")
+    public ResponseBody<Void> resend(@RequestParam(required = true) String email) {
+        signupService.resendActivationCode(email);
+        String message = "Activation code sent successfully. Please check your email.";
+        return ResponseBody.<Void>builder().message(message).build();
+    }
 }
