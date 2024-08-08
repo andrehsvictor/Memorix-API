@@ -21,6 +21,11 @@ public class UserService {
     private static final String USER_NOT_FOUND = "User not found with username or email: %s. Please sign up.";
     private static final String USER_NOT_AUTHENTICATED = "User not authenticated. Please sign in.";
 
+    public User activate(User user) {
+        user.enable();
+        return userRepository.save(user);
+    }
+
     public User create(User user) {
         validateUser(user);
         return userRepository.save(user);
