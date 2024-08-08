@@ -1,41 +1,69 @@
-echo "Setting up the project..."
+animated_message() {
+    local message=$1
+    clear
+    echo "$message"
+    sleep 1
+    clear
+    echo "$message."
+    sleep 1
+    clear
+    echo "$message.."
+    sleep 1
+    clear
+    echo "$message..."
+    sleep 1
+    clear
+}
+
+animated_message "Setting up project"
 
 mkdir -p keys && cd keys
-openssl genpkey -algorithm RSA -out private.key -pkeyopt rsa_keygen_bits:2048
+openssl genpkey -algorithm RSA -out private.key -pkeyopt rsa_keygen_bits:2048 
 openssl rsa -pubout -in private.key -out public.key
 
 cd ..
 
-read -p "Type your database name: " dbName
-read -p "Type your database user: " dbUser
-read -sp "Type your database password: " dbPassword
+clear
+read -p "Type the database name: " dbName
+read -p "Type the database port: " dbPort
+read -p "Type the database user: " dbUser
+read -sp "Type the database password: " dbPassword
 
-echo "Now, let's set up the JWT configurations"
-read -p "Type the JWT access token expiry time (ex: 15m, 1h, 24h): " accessTokenExpiryTime
-read -p "Type the JWT refresh token expiry time (ex: 24h, 30d): " refreshTokenExpiryTime
+clear
+read -p "Type the JWT access token expiry time (Ex.: 15m, 1h, 24h): " accessTokenExpiry
+read -p "Type the JWT refresh token expiry time (Ex.: 24h, 30d): " refreshTokenExpiry
 
-echo "Now, let's set up the SMTP configurations"
+clear
 read -p "Type the SMTP host: " mailHost
 read -p "Type the SMTP port: " mailPort
 read -p "Type the SMTP user: " mailUser
 read -sp "Type the SMTP password: " mailPassword
 
-echo "Now, let's set up the CORS configurations"
-read -p "Type the allowed origins (ex: http://localhost:3000,http://localhost:3001): " allowedOrigins
+clear
+read -p "Type the CORS allowed origins (ex: http://localhost:3000,http://localhost:3001): " allowedOrigins
 
+animated_message "Creating .env file"
 {
+    echo "# Database"
     echo "DB_NAME=$dbName"
     echo "DB_USER=$dbUser"
     echo "DB_PASSWORD=$dbPassword"
+    echo "DB_PORT=$dbPort"
+    echo ""
+    echo "# JWT"
     echo "RSA_PRIVATE_KEY_PATH=file:./keys/private.key"
     echo "RSA_PUBLIC_KEY_PATH=file:./keys/public.key"
-    echo "ACCESS_TOKEN_EXPIRY=$accessTokenExpiryTime"
-    echo "REFRESH_TOKEN_EXPIRY=$refreshTokenExpiryTime"
+    echo "ACCESS_TOKEN_EXPIRY=$accessTokenExpiry"
+    echo "REFRESH_TOKEN_EXPIRY=$refreshTokenExpiry"
+    echo ""
+    echo "# SMTP"
     echo "MAIL_HOST=$mailHost"
     echo "MAIL_PORT=$mailPort"
     echo "MAIL_USER=$mailUser"
     echo "MAIL_PASSWORD=$mailPassword"
-    echo "ALLOWED_ORIGINS=$allowedOrigins"
+    echo ""
+    echo "# CORS"
+    echo "CORS_ALLOWED_ORIGINS=$allowedOrigins"
 } > .env
 
-echo "Project setup completed!"
+echo "Project setup completed."
