@@ -2,6 +2,7 @@ package andrehsvictor.memorix.service;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.entity.User;
@@ -48,12 +49,8 @@ public class UserService {
     }
 
     public User findAuthenticatedUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!(principal instanceof UserDetailsImpl)) {
-            throw new MemorixException(HttpStatus.UNAUTHORIZED, USER_NOT_AUTHENTICATED);
-        }
-        UserDetailsImpl userDetails = (UserDetailsImpl) principal;
-        return userDetails.getUser();
+        JwtAuthenticationToken authentication = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        return findByUsernameOrEmail(authentication.getName());
     }
 
     private void validateUser(User user) {
