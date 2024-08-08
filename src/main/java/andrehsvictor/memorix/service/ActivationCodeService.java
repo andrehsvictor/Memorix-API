@@ -26,6 +26,10 @@ public class ActivationCodeService {
                 .orElseThrow(() -> new MemorixException(HttpStatus.NOT_FOUND, ACTIVATION_CODE_NOT_FOUND));
     }
 
+    public void delete(ActivationCode activationCode) {
+        activationCodeRepository.delete(activationCode);
+    }
+
     public ActivationCode create(User user) {
         deleteActivationCodeIfExists(user);
         ActivationCode activationCode = ActivationCode.builder()
