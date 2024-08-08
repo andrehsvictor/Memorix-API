@@ -66,4 +66,4 @@ animated_message "Creating .env file"
     echo "CORS_ALLOWED_ORIGINS=$allowedOrigins"
 } > .env
 
-echo "Project setup completed."
+echo "Done!"
