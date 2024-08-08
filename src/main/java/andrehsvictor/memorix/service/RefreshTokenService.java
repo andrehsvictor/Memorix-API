@@ -9,20 +9,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import andrehsvictor.memorix.entity.RefreshToken;
 import andrehsvictor.memorix.entity.User;
 import andrehsvictor.memorix.exception.MemorixException;
 import andrehsvictor.memorix.repository.RefreshTokenRepository;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Validated
 @RequiredArgsConstructor
 public class RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserService userService;
 
+    @NotNull(message = "Refresh token expiry must be provided")
     @Value("${memorix.jwt.refresh.token.expiry:30d}")
     private Duration expiry = Duration.ofDays(30);
 
