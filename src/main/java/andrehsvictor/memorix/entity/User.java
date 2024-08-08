@@ -51,6 +51,9 @@ public class User {
     @OneToOne(mappedBy = "user")
     private RefreshToken refreshToken;
 
+    @OneToOne(mappedBy = "user")
+    private ActivationCode activationCode;
+
     public void delete() {
         this.deleted = true;
     }
