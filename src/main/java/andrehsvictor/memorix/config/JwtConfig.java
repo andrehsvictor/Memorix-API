@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.validation.annotation.Validated;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -18,12 +19,17 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import jakarta.validation.constraints.NotNull;
+
+@Validated
 @Configuration
 public class JwtConfig {
     
+    @NotNull(message = "Private key must be provided")
     @Value("${memorix.rsa.private.key.path}")
     private RSAPrivateKey privateKey;
 
+    @NotNull(message = "Public key must be provided")
     @Value("${memorix.rsa.public.key.path}")
     private RSAPublicKey publicKey;
 
