@@ -40,7 +40,7 @@ read -p "Type the SMTP user: " mailUser
 read -sp "Type the SMTP password: " mailPassword
 
 clear
-read -p "Type the CORS allowed origins (ex: http://localhost:3000,http://localhost:3001): " allowedOrigins
+read -p "Type the CORS allowed origins (Ex.: http://localhost:3000,http://localhost:3001): " allowedOrigins
 
 animated_message "Creating .env file"
 {
