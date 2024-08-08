@@ -14,7 +14,7 @@ import jakarta.validation.constraints.NotBlank;
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
-    @NotBlank
+    @NotBlank(message = "Allowed origins must be provided")
     @Value("${memorix.cors.allowed.origins:*}")
     private String allowedOrigins = "*";
 
