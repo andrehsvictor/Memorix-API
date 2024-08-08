@@ -15,7 +15,7 @@ animated_message() {
     clear
 }
 
-animated_message "Setting up project"
+animated_message "Generating RSA keys"
 
 mkdir -p keys && cd keys
 openssl genpkey -algorithm RSA -out private.key -pkeyopt rsa_keygen_bits:2048 
