@@ -4,10 +4,13 @@ import java.time.ZoneOffset;
 
 import org.springframework.hateoas.RepresentationModel;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 import andrehsvictor.memorix.entity.Deck;
 import lombok.Data;
 
 @Data
+@JsonFilter("DeckResponseDTO")
 public class DeckResponseDTO extends RepresentationModel<DeckResponseDTO> {
     private Long id;
     private String name;
@@ -16,7 +19,6 @@ public class DeckResponseDTO extends RepresentationModel<DeckResponseDTO> {
     private Long createdAt;
     private Long updatedAt;
     private Long totalCards;
-    private Long totalCardsToReview;
 
     public DeckResponseDTO(Deck deck) {
         this.id = deck.getId();
@@ -26,6 +28,5 @@ public class DeckResponseDTO extends RepresentationModel<DeckResponseDTO> {
         this.createdAt = deck.getCreatedAt().toInstant(ZoneOffset.UTC).toEpochMilli();
         this.updatedAt = deck.getUpdatedAt().toInstant(ZoneOffset.UTC).toEpochMilli();
         this.totalCards = 0L;
-        this.totalCardsToReview = 0L;
     }
 }
