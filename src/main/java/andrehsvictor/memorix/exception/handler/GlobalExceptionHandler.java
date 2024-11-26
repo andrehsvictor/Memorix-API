@@ -1,0 +1,38 @@
+package andrehsvictor.memorix.exception.handler;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import andrehsvictor.memorix.exception.ResourceAlreadyExistsException;
+import andrehsvictor.memorix.exception.ResourceNotFoundException;
+import andrehsvictor.memorix.exception.dto.ErrorDto;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RestControllerAdvice
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(Exception.class)
+    public final ResponseEntity<ErrorDto<String>> handleAllExceptions(Exception ex) {
+        log.error("An internal error occurred.", ex);
+        ErrorDto<String> errorDto = ErrorDto.of(ex.getMessage());
+        return ResponseEntity.internalServerError().body(errorDto);
+    }
+
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public final ResponseEntity<ErrorDto<String>> handleResourceAlreadyExistsException(
+            ResourceAlreadyExistsException ex) {
+        ErrorDto<String> errorDto = ErrorDto.of(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorDto);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public final ResponseEntity<ErrorDto<String>> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        ErrorDto<String> errorDto = ErrorDto.of(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDto);
+    }
+
+}
