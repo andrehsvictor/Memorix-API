@@ -10,3 +10,9 @@ spring:
     url: jdbc:${DB_TYPE}://${DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
+
+memorix:
+  security:
+    jwt:
+      public-key-location: optional:file:${JWT_PUBLIC_KEY_LOCATION}
+      private-key-location: optional:file:${JWT_PRIVATE_KEY_LOCATION}
