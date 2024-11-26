@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -58,5 +59,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorDto<FieldErrorDto> errorDto = new ErrorDto<>();
         errorDto.setErrors(fieldErrorDto);
         return ResponseEntity.badRequest().body(errorDto);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public final ResponseEntity<ErrorDto<String>> handleAuthenticationException(AuthenticationException ex) {
+        ErrorDto<String> errorDto = ErrorDto.of(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDto);
     }
 }
