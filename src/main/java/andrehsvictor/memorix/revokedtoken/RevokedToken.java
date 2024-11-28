@@ -1,4 +1,4 @@
-package andrehsvictor.memorix.token.revokedtoken;
+package andrehsvictor.memorix.revokedtoken;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
