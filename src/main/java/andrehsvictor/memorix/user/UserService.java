@@ -26,7 +26,7 @@ public class UserService {
     }
 
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
+        return userRepository.findByUsernameOrEmail(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username + "."));
     }
 

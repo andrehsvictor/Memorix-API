@@ -1,4 +1,4 @@
-package andrehsvictor.memorix.revokedtoken;
+package andrehsvictor.memorix.token.revokedtoken;
 
 import java.util.UUID;
 

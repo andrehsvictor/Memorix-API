@@ -1,4 +1,4 @@
-package andrehsvictor.memorix.accesstoken;
+package andrehsvictor.memorix.token.accesstoken;
 
 import java.time.Duration;
 import java.time.Instant;

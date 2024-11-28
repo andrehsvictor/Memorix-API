@@ -1,4 +1,4 @@
-package andrehsvictor.memorix.refreshtoken;
+package andrehsvictor.memorix.token.refreshtoken;
 
 import java.util.UUID;
 
