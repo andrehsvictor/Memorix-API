@@ -33,7 +33,7 @@ public class RefreshTokenService {
 
     public RefreshToken findByToken(String token) {
         return refreshTokenRepository.findByToken(token)
-                .orElseThrow(() -> new UnauthorizedException("Invalid refresh token."));
+                .orElseThrow(() -> new UnauthorizedException("Invalid or expired refresh token."));
     }
 
     private RefreshToken buildRefreshToken(UUID userId, String token) {
