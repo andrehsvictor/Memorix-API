@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.authentication.AuthenticationService;
+import andrehsvictor.memorix.exception.UnauthorizedException;
 import andrehsvictor.memorix.token.accesstoken.AccessToken;
 import andrehsvictor.memorix.token.accesstoken.AccessTokenService;
 import andrehsvictor.memorix.token.dto.GetTokenDto;
@@ -36,6 +37,9 @@ public class TokenFacade {
 
     public GetTokenDto refreshToken(RefreshTokenDto refreshTokenDto) {
         RefreshToken refreshToken = refreshTokenService.findByToken(refreshTokenDto.getRefreshToken());
+        if (revokedTokenService.isRevoked(refreshTokenDto.getRefreshToken())) {
+            throw new UnauthorizedException("This token has been revoked.");
+        }
         revokedTokenService.revoke(refreshTokenDto.getRefreshToken());
         User user = userService.findById(refreshToken.getUserId());
         return buildGetTokenDto(user);
