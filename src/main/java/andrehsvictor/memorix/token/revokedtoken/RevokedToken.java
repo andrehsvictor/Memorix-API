@@ -31,4 +31,8 @@ public class RevokedToken implements Serializable {
     private String token;
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    public RevokedToken(String token) {
+        this.token = token;
+    }
+
 }
