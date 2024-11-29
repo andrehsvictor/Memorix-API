@@ -6,13 +6,14 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
+import org.springframework.data.redis.core.index.Indexed;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,9 +21,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@RedisHash
 @NoArgsConstructor
 @AllArgsConstructor
-@RedisHash("refresh_token")
+@EqualsAndHashCode(of = "id")
 public class RefreshToken implements Serializable {
 
     private static final long serialVersionUID = -4157557238683463036L;
@@ -31,12 +33,11 @@ public class RefreshToken implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Indexed
     private String token;
 
-    @Column(name = "user_id")
     private UUID userId;
 
-    @Column(name = "expires_in")
     @TimeToLive(unit = TimeUnit.SECONDS)
     private Long expiresIn;
 
