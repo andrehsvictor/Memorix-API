@@ -9,9 +9,12 @@ import andrehsvictor.memorix.token.accesstoken.AccessToken;
 import andrehsvictor.memorix.token.accesstoken.AccessTokenService;
 import andrehsvictor.memorix.token.dto.GetTokenDto;
 import andrehsvictor.memorix.token.dto.PostTokenDto;
+import andrehsvictor.memorix.token.dto.RefreshTokenDto;
 import andrehsvictor.memorix.token.refreshtoken.RefreshToken;
 import andrehsvictor.memorix.token.refreshtoken.RefreshTokenService;
+import andrehsvictor.memorix.token.revokedtoken.RevokedTokenService;
 import andrehsvictor.memorix.user.User;
+import andrehsvictor.memorix.user.UserService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -21,11 +24,20 @@ public class TokenFacade {
     private final AccessTokenService accessTokenService;
     private final RefreshTokenService refreshTokenService;
     private final AuthenticationService authenticationService;
+    private final RevokedTokenService revokedTokenService;
+    private final UserService userService;
 
     public GetTokenDto getToken(PostTokenDto postTokenDto) {
         String username = postTokenDto.getUsername();
         String password = postTokenDto.getPassword();
         User user = (User) authenticationService.authenticate(username, password).getPrincipal();
+        return buildGetTokenDto(user);
+    }
+
+    public GetTokenDto refreshToken(RefreshTokenDto refreshTokenDto) {
+        RefreshToken refreshToken = refreshTokenService.findByToken(refreshTokenDto.getRefreshToken());
+        revokedTokenService.revoke(refreshTokenDto.getRefreshToken());
+        User user = userService.findById(refreshToken.getUserId());
         return buildGetTokenDto(user);
     }
 
