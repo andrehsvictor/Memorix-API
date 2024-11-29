@@ -15,8 +15,9 @@ public class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
 
-    public Authentication authenticate(UsernamePasswordAuthenticationToken token) {
+    public Authentication authenticate(String username, String password) {
         try {
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
             return authenticationManager.authenticate(token);
         } catch (DisabledException e) {
             throw new DisabledException("User is disabled.");
