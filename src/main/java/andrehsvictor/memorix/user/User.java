@@ -3,8 +3,6 @@ package andrehsvictor.memorix.user;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;   
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.security.core.CredentialsContainer;
@@ -12,13 +10,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import andrehsvictor.memorix.token.refreshtoken.RefreshToken;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
@@ -56,9 +52,6 @@ public class User implements UserDetails, CredentialsContainer {
     private String avatarUrl;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
-
-    @OneToMany(mappedBy = "user")
-    private Set<RefreshToken> refreshTokens = new HashSet<>();
 
     @PreUpdate
     void preUpdate() {
