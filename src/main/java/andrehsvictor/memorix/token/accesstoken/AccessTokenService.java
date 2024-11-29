@@ -25,6 +25,6 @@ public class AccessTokenService {
 
     public AccessToken issue(String subject) {
         Jwt jwt = jwtService.issue(subject, JwtType.ACCESS, expiresIn);
-        return AccessToken.of(jwt);
+        return AccessToken.of(jwt, expiresIn.getSeconds());
     }
 }
