@@ -1,34 +1,21 @@
 package andrehsvictor.memorix.token.refreshtoken;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.UUID;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
 
-import andrehsvictor.memorix.user.User;
-import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
-@Entity
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(of = "id")
-@ToString(exclude = { "user" })
-@Table(name = "refresh_tokens")
+@RedisHash("refresh_tokens")
 public class RefreshToken implements Serializable {
 
     private static final long serialVersionUID = -4157557238683463036L;
@@ -39,13 +26,15 @@ public class RefreshToken implements Serializable {
 
     private String token;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @TimeToLive
+    private Long ttl;
 
-    @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
-    
-    private LocalDateTime expiresAt;
+    private UUID userId;
+
+    public RefreshToken(String token, Long ttl, UUID userId) {
+        this.token = token;
+        this.ttl = ttl;
+        this.userId = userId;
+    }
 
 }

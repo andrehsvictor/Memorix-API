@@ -12,9 +12,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import andrehsvictor.memorix.user.User;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -22,26 +20,23 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtService {
 
-    @NotNull(message = "The access token expiry must be provided.")
-    @Value("${memorix.security.jwt.access-token.expiry:PT15M}")
-    private Duration expiry = Duration.ofMinutes(15);
-
     @NotEmpty(message = "The access token issuer must be provided.")
-    @Value("${memorix.security.jwt.access-token.issuer}")
+    @Value("${memorix.security.jwt.issuer}")
     private String issuer = "localhost";
 
     @NotEmpty(message = "The access token audience must be provided.")
-    @Value("${memorix.security.jwt.access-token.audience}")
+    @Value("${memorix.security.jwt.audience}")
     private String audience = "memorix";
 
     private final JwtEncoder jwtEncoder;
 
-    public Jwt issue(User user) {
+    public Jwt issue(String subject, String type, Duration expiry) {
         JwtClaimsSet claims = JwtClaimsSet.builder()
-                .subject(user.getId().toString())
+                .subject(subject)
                 .issuer(issuer)
                 .id(UUID.randomUUID().toString())
                 .claim("aud", audience)
+                .claim("type", type)
                 .issuedAt(Instant.now())
                 .expiresAt(Instant.now().plus(expiry))
                 .build();

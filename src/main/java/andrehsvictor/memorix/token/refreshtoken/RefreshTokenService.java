@@ -1,33 +1,33 @@
 package andrehsvictor.memorix.token.refreshtoken;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.token.jwt.JwtService;
-import andrehsvictor.memorix.user.User;
+import andrehsvictor.memorix.token.jwt.JwtType;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
 
+    @Value("${memorix.security.jwt.refresh-token.expiry:PT24H}")
+    private Duration expiry = Duration.ofHours(24);
+
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtService jwtService;
 
-    @Value("${memorix.security.jwt.refresh-token.expiry:PT1D}")
-    private Duration expiry = Duration.ofDays(1);
+    public boolean existsByToken(String token) {
+        return refreshTokenRepository.existsByToken(token);
+    }
 
-    public RefreshToken issue(User user) {
-        String token = jwtService.issue(user).getTokenValue();
-        LocalDateTime expiresAt = LocalDateTime.now().plus(expiry);
-        RefreshToken refreshToken = RefreshToken.builder()
-                .token(token)
-                .user(user)
-                .expiresAt(expiresAt)
-                .build();
+    public RefreshToken issue(UUID userId) {
+        Long ttl = expiry.toSeconds();
+        String token = jwtService.issue(userId.toString(), JwtType.REFRESH, expiry).getTokenValue();
+        RefreshToken refreshToken = new RefreshToken(token, ttl, userId);
         return refreshTokenRepository.save(refreshToken);
     }
 }

@@ -2,10 +2,12 @@ package andrehsvictor.memorix.token.revokedtoken;
 
 import java.util.UUID;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface RevokedTokenRepository extends JpaRepository<RevokedToken, UUID> {
+@Repository
+public interface RevokedTokenRepository extends CrudRepository<RevokedToken, UUID> {
 
     boolean existsByToken(String token);
-    
+
 }

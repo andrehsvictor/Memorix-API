@@ -2,8 +2,12 @@ package andrehsvictor.memorix.token.refreshtoken;
 
 import java.util.UUID;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID> {
+@Repository
+public interface RefreshTokenRepository extends CrudRepository<RefreshToken, UUID> {
+
+    boolean existsByToken(String token);
 
 }
