@@ -30,7 +30,7 @@ public class JwtService {
 
     private final JwtEncoder jwtEncoder;
 
-    public Jwt issue(String subject, String type, Duration expiry) {
+    public Jwt issue(String subject, String type, Duration expiresIn) {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .subject(subject)
                 .issuer(issuer)
@@ -38,7 +38,7 @@ public class JwtService {
                 .claim("aud", audience)
                 .claim("type", type)
                 .issuedAt(Instant.now())
-                .expiresAt(Instant.now().plus(expiry))
+                .expiresAt(Instant.now().plus(expiresIn))
                 .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims));
