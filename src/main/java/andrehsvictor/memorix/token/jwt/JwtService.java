@@ -3,10 +3,12 @@ package andrehsvictor.memorix.token.jwt;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ public class JwtService {
     private String audience = "memorix";
 
     private final JwtEncoder jwtEncoder;
+    private final JwtDecoder jwtDecoder;
 
     public Jwt issue(String subject, String type, Duration expiresIn) {
         JwtClaimsSet claims = JwtClaimsSet.builder()
@@ -42,6 +45,13 @@ public class JwtService {
                 .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims));
+    }
+
+    public Long getRemainingLifetime(String token, TimeUnit timeUnit) {
+        Jwt jwt = jwtDecoder.decode(token);
+        Instant expiresAt = jwt.getExpiresAt();
+        Instant now = Instant.now();
+        return timeUnit.convert(expiresAt.getEpochSecond() - now.getEpochSecond(), TimeUnit.SECONDS);
     }
 
 }
