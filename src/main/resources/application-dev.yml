@@ -2,7 +2,3 @@ spring:
   docker:
     compose:
       file: docker-compose.dev.yml
-
-server:
-  address: localhost
-  port: 8080
