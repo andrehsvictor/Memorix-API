@@ -1,4 +1,4 @@
-package andrehsvictor.memorix.token.accesstoken;
+package andrehsvictor.memorix.token.jwt;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Validated
 @RequiredArgsConstructor
-public class AccessTokenService {
+public class JwtService {
 
     @NotNull(message = "The access token expiry must be provided.")
     @Value("${memorix.security.jwt.access-token.expiry:PT15M}")

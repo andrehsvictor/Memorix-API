@@ -12,6 +12,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +23,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @Entity
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @ToString(exclude = { "user" })
 @Table(name = "refresh_tokens")
@@ -38,8 +42,10 @@ public class RefreshToken implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    
+
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
+    
     private LocalDateTime expiresAt;
 
 }
