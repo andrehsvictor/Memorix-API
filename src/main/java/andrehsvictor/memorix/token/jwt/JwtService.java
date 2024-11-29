@@ -21,11 +21,11 @@ import lombok.RequiredArgsConstructor;
 public class JwtService {
 
     @NotEmpty(message = "The access token issuer must be provided.")
-    @Value("${memorix.security.jwt.issuer}")
+    @Value("${memorix.security.jwt.issuer:localhost}")
     private String issuer = "localhost";
 
     @NotEmpty(message = "The access token audience must be provided.")
-    @Value("${memorix.security.jwt.audience}")
+    @Value("${memorix.security.jwt.audience:memorix}")
     private String audience = "memorix";
 
     private final JwtEncoder jwtEncoder;
