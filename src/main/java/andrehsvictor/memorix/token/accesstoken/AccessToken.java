@@ -11,23 +11,22 @@ import lombok.Setter;
 @Setter
 public class AccessToken {
     private Jwt jwt;
+    private Long expiresIn;
 
-    public AccessToken(Jwt jwt) {
+    public AccessToken(Jwt jwt, Long expiresIn) {
         this.jwt = jwt;
+        this.expiresIn = expiresIn;
     }
 
     public Long getExpiresIn(TimeUnit timeUnit) {
-        Long expiration = jwt.getExpiresAt().toEpochMilli();
-        Long now = System.currentTimeMillis();
-        Long timeToLive = expiration - now;
-        return timeUnit.convert(timeToLive, TimeUnit.MILLISECONDS);
+        return timeUnit.convert(expiresIn, TimeUnit.SECONDS);
     }
 
     public String getToken() {
         return jwt.getTokenValue();
     }
 
-    public static AccessToken of(Jwt jwt) {
-        return new AccessToken(jwt);
+    public static AccessToken of(Jwt jwt, Long expiresIn) {
+        return new AccessToken(jwt, expiresIn);
     }
 }
