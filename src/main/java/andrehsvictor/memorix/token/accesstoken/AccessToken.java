@@ -16,8 +16,15 @@ public class AccessToken {
         this.jwt = jwt;
     }
 
-    public Long getTtl(TimeUnit timeUnit) {
-        return timeUnit.convert(jwt.getExpiresAt().toEpochMilli() - System.currentTimeMillis(), timeUnit);
+    public Long getExpiresIn(TimeUnit timeUnit) {
+        Long expiration = jwt.getExpiresAt().toEpochMilli();
+        Long now = System.currentTimeMillis();
+        Long timeToLive = expiration - now;
+        return timeUnit.convert(timeToLive, TimeUnit.MILLISECONDS);
+    }
+
+    public String getToken() {
+        return jwt.getTokenValue();
     }
 
     public static AccessToken of(Jwt jwt) {
