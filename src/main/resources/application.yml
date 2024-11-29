@@ -12,6 +12,15 @@ spring:
     url: jdbc:${DB_TYPE}://${DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
+  cache:
+    type: ${CACHE_TYPE}
+  data:
+    redis:
+      database: ${CACHE_DB}
+      host: ${CACHE_HOST}
+      port: ${CACHE_PORT}
+      password: ${CACHE_PASSWORD}
+      username: ${CACHE_USERNAME}
 
 memorix:
   security:
