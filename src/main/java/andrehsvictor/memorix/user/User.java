@@ -1,14 +1,8 @@
 package andrehsvictor.memorix.user;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.UUID;
-
-import org.springframework.security.core.CredentialsContainer;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,7 +24,7 @@ import lombok.ToString;
 @Table(name = "users")
 @EqualsAndHashCode(of = "id")
 @ToString(exclude = { "password" })
-public class User implements UserDetails, CredentialsContainer {
+public class User implements Serializable {
 
     private static final long serialVersionUID = 3571175413126174619L;
 
@@ -56,16 +50,6 @@ public class User implements UserDetails, CredentialsContainer {
     @PreUpdate
     void preUpdate() {
         updatedAt = LocalDateTime.now();
-    }
-
-    @Override
-    public void eraseCredentials() {
-        password = null;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
 }
