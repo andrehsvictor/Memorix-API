@@ -11,5 +11,7 @@ public class GetTokenDto {
     private String accessToken;
     private String refreshToken;
     private Long expiresIn;
-    private Long refreshExpiresIn;
+
+    @Builder.Default
+    private String tokenType = "Bearer";
 }
