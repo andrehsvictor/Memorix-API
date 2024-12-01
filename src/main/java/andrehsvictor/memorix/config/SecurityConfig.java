@@ -28,12 +28,18 @@ public class SecurityConfig {
     private final JwtDecoder jwtDecoder;
     private final JwtFilter jwtFilter;
 
+    private static final String[] ALLOWED_PATHS_WITH_POST_METHOD = {
+            "/auth/token",
+            "/auth/token/refresh",
+            "/auth/token/revoke"
+    };
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests((authorize) -> {
-            authorize.requestMatchers(HttpMethod.POST, "/auth/token").permitAll();
+            authorize.requestMatchers(HttpMethod.POST, ALLOWED_PATHS_WITH_POST_METHOD).permitAll();
             authorize.anyRequest().permitAll();
         });
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
