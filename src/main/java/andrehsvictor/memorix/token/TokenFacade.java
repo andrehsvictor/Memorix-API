@@ -29,14 +29,14 @@ public class TokenFacade {
     private final RevokedTokenService revokedTokenService;
     private final UserService userService;
 
-    public GetTokenDto getToken(PostTokenDto postTokenDto) {
+    public GetTokenDto request(PostTokenDto postTokenDto) {
         String username = postTokenDto.getUsername();
         String password = postTokenDto.getPassword();
         UserDetailsImpl userDetails = (UserDetailsImpl) authenticationService.authenticate(username, password).getPrincipal();
         return buildGetTokenDto(userDetails.getUser());
     }
 
-    public GetTokenDto refreshToken(RefreshTokenDto refreshTokenDto) {
+    public GetTokenDto refresh(RefreshTokenDto refreshTokenDto) {
         RefreshToken refreshToken = refreshTokenService.findByToken(refreshTokenDto.getRefreshToken());
         if (revokedTokenService.isRevoked(refreshTokenDto.getRefreshToken())) {
             throw new UnauthorizedException("This token has been revoked.");
