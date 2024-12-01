@@ -6,9 +6,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RefreshTokenDto {
+public class TokenDto {
 
-    @NotBlank(message = "The refresh token must be provided.")
-    private String refreshToken;
+    @NotBlank(message = "Token must be provided.")
+    private String token;
 
 }
