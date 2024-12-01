@@ -3,6 +3,7 @@ package andrehsvictor.memorix.security;
 import java.io.IOException;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -28,7 +29,9 @@ public class JwtFilter extends OncePerRequestFilter {
         if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
             String token = bearerToken.replace(BEARER_PREFIX, "");
             if (revokedTokenService.isRevoked(token)) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().close();
+                SecurityContextHolder.clearContext();
                 return;
             }
         }
