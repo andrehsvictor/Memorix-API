@@ -25,11 +25,11 @@ spring:
 memorix:
   security:
     jwt:
+      public-key:
+        location: file:${RSA_PUBLIC_KEY_LOCATION}
+      private-key:
+        location: file:${RSA_PRIVATE_KEY_LOCATION}
       access-token:
-        public-key:
-          location: file:${RSA_PUBLIC_KEY_LOCATION}
-        private-key:
-          location: file:${RSA_PRIVATE_KEY_LOCATION}
         expires-in: ${ACCESS_TOKEN_EXPIRES_IN:15m}
       refresh-token:
         expires-in: ${REFRESH_TOKEN_EXPIRES_IN:1d}
