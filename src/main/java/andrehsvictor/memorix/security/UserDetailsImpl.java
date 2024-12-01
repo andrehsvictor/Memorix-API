@@ -8,7 +8,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import andrehsvictor.memorix.user.User;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class UserDetailsImpl implements UserDetails, CredentialsContainer {
 
     private static final long serialVersionUID = -3966817104016432200L;
