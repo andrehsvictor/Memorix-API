@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.authentication.AuthenticationService;
 import andrehsvictor.memorix.exception.UnauthorizedException;
+import andrehsvictor.memorix.security.UserDetailsImpl;
 import andrehsvictor.memorix.token.accesstoken.AccessToken;
 import andrehsvictor.memorix.token.accesstoken.AccessTokenService;
 import andrehsvictor.memorix.token.dto.GetTokenDto;
@@ -31,8 +32,8 @@ public class TokenFacade {
     public GetTokenDto getToken(PostTokenDto postTokenDto) {
         String username = postTokenDto.getUsername();
         String password = postTokenDto.getPassword();
-        User user = (User) authenticationService.authenticate(username, password).getPrincipal();
-        return buildGetTokenDto(user);
+        UserDetailsImpl userDetails = (UserDetailsImpl) authenticationService.authenticate(username, password).getPrincipal();
+        return buildGetTokenDto(userDetails.getUser());
     }
 
     public GetTokenDto refreshToken(RefreshTokenDto refreshTokenDto) {
