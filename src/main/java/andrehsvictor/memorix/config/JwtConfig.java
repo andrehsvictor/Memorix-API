@@ -26,11 +26,11 @@ import jakarta.validation.constraints.NotNull;
 public class JwtConfig {
 
     @NotNull(message = "The public key must be provided.")
-    @Value("${memorix.security.jwt.access-token.public-key.location}")
+    @Value("${memorix.security.jwt.public-key.location}")
     private RSAPublicKey publicKey;
 
     @NotNull(message = "The private key must be provided.")
-    @Value("${memorix.security.jwt.access-token.private-key.location}")
+    @Value("${memorix.security.jwt.private-key.location}")
     private RSAPrivateKey privateKey;
 
     @Bean
