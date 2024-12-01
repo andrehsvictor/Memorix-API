@@ -9,29 +9,32 @@ spring:
   config:
     import: optional:file:.env[.properties]
   datasource:
-    url: jdbc:${DB_TYPE}://${DB_HOST}:${DB_PORT}/${DB_NAME}
-    username: ${DB_USER}
+    url: jdbc:${DB_TYPE:postgresql}://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:memorix}
+    username: ${DB_USER:postgres}
     password: ${DB_PASSWORD}
   cache:
-    type: ${CACHE_TYPE}
+    type: ${CACHE_TYPE:redis}
   data:
     redis:
-      database: ${CACHE_DB}
-      host: ${CACHE_HOST}
-      port: ${CACHE_PORT}
+      database: ${CACHE_DB:0}
+      host: ${CACHE_HOST:localhost}
+      port: ${CACHE_PORT:6379}
       password: ${CACHE_PASSWORD}
-      username: ${CACHE_USERNAME}
+      username: ${CACHE_USERNAME:root}
 
 memorix:
   security:
     jwt:
       public-key:
-        location: file:${RSA_PUBLIC_KEY_LOCATION}
+        location: file:${RSA_PUBLIC_KEY_LOCATION:.keys/public.pem}
       private-key:
-        location: file:${RSA_PRIVATE_KEY_LOCATION}
+        location: file:${RSA_PRIVATE_KEY_LOCATION:.keys/private.pem}
       access-token:
         expires-in: ${ACCESS_TOKEN_EXPIRES_IN:15m}
       refresh-token:
         expires-in: ${REFRESH_TOKEN_EXPIRES_IN:1d}
       issuer: ${JWT_ISSUER:localhost}
       audience: ${JWT_AUDIENCE:memorix}
+    cors:
+      allowed-origins: ${CORS_ALLOWED_ORIGINS:*}
+      allowed-methods: ${CORS_ALLOWED_METHODS:*}
