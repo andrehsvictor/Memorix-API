@@ -18,19 +18,19 @@ public class TokenResource {
     private final TokenFacade facade;
 
     @PostMapping("/auth/token")
-    public ResponseEntity<GetTokenDto> getToken(@RequestBody @Valid PostTokenDto postTokenDto) {
+    public ResponseEntity<GetTokenDto> request(@RequestBody @Valid PostTokenDto postTokenDto) {
         GetTokenDto getTokenDto = facade.request(postTokenDto);
         return ResponseEntity.ok(getTokenDto);
     }
 
     @PostMapping("/auth/token/refresh")
-    public ResponseEntity<GetTokenDto> refreshToken(@RequestBody @Valid TokenDto tokenDto) {
+    public ResponseEntity<GetTokenDto> refresh(@RequestBody @Valid TokenDto tokenDto) {
         GetTokenDto getTokenDto = facade.refresh(tokenDto);
         return ResponseEntity.ok(getTokenDto);
     }
 
     @PostMapping("/auth/token/revoke")
-    public ResponseEntity<Void> revokeToken(@RequestBody @Valid TokenDto tokenDto) {
+    public ResponseEntity<Void> revoke(@RequestBody @Valid TokenDto tokenDto) {
         facade.revoke(tokenDto);
         return ResponseEntity.noContent().build();
     }
