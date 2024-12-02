@@ -41,9 +41,9 @@ memorix:
       private-key:
         location: file:${RSA_PRIVATE_KEY_LOCATION:.keys/private.pem}
       access-token:
-        expires-in: ${ACCESS_TOKEN_EXPIRES_IN:15m}
+        lifespan: ${ACCESS_TOKEN_LIFESPAN:1h}
       refresh-token:
-        expires-in: ${REFRESH_TOKEN_EXPIRES_IN:1d}
+        lifespan: ${REFRESH_TOKEN_LIFESPAN:1d}
       issuer: ${JWT_ISSUER:localhost}
       audience: ${JWT_AUDIENCE:memorix}
     cors:
@@ -51,5 +51,5 @@ memorix:
       allowed-methods: ${CORS_ALLOWED_METHODS:*}
     actions:
       token:
-        expires-in: ${ACTION_TOKEN_EXPIRES_IN:1h}
+        lifespan: ${ACTION_TOKEN_LIFESPAN:1h}
       frontend-url: ${FRONTEND_URL:http://localhost:4200}
