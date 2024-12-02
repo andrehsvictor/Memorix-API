@@ -33,13 +33,13 @@ public class JwtService {
     private final JwtEncoder jwtEncoder;
     private final JwtDecoder jwtDecoder;
 
-    public Jwt issue(String subject, String type, Duration expiresIn) {
+    public Jwt issue(String subject, JwtType type, Duration expiresIn) {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .subject(subject)
                 .issuer(issuer)
                 .id(UUID.randomUUID().toString())
                 .claim("aud", audience)
-                .claim("type", type)
+                .claim("type", type.getType())
                 .issuedAt(Instant.now())
                 .expiresAt(Instant.now().plus(expiresIn))
                 .build();
