@@ -35,4 +35,11 @@ public class RefreshToken implements Serializable {
     @TimeToLive(unit = TimeUnit.SECONDS)
     private Long ttl;
 
+    public static RefreshToken of(UUID id, Long ttl) {
+        return RefreshToken.builder()
+                .id(id)
+                .ttl(ttl)
+                .build();
+    }
+
 }
