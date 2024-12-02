@@ -21,27 +21,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserResource {
 
-    private final UserService userService;
-    private final UserMapper userMapper;
+    private final UserFacade userFacade;
 
     @GetMapping("/users")
     public Page<GetUserDto> findAll(Pageable pageable) {
-        Page<User> users = userService.findAll(pageable);
-        return users.map(userMapper::userToGetUserDto);
+        return userFacade.findAll(pageable);
     }
 
     @GetMapping("/users/{username}")
     public GetUserDto findByUsername(@PathVariable String username) {
-        User user = userService.findByUsername(username);
-        return userMapper.userToGetUserDto(user);
+        return userFacade.findByUsername(username);
     }
 
     @PostMapping("/users")
     public ResponseEntity<GetMeDto> create(@RequestBody @Valid PostUserDto postUserDto) {
-        User user = userMapper.postUserDtoToUser(postUserDto);
-        user = userService.save(user);
-        GetMeDto getMeDto = userMapper.userToGetMeDto(user);
-        URI location = URI.create("/users/" + user.getUsername());
+        GetMeDto getMeDto = userFacade.create(postUserDto);
+        URI location = URI.create("/users/" + getMeDto.getUsername());
         return ResponseEntity.created(location).body(getMeDto);
     }
 
