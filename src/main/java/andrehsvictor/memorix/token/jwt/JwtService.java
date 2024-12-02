@@ -55,7 +55,7 @@ public class JwtService {
         Jwt jwt = jwtDecoder.decode(token);
         Instant expiresAt = jwt.getExpiresAt();
         Instant now = Instant.now();
-        return timeUnit.convert(expiresAt.getEpochSecond() - now.getEpochSecond(), TimeUnit.SECONDS);
+        return timeUnit.convert(Duration.between(now, expiresAt).toMillis(), TimeUnit.MILLISECONDS);
     }
 
     public String getJti(String token) {
