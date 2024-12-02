@@ -8,6 +8,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RevokedTokenRepository extends CrudRepository<RevokedToken, UUID> {
 
-    boolean existsByToken(String token);
-
 }

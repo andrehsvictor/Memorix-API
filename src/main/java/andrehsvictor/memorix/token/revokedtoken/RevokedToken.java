@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
-import org.springframework.data.redis.core.index.Indexed;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,17 +31,7 @@ public class RevokedToken implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Indexed
-    private String token;
-
     @TimeToLive
     private Long ttl;
-
-    public static RevokedToken of(String token, Long ttl) {
-        return RevokedToken.builder()
-                .token(token)
-                .ttl(ttl)
-                .build();
-    }
 
 }

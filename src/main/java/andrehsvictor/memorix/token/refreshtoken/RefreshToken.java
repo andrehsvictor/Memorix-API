@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
-import org.springframework.data.redis.core.index.Indexed;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,16 +32,7 @@ public class RefreshToken implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Indexed
-    private String token;
-
-    private UUID userId;
-
     @TimeToLive(unit = TimeUnit.SECONDS)
     private Long ttl;
-
-    public Long getTtl(TimeUnit timeUnit) {
-        return timeUnit.convert(ttl, TimeUnit.SECONDS);
-    }
 
 }

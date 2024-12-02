@@ -54,4 +54,14 @@ public class JwtService {
         return timeUnit.convert(expiresAt.getEpochSecond() - now.getEpochSecond(), TimeUnit.SECONDS);
     }
 
+    public String getJti(String token) {
+        Jwt jwt = jwtDecoder.decode(token);
+        return jwt.getId();
+    }
+
+    public String getSubject(String token) {
+        Jwt jwt = jwtDecoder.decode(token);
+        return jwt.getSubject();
+    }
+
 }
