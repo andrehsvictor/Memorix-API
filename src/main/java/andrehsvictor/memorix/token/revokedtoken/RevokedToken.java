@@ -36,11 +36,12 @@ public class RevokedToken implements Serializable {
     private String token;
 
     @TimeToLive
-    private Long timeToLive;
+    private Long ttl;
 
-    public static RevokedToken of(String token, Long timeToLive) {
+    public static RevokedToken of(String token, Long ttl) {
         return RevokedToken.builder()
                 .token(token)
+                .ttl(ttl)
                 .build();
     }
 
