@@ -40,7 +40,7 @@ public class User implements Serializable {
     @Column(name = "password_hash")
     private String password;
 
-    private boolean enabled = true;
+    private boolean enabled = false;
 
     private String bio;
     private String avatarUrl;
