@@ -39,15 +39,19 @@ public class TokenFacade {
 
     public GetTokenDto refresh(TokenDto refreshTokenDto) {
         RefreshToken refreshToken = refreshTokenService.findByToken(refreshTokenDto.getToken());
-        if (revokedTokenService.isRevoked(refreshTokenDto.getToken())) {
-            throw new UnauthorizedException("This token has been revoked.");
-        }
-        revokedTokenService.revoke(refreshTokenDto.getToken());
+        checkAndRevokeToken(refreshTokenDto);
         User user = userService.findById(refreshToken.getUserId());
         return buildGetTokenDto(user);
     }
 
     public void revoke(TokenDto tokenDto) {
+        checkAndRevokeToken(tokenDto);
+    }
+
+    private void checkAndRevokeToken(TokenDto tokenDto) {
+        if (revokedTokenService.isRevoked(tokenDto.getToken())) {
+            throw new UnauthorizedException("This token has been revoked.");
+        }
         revokedTokenService.revoke(tokenDto.getToken());
     }
 
