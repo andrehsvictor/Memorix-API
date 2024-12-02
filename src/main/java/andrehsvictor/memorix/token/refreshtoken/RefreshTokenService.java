@@ -40,7 +40,7 @@ public class RefreshTokenService {
         return RefreshToken.builder()
                 .userId(userId)
                 .token(token)
-                .expiresIn(expiresIn.getSeconds())
+                .ttl(expiresIn.getSeconds())
                 .build();
     }
 }
