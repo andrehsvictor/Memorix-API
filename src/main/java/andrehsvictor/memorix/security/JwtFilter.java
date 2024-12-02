@@ -33,7 +33,8 @@ public class JwtFilter extends OncePerRequestFilter {
         if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
             String token = bearerToken.replace(BEARER_PREFIX, "");
             Jwt jwt = jwtService.decode(token);
-            if (revokedTokenService.existsById(UUID.fromString(jwt.getId()))) {
+            UUID tokenId = UUID.fromString(jwt.getId());
+            if (revokedTokenService.existsById(tokenId) || !jwt.getClaim("type").equals("access")) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().close();
                 SecurityContextHolder.clearContext();
