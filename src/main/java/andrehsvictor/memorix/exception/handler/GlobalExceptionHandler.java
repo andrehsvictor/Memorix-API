@@ -26,10 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public final ResponseEntity<ErrorDto<String>> handleAllExceptions(Exception ex) {
+    public final ResponseEntity<String> handleAllExceptions(Exception ex) {
         log.error("An internal error occurred.", ex);
-        ErrorDto<String> errorDto = ErrorDto.of(ex.getMessage());
-        return ResponseEntity.internalServerError().body(errorDto);
+        return ResponseEntity.internalServerError().body("An internal error occurred.");
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
