@@ -21,11 +21,10 @@ public class AccessTokenService {
     private final JwtService jwtService;
 
     @NotNull(message = "The access token expires in must be set.")
-    @Value("${memorix.security.jwt.access-token.expires-in:15m}")
-    private Duration expiresIn = Duration.ofMinutes(15);
+    @Value("${memorix.security.jwt.access-token.lifespan:15m}")
+    private Duration lifespan = Duration.ofMinutes(15);
 
-    public AccessToken issue(UUID userId) {
-        Jwt jwt = jwtService.issue(userId.toString(), JwtType.ACCESS, expiresIn);
-        return AccessToken.of(jwt, expiresIn.getSeconds());
+    public Jwt issue(UUID userId) {
+        return jwtService.issue(userId.toString(), JwtType.ACCESS, lifespan);
     }
 }

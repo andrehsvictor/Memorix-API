@@ -47,7 +47,11 @@ public class JwtService {
         return jwtEncoder.encode(JwtEncoderParameters.from(claims));
     }
 
-    public Long getRemainingLifetime(String token, TimeUnit timeUnit) {
+    public Jwt decode(String token) {
+        return jwtDecoder.decode(token);
+    }
+
+    public Long getRemainingLifespan(String token, TimeUnit timeUnit) {
         Jwt jwt = jwtDecoder.decode(token);
         Instant expiresAt = jwt.getExpiresAt();
         Instant now = Instant.now();

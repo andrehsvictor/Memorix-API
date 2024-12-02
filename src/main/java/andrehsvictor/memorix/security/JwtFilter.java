@@ -1,12 +1,15 @@
 package andrehsvictor.memorix.security;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import andrehsvictor.memorix.token.jwt.JwtService;
 import andrehsvictor.memorix.token.revokedtoken.RevokedTokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final RevokedTokenService revokedTokenService;
+    private final JwtService jwtService;
 
     private static final String BEARER_PREFIX = "Bearer ";
 
@@ -28,7 +32,8 @@ public class JwtFilter extends OncePerRequestFilter {
         String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
             String token = bearerToken.replace(BEARER_PREFIX, "");
-            if (revokedTokenService.isRevoked(token)) {
+            Jwt jwt = jwtService.decode(token);
+            if (revokedTokenService.existsById(UUID.fromString(jwt.getId()))) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().close();
                 SecurityContextHolder.clearContext();

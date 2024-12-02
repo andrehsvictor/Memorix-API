@@ -34,4 +34,11 @@ public class RevokedToken implements Serializable {
     @TimeToLive
     private Long ttl;
 
+    public static RevokedToken of(UUID id, Long ttl) {
+        return RevokedToken.builder()
+                .id(id)
+                .ttl(ttl)
+                .build();
+    }
+
 }
