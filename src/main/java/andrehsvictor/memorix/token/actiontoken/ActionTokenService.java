@@ -14,7 +14,7 @@ public class ActionTokenService {
 
     private final ActionTokenRepository actionTokenRepository;
 
-    @Value("${memorix.security.action-token.expires-in:PT1H}")
+    @Value("${memorix.security.actions.token.expires-in:1h}")
     private Duration expiresIn = Duration.ofHours(1);
 
     public ActionToken issue(ActionType action, UUID userId) {
