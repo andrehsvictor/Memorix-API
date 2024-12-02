@@ -1,6 +1,7 @@
 package andrehsvictor.memorix.token.accesstoken;
 
 import java.time.Duration;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -23,8 +24,8 @@ public class AccessTokenService {
     @Value("${memorix.security.jwt.access-token.expires-in:15m}")
     private Duration expiresIn = Duration.ofMinutes(15);
 
-    public AccessToken issue(String subject) {
-        Jwt jwt = jwtService.issue(subject, JwtType.ACCESS, expiresIn);
+    public AccessToken issue(UUID userId) {
+        Jwt jwt = jwtService.issue(userId.toString(), JwtType.ACCESS, expiresIn);
         return AccessToken.of(jwt, expiresIn.getSeconds());
     }
 }
