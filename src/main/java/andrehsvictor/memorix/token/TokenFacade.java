@@ -39,8 +39,10 @@ public class TokenFacade {
 
     public GetTokenDto refresh(TokenDto tokenDto) {
         Jwt refreshToken = jwtService.decode(tokenDto.getToken());
-        refreshTokenService.assertExistsById(UUID.fromString(refreshToken.getId()));
-        revokedTokenService.revoke(tokenDto.getToken());
+        UUID tokenId = UUID.fromString(refreshToken.getId());
+        revokedTokenService.assertNotExistsById(tokenId);
+        refreshTokenService.assertExistsById(tokenId);
+        refreshTokenService.deleteById(tokenId);
         UUID userId = UUID.fromString(refreshToken.getSubject());
         return getTokenDto(userId);
     }
