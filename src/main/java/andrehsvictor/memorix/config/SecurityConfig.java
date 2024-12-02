@@ -34,12 +34,19 @@ public class SecurityConfig {
             "/auth/token/revoke"
     };
 
+    private static final String[] ALLOWED_PATHS_WITH_GET_METHOD = {
+            "/users",
+            "/users/{id}",
+            "/users/{id}/decks",
+    };
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests((authorize) -> {
             authorize.requestMatchers(HttpMethod.POST, ALLOWED_PATHS_WITH_POST_METHOD).permitAll();
+            authorize.requestMatchers(HttpMethod.GET, ALLOWED_PATHS_WITH_GET_METHOD).permitAll();
             authorize.anyRequest().permitAll();
         });
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
