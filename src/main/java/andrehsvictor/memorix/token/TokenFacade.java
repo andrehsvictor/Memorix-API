@@ -56,7 +56,7 @@ public class TokenFacade {
     }
 
     private GetTokenDto buildGetTokenDto(User user) {
-        AccessToken accessToken = accessTokenService.issue(user.getId().toString());
+        AccessToken accessToken = accessTokenService.issue(user.getId());
         RefreshToken refreshToken = refreshTokenService.issue(user.getId());
         Long expiresIn = accessToken.getExpiresIn(TimeUnit.SECONDS);
         return GetTokenDto.builder()
