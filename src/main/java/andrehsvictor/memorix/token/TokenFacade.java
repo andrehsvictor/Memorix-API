@@ -43,6 +43,7 @@ public class TokenFacade {
         revokedTokenService.assertNotExistsById(tokenId);
         refreshTokenService.assertExistsById(tokenId);
         refreshTokenService.deleteById(tokenId);
+        revokedTokenService.revoke(tokenDto.getToken());
         UUID userId = UUID.fromString(refreshToken.getSubject());
         return getTokenDto(userId);
     }
