@@ -18,8 +18,11 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public User save(User user) {
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
+        if (user.getId() == null) {
+            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encodedPassword);
+            return userRepository.save(user);
+        }
         return userRepository.save(user);
     }
 
