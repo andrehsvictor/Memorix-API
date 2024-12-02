@@ -2,6 +2,8 @@ package andrehsvictor.memorix.user;
 
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
@@ -33,5 +35,9 @@ public class UserService {
     public User findById(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id + "."));
+    }
+
+    public Page<User> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 }
