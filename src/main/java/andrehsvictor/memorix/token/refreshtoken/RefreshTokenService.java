@@ -39,4 +39,8 @@ public class RefreshTokenService {
             throw new UnauthorizedException("Invalid or expired refresh token.");
         }
     }
+
+    public void deleteById(UUID id) {
+        refreshTokenRepository.deleteById(id);
+    }
 }
