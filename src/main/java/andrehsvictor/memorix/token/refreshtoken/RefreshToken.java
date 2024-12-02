@@ -39,10 +39,10 @@ public class RefreshToken implements Serializable {
     private UUID userId;
 
     @TimeToLive(unit = TimeUnit.SECONDS)
-    private Long expiresIn;
+    private Long ttl;
 
-    public Long getExpiresIn(TimeUnit timeUnit) {
-        return timeUnit.convert(expiresIn, TimeUnit.SECONDS);
+    public Long getTtl(TimeUnit timeUnit) {
+        return timeUnit.convert(ttl, TimeUnit.SECONDS);
     }
 
 }
