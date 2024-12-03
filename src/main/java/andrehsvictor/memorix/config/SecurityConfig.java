@@ -14,7 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 
+import andrehsvictor.memorix.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -24,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final JwtDecoder jwtDecoder;
+    private final JwtFilter jwtFilter;
 
     private static final String[] ALLOWED_PATHS_WITH_POST_METHOD = {
             "/auth/token",
@@ -47,6 +50,7 @@ public class SecurityConfig {
             authorize.anyRequest().permitAll();
         });
         http.oauth2ResourceServer((oauth2) -> oauth2.jwt((jwt) -> jwt.decoder(jwtDecoder)));
+        http.addFilterAfter(jwtFilter, AuthorizationFilter.class);
         return http.build();
     }
 
