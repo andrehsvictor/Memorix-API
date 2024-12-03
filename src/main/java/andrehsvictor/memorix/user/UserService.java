@@ -29,12 +29,12 @@ public class UserService {
 
     public User findByUsername(String username) {
         return userRepository.findByUsernameOrEmail(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username + "."));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
     }
 
     public User findById(UUID id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id + "."));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
     }
 
     public Page<User> findAll(Pageable pageable) {
