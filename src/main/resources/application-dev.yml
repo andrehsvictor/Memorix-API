@@ -2,3 +2,6 @@ spring:
   docker:
     compose:
       file: docker-compose.dev.yml
+
+memorix:
+  version: dev
