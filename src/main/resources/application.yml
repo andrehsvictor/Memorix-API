@@ -29,6 +29,8 @@ memorix:
         location: file:${PRIVATE_KEY_LOCATION:.keys/private.pem}
       public-key:
         location: file:${PUBLIC_KEY_LOCATION:.keys/public.pem}
+      issuer: ${ISSUER:localhost}
+      audience: ${AUDIENCE:memorix}
     access-token:
       lifespan: ${ACCESS_TOKEN_LIFESPAN:15m}
     refresh-token:
