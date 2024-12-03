@@ -17,17 +17,17 @@ public class TokenResource {
 
     private final TokenFacade tokenFacade;
 
-    @PostMapping("/auth/token")
+    @PostMapping("/v1/auth/token")
     public GetTokenDto request(@RequestBody @Valid PostTokenDto postTokenDto) {
         return tokenFacade.request(postTokenDto);
     }
 
-    @PostMapping("/auth/token/refresh")
+    @PostMapping("/v1/auth/token/refresh")
     public ResponseEntity<GetTokenDto> refresh(@RequestBody @Valid TokenDto tokenDto) {
         return ResponseEntity.ok(tokenFacade.refresh(tokenDto));
     }
 
-    @PostMapping("/auth/token/revoke")
+    @PostMapping("/v1/auth/token/revoke")
     public ResponseEntity<Void> revoke(@RequestBody @Valid TokenDto tokenDto) {
         tokenFacade.revoke(tokenDto);
         return ResponseEntity.noContent().build();
