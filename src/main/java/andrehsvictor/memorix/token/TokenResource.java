@@ -1,11 +1,13 @@
 package andrehsvictor.memorix.token;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import andrehsvictor.memorix.token.dto.GetTokenDto;
 import andrehsvictor.memorix.token.dto.PostTokenDto;
+import andrehsvictor.memorix.token.dto.TokenDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -18,5 +20,16 @@ public class TokenResource {
     @PostMapping("/auth/token")
     public GetTokenDto request(@RequestBody @Valid PostTokenDto postTokenDto) {
         return tokenFacade.request(postTokenDto);
+    }
+
+    @PostMapping("/auth/token/refresh")
+    public ResponseEntity<GetTokenDto> refresh(@RequestBody @Valid TokenDto tokenDto) {
+        return ResponseEntity.ok(tokenFacade.refresh(tokenDto));
+    }
+
+    @PostMapping("/auth/token/revoke")
+    public ResponseEntity<Void> revoke(@RequestBody @Valid TokenDto tokenDto) {
+        tokenFacade.revoke(tokenDto);
+        return ResponseEntity.noContent().build();
     }
 }
