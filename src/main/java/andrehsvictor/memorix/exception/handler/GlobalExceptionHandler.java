@@ -27,8 +27,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<ErrorDto<String>> handleAllExceptions(Exception ex) {
-        log.error("An internal error occurred.", ex);
-        ErrorDto<String> errorDto = ErrorDto.of("An internal error occurred.");
+        log.error("An internal error occurred", ex);
+        ErrorDto<String> errorDto = ErrorDto.of("An internal error occurred");
         return ResponseEntity.internalServerError().body(errorDto);
     }
 
