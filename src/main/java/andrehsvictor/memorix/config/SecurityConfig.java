@@ -29,15 +29,13 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
 
     private static final String[] ALLOWED_PATHS_WITH_POST_METHOD = {
-            "/auth/token",
-            "/auth/token/refresh",
-            "/auth/token/revoke"
+            "/v1/auth/token",
+            "/v1/auth/token/refresh",
+            "/v1/auth/token/revoke",
     };
 
     private static final String[] ALLOWED_PATHS_WITH_GET_METHOD = {
-            "/users",
-            "/users/{id}",
-            "/users/{id}/decks",
+            "/v1/users",
     };
 
     @Bean
