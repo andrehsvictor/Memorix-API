@@ -30,6 +30,11 @@ public class UserDetailsImpl implements UserDetails, CredentialsContainer {
     }
 
     @Override
+    public boolean isEnabled() {
+        return user.isEnabled();
+    }
+
+    @Override
     public String getUsername() {
         return user.getUsername();
     }
