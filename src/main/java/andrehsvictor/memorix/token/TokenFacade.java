@@ -46,6 +46,7 @@ public class TokenFacade {
         if (isRevoked || !isValid) {
             throw new UnauthorizedException("Refresh token is invalid or revoked.");
         }
+        tokenRenewalService.delete(jwt.getId());
         return getTokenDto(jwt.getSubject());
     }
 
