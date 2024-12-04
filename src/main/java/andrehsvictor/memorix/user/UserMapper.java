@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import andrehsvictor.memorix.user.dto.GetMeDto;
+import andrehsvictor.memorix.user.dto.GetUserDto;
 import andrehsvictor.memorix.user.dto.PostUserDto;
 
 @Mapper(componentModel = "spring")
@@ -17,5 +18,7 @@ public interface UserMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     User postUserDtoToUser(PostUserDto postUserDto);
+
+    GetUserDto userToGetUserDto(User user);
 
 }
