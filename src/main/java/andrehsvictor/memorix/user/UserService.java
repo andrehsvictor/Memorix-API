@@ -25,6 +25,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public Page<User> searchByDisplayNameOrUsername(String displayName, String username, Pageable pageable) {
+        return userRepository.findAllByDisplayNameOrUsernameContainingIgnoreCase(displayName, username, pageable);
+    }
+
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
