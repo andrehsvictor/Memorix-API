@@ -41,11 +41,10 @@ public class UserResource {
     }
 
     @GetMapping("/v1/users")
-    public Page<GetUserDto> findAll(@Valid UserQuery userQuery, Pageable pageable) {
+    public Page<GetUserDto> findAll(String displayName, String username, Pageable pageable) {
         Page<User> users;
-        if (userQuery.getDisplayName() != null || userQuery.getUsername() != null) {
-            users = userService.searchByDisplayNameOrUsername(userQuery.getDisplayName(), userQuery.getUsername(),
-                    pageable);
+        if (displayName != null || username != null) {
+            users = userService.searchByDisplayNameOrUsername(displayName, username, pageable);
         } else {
             users = userService.findAll(pageable);
         }
