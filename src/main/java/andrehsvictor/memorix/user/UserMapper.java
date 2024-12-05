@@ -26,11 +26,11 @@ public interface UserMapper {
     @Mapping(target = "avatarUrl", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
     @Mapping(target = "bio", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    public abstract User updateUserFromPutUserDto(PutUserDto putUserDto, @MappingTarget User user);
+    User updateUserFromPutUserDto(PutUserDto putUserDto, @MappingTarget User user);
 
     @BeforeMapping
     default void beforeUpdateUserFromPutUserDto(PutUserDto putUserDto, @MappingTarget User user) {
-        if (putUserDto.getEmail() != null) {
+        if (putUserDto.getEmail() != null && !putUserDto.getEmail().equals(user.getEmail())) {
             user.setEmailVerified(false);
         }
     }
