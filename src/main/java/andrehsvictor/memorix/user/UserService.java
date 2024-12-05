@@ -50,4 +50,8 @@ public class UserService {
     public Page<User> findAll(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
+
+    public void deleteById(UUID id) {
+        userRepository.deleteById(id);
+    }
 }
