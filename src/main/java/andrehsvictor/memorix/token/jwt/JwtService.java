@@ -22,11 +22,11 @@ public class JwtService {
     private final JwtEncoder jwtEncoder;
     private final JwtDecoder jwtDecoder;
 
-    @Value("${memorix.security.jwt.access-token.lifespan:15m}")
+    @Value("${memorix.security.access-token.lifespan:15m}")
     private Duration accessTokenLifespan = Duration.ofMinutes(15);
 
-    @Value("${memorix.security.jwt.refresh-token.lifespan:7d}")
-    private Duration refreshTokenLifespan = Duration.ofDays(7);
+    @Value("${memorix.security.refresh-token.lifespan:1d}")
+    private Duration refreshTokenLifespan = Duration.ofDays(1);
 
     @Value("${memorix.security.jwt.issuer:localhost}")
     private String issuer = "localhost";
