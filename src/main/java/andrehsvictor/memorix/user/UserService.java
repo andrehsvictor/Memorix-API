@@ -16,7 +16,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public User save(User user) {
         return userRepository.save(user);
     }
@@ -33,6 +33,10 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
+    public boolean existsByUsernameOrEmail(String username, String email) {
+        return userRepository.existsByUsernameOrEmail(username, email);
+    }
+
     public User findByUsername(String username) {
         return userRepository.findByUsernameOrEmail(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
@@ -47,6 +51,7 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
+    @Transactional
     public void deleteById(UUID id) {
         userRepository.deleteById(id);
     }

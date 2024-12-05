@@ -26,7 +26,7 @@ public interface UserMapper {
     @Mapping(target = "avatarUrl", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
     @Mapping(target = "bio", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    User updateUserFromPutUserDto(PutUserDto putUserDto, @MappingTarget User user);
+    public abstract User updateUserFromPutUserDto(PutUserDto putUserDto, @MappingTarget User user);
 
     @BeforeMapping
     default void beforeUpdateUserFromPutUserDto(PutUserDto putUserDto, @MappingTarget User user) {
