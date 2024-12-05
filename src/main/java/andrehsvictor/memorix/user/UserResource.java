@@ -6,15 +6,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import andrehsvictor.memorix.user.dto.GetMeDto;
 import andrehsvictor.memorix.user.dto.GetUserDto;
 import andrehsvictor.memorix.user.dto.PostUserDto;
+import andrehsvictor.memorix.user.dto.PutUserDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +32,21 @@ public class UserResource {
     public ResponseEntity<GetMeDto> getMe(@AuthenticationPrincipal User user) {
         GetMeDto getMeDto = userMapper.userToGetMeDto(user);
         return ResponseEntity.ok(getMeDto);
+    }
+
+    @PutMapping("/v1/users/me")
+    public ResponseEntity<GetMeDto> updateMe(@AuthenticationPrincipal User user,
+            @RequestBody @Valid PutUserDto putUserDto) {
+        user = userMapper.updateUserFromPutUserDto(putUserDto, user);
+        user = userService.save(user);
+        GetMeDto getMeDto = userMapper.userToGetMeDto(user);
+        return ResponseEntity.ok(getMeDto);
+    }
+
+    @DeleteMapping("/v1/users/me")
+    public ResponseEntity<Void> deleteMe(@AuthenticationPrincipal User user) {
+        userService.deleteById(user.getId());
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/v1/users")
