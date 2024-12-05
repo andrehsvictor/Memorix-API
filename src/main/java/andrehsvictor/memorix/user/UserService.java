@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import andrehsvictor.memorix.exception.ResourceAlreadyExistsException;
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 
@@ -19,9 +18,6 @@ public class UserService {
 
     @Transactional(rollbackFor = Exception.class)
     public User save(User user) {
-        if (existsByUsername(user.getUsername()) || existsByEmail(user.getEmail())) {
-            throw new ResourceAlreadyExistsException("Username or e-mail already in use");
-        }
         return userRepository.save(user);
     }
 
