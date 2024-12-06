@@ -13,19 +13,21 @@ public class TokenRenewalService {
 
     private final RedisTemplate<String, String> redisTemplate;
 
+    private static final String PREFIX = "refresh_token:";
+
     public void save(String jti, Duration lifespan) {
-        redisTemplate.opsForValue().set("refresh_token:" + jti, jti, lifespan);
+        redisTemplate.opsForValue().set(PREFIX + jti, jti, lifespan);
     }
 
     public String get(String jti) {
-        return redisTemplate.opsForValue().get("refresh_token:" + jti);
+        return redisTemplate.opsForValue().get(PREFIX + jti);
     }
 
     public boolean exists(String jti) {
-        return redisTemplate.hasKey("refresh_token:" + jti);
+        return redisTemplate.hasKey(PREFIX + jti);
     }
 
     public void delete(String jti) {
-        redisTemplate.delete("refresh_token:" + jti);
+        redisTemplate.delete(PREFIX + jti);
     }
 }
