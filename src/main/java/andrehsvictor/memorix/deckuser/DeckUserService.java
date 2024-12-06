@@ -22,4 +22,12 @@ public class DeckUserService {
         deckUserRepository.deleteByDeckIdAndUserId(deckId, userId);
     }
 
+    public DeckUser save(DeckUser deckUser) {
+        return deckUserRepository.save(deckUser);
+    }
+
+    public boolean existsByDeckIdAndUserId(UUID deckId, UUID userId) {
+        return deckUserRepository.existsByDeckIdAndUserId(deckId, userId);
+    }
+
 }

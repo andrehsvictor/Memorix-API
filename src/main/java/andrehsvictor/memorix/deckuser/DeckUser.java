@@ -14,6 +14,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +25,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @Entity
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "decks_users")
 @EqualsAndHashCode(of = "id")
 @ToString(exclude = { "user", "deck" })
@@ -44,10 +48,14 @@ public class DeckUser implements Serializable {
     @JoinColumn(name = "deck_id")
     private Deck deck;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     private DeckUserRole role = DeckUserRole.USER;
 
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Builder.Default
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     @PreUpdate

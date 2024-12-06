@@ -19,4 +19,6 @@ public interface DeckUserRepository extends JpaRepository<DeckUser, DeckUserId> 
     @Transactional
     void deleteByDeckIdAndUserId(UUID deckId, UUID userId);
 
+    boolean existsByDeckIdAndUserId(UUID deckId, UUID userId);
+
 }
