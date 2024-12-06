@@ -42,4 +42,9 @@ public class DeckResource {
             Pageable pageable) {
         return deckFacade.findAllByOwnerUsernameAndVisibilityPublic(username, pageable);
     }
+
+    @GetMapping("/v1/users/me/decks")
+    public Page<GetDeckDto> findAllMine(Pageable pageable, @AuthenticationPrincipal User user) {
+        return deckFacade.findAllByUserId(user.getId(), pageable);
+    }
 }

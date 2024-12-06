@@ -53,4 +53,8 @@ public class DeckService {
     public Page<Deck> findAllByOwnerUsernameAndVisibilityPublic(String username, Pageable pageable) {
         return deckRepository.findAllByOwnerUsernameAndVisibility(username, DeckVisibility.PUBLIC, pageable);
     }
+
+    public String generateRandomAccentColor() {
+        return "#" + Integer.toHexString((int) (Math.random() * 0xffffff)).toUpperCase();
+    }
 }
