@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS progresses (
+    id UUID PRIMARY KEY,
+    user_id UUID NOT NULL,
+    card_id UUID NOT NULL,
+    easiness_factor FLOAT NOT NULL DEFAULT 2.5,
+    repetitions INT NOT NULL DEFAULT 0,
+    interval INT NOT NULL DEFAULT 1,
+    next_repetition TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_studied TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (card_id) REFERENCES cards(id) ON DELETE CASCADE
+);

@@ -1,0 +1,1 @@
+ALTER TABLE progresses ADD UNIQUE (user_id, card_id);
