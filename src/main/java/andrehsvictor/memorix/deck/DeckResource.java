@@ -76,13 +76,13 @@ public class DeckResource {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/v1/decks/{id}/add")
+    @PostMapping("/v1/users/me/decks/{id}")
     public ResponseEntity<Void> add(@PathVariable String id, @AuthenticationPrincipal User user) {
         deckFacade.add(UUID.fromString(id), user);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/v1/decks/{id}/remove")
+    @DeleteMapping("/v1/users/me/decks/{id}")
     public ResponseEntity<Void> remove(@PathVariable String id, @AuthenticationPrincipal User user) {
         deckFacade.remove(UUID.fromString(id), user);
         return ResponseEntity.noContent().build();
