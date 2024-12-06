@@ -1,5 +1,7 @@
 package andrehsvictor.memorix.deck;
 
+import java.time.LocalDateTime;
+
 import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -28,6 +30,13 @@ public abstract class DeckMapper {
     @Mapping(target = "accentColor", expression = "java(deckService.generateRandomAccentColor())")
     public abstract Deck postDeckDtoToDeck(PostDeckDto postDeckDto);
 
+    @AfterMapping
+    protected void afterMapping(PostDeckDto postDeckDto, @MappingTarget Deck deck) {
+        if (postDeckDto.getVisibility().equals("PUBLIC")) {
+            deck.setPublishedAt(LocalDateTime.now());
+        }
+    }
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     public abstract Deck updateDeckFromPutDeckDto(PutDeckDto putDeckDto, @MappingTarget Deck deck);
 
@@ -36,6 +45,11 @@ public abstract class DeckMapper {
         if (putDeckDto.getVisibility().equals("PRIVATE") && !deck.getVisibility().equals(deck.getVisibility())) {
             deckUserService.deleteAllByDeckIdExceptOwner(deck.getId());
             deck.setUsersCount(1);
+        }
+        if (putDeckDto.getVisibility().equals("PUBLIC") && !deck.getVisibility().equals(deck.getVisibility())) {
+            if (deck.getPublishedAt() == null) {
+                deck.setPublishedAt(LocalDateTime.now());
+            }
         }
         if (putDeckDto.getCoverUrl().isBlank()) {
             deck.setCoverUrl(null);
