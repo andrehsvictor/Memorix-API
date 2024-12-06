@@ -32,10 +32,15 @@ public class SecurityConfig {
             "/v1/auth/token",
             "/v1/auth/token/refresh",
             "/v1/auth/token/revoke",
+            "/v1/users",
     };
 
     private static final String[] ALLOWED_PATHS_WITH_GET_METHOD = {
             "/v1/users",
+            "/v1/users/{username}",
+            "/v1/decks",
+            "/v1/decks/{id}",
+            "/v1/users/{username}/decks",
     };
 
     @Bean
