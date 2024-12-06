@@ -59,6 +59,7 @@ public class Deck implements Serializable {
     private int cardsCount = 0;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime publishedAt;
 
     @PreUpdate
     void preUpdate() {
