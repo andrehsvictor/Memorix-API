@@ -23,6 +23,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Table(name = "users")
 @EqualsAndHashCode(of = "id")
+@ToString(exclude = { "password" })
 public class User implements Serializable {
 
     private static final long serialVersionUID = 3571175413126174619L;
@@ -36,7 +37,6 @@ public class User implements Serializable {
     private String email;
     private boolean emailVerified = false;
 
-    @ToString.Include(name = "[PROTECTED]")
     @Column(name = "password_hash")
     private String password;
 
