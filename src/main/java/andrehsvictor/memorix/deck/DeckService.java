@@ -37,7 +37,7 @@ public class DeckService {
     }
 
     public Deck findByIdAndUserIdOrVisibilityPublic(UUID id, UUID userId) {
-        return deckRepository.findByIdAndUsersUserIdOrVisibility(id, userId, DeckVisibility.PUBLIC)
+        return deckRepository.findByIdAndUsersUserIdOrVisibility(id, userId, DeckVisibility.PUBLIC.name())
                 .orElseThrow(() -> new ResourceNotFoundException("Deck not found with ID '" + id + "'"));
     }
 
