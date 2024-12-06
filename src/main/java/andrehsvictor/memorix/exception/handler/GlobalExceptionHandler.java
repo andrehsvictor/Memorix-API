@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import andrehsvictor.memorix.exception.ForbiddenActionException;
 import andrehsvictor.memorix.exception.ResourceAlreadyExistsException;
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.exception.dto.ErrorDto;
@@ -65,5 +66,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public final ResponseEntity<ErrorDto<String>> handleAuthenticationException(AuthenticationException ex) {
         ErrorDto<String> errorDto = ErrorDto.of(ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDto);
+    }
+
+    @ExceptionHandler(ForbiddenActionException.class)
+    public final ResponseEntity<ErrorDto<String>> handleForbiddenActionException(ForbiddenActionException ex) {
+        ErrorDto<String> errorDto = ErrorDto.of(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorDto);
     }
 }
