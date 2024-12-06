@@ -12,8 +12,13 @@ public interface DeckRepository extends JpaRepository<Deck, UUID> {
 
     Page<Deck> findAllByUsersUserId(UUID userId, Pageable pageable);
 
-    @Query("SELECT d FROM Deck d JOIN d.users u WHERE d.id = :id AND (u.id.userId = :userId OR d.visibility = :visibility)")
-    Optional<Deck> findByIdAndUsersUserIdOrVisibility(UUID id, UUID userId, DeckVisibility visibility);
+    @Query(nativeQuery = true, value = """
+            SELECT d.*
+            FROM decks d, decks_users du
+            WHERE d.id = :id
+            AND ((du.user_id = :userId AND du.deck_id = :id) OR d.visibility = :visibility)
+            """)
+    Optional<Deck> findByIdAndUsersUserIdOrVisibility(UUID id, UUID userId, String visibility);
 
     Page<Deck> findAllByVisibility(DeckVisibility visibility, Pageable pageable);
 
