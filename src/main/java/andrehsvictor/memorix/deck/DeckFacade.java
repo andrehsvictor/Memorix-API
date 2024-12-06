@@ -10,6 +10,7 @@ import andrehsvictor.memorix.deck.dto.GetDeckDto;
 import andrehsvictor.memorix.deck.dto.PostDeckDto;
 import andrehsvictor.memorix.deck.dto.PutDeckDto;
 import andrehsvictor.memorix.deckuser.DeckUser;
+import andrehsvictor.memorix.deckuser.DeckUserId;
 import andrehsvictor.memorix.deckuser.DeckUserRole;
 import andrehsvictor.memorix.deckuser.DeckUserService;
 import andrehsvictor.memorix.exception.ForbiddenActionException;
@@ -59,7 +60,12 @@ public class DeckFacade {
     }
 
     private DeckUser of(User user, Deck deck, DeckUserRole role) {
+        DeckUserId id = DeckUserId.builder()
+                .deckId(deck.getId())
+                .userId(user.getId())
+                .build();
         return DeckUser.builder()
+                .id(id)
                 .deck(deck)
                 .user(user)
                 .role(role)
