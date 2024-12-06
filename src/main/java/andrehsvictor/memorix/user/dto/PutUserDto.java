@@ -10,10 +10,10 @@ import lombok.Setter;
 @Setter
 public class PutUserDto {
 
-    @Size(min = 1, max = 50, message = "Display name must be between 1 and 50 characters")
+    @Size(min = 3, max = 50, message = "Display name must be between 1 and 50 characters")
     private String displayName;
 
-    @Size(min = 1, max = 50, message = "Username must be between 1 and 50 characters")
+    @Size(min = 3, max = 50, message = "Username must be between 1 and 50 characters")
     private String username;
 
     @Email(message = "E-mail must be valid")

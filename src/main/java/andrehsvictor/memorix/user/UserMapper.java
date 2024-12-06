@@ -1,5 +1,6 @@
 package andrehsvictor.memorix.user;
 
+import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.BeforeMapping;
 import org.mapstruct.Mapper;
@@ -23,8 +24,6 @@ public interface UserMapper {
 
     GetUserDto userToGetUserDto(User user);
 
-    @Mapping(target = "avatarUrl", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
-    @Mapping(target = "bio", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     User updateUserFromPutUserDto(PutUserDto putUserDto, @MappingTarget User user);
 
@@ -32,6 +31,16 @@ public interface UserMapper {
     default void beforeUpdateUserFromPutUserDto(PutUserDto putUserDto, @MappingTarget User user) {
         if (putUserDto.getEmail() != null && !putUserDto.getEmail().equals(user.getEmail())) {
             user.setEmailVerified(false);
+        }
+    }
+
+    @AfterMapping
+    default void afterUpdateUserFromPutUserDto(PutUserDto putUserDto, @MappingTarget User user) {
+        if (putUserDto.getAvatarUrl() != null && putUserDto.getAvatarUrl().isBlank()) {
+            user.setAvatarUrl(null);
+        }
+        if (putUserDto.getBio() != null && putUserDto.getBio().isBlank()) {
+            user.setBio(null);
         }
     }
 
