@@ -8,6 +8,8 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
+    networks:
+      - memorix-network
     env_file:
       - .env
   cache:
@@ -21,3 +23,9 @@ services:
       REDIS_DB: ${CACHE_DB}
     env_file:
       - .env
+    networks:
+      - memorix-network
+networks:
+  memorix-network:
+    driver: bridge
+    name: memorix-network
