@@ -15,11 +15,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TokenResource {
 
-    private final TokenFacade tokenFacade;
+    private final TokenService tokenFacade;
 
     @PostMapping("/v1/auth/token")
     public GetTokenDto request(@RequestBody @Valid PostTokenDto postTokenDto) {
-        return tokenFacade.request(postTokenDto);
+        return tokenFacade.get(postTokenDto);
     }
 
     @PostMapping("/v1/auth/token/refresh")
