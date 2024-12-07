@@ -36,11 +36,8 @@ public class SecurityConfig {
     };
 
     private static final String[] ALLOWED_PATHS_WITH_GET_METHOD = {
-            "/v1/users",
-            "/v1/users/{username}",
-            "/v1/decks",
-            "/v1/decks/{id}",
-            "/v1/users/{username}/decks",
+        "/swagger-ui/**",
+        "/v3/api-docs/**",
     };
 
     @Bean
