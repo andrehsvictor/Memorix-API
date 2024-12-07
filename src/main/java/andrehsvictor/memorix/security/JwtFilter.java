@@ -2,6 +2,7 @@ package andrehsvictor.memorix.security;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.http.HttpHeaders;
@@ -14,7 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import andrehsvictor.memorix.token.TokenBlacklistService;
 import andrehsvictor.memorix.token.jwt.JwtService;
 import andrehsvictor.memorix.user.User;
-import andrehsvictor.memorix.user.UserService;
+import andrehsvictor.memorix.user.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +28,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final TokenBlacklistService tokenBlacklistService;
     private final JwtService jwtService;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     private final static String BEARER_PREFIX = "Bearer ";
 
@@ -39,20 +40,25 @@ public class JwtFilter extends OncePerRequestFilter {
             String token = bearerToken.substring(BEARER_PREFIX.length());
             Jwt jwt = jwtService.decode(token);
             if (tokenBlacklistService.exists(jwt.getId()) || !jwt.getClaim("type").equals("access")) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().close();
+                sendUnauthorizedResponse(response);
                 return;
             }
-            setAuthentication(jwt);
+            Optional<User> optionalUser = userRepository.findById(UUID.fromString(jwt.getSubject()));
+            if (optionalUser.isEmpty()) {
+                sendUnauthorizedResponse(response);
+                return;
+            }
+            User user = optionalUser.get();
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
+                    Collections.emptyList());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);
     }
 
-    private void setAuthentication(Jwt jwt) {
-        User user = userService.findById(UUID.fromString(jwt.getSubject()));
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
-                Collections.emptyList());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    private void sendUnauthorizedResponse(HttpServletResponse response) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().close();
     }
 
 }
