@@ -15,21 +15,21 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TokenResource {
 
-    private final TokenService tokenFacade;
+    private final TokenService tokenService;
 
     @PostMapping("/v1/auth/token")
     public GetTokenDto request(@RequestBody @Valid PostTokenDto postTokenDto) {
-        return tokenFacade.get(postTokenDto);
+        return tokenService.get(postTokenDto);
     }
 
     @PostMapping("/v1/auth/token/refresh")
     public ResponseEntity<GetTokenDto> refresh(@RequestBody @Valid TokenDto tokenDto) {
-        return ResponseEntity.ok(tokenFacade.refresh(tokenDto));
+        return ResponseEntity.ok(tokenService.refresh(tokenDto));
     }
 
     @PostMapping("/v1/auth/token/revoke")
     public ResponseEntity<Void> revoke(@RequestBody @Valid TokenDto tokenDto) {
-        tokenFacade.revoke(tokenDto);
+        tokenService.revoke(tokenDto);
         return ResponseEntity.noContent().build();
     }
 }
