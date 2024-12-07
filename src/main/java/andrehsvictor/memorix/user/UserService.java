@@ -26,18 +26,18 @@ public class UserService {
         User user = userMapper.postUserDtoToUser(postUserDto);
         encodePassword(user);
         userRepository.save(user);
-        return userMapper.userToGetMeDto(user);
+        return userMapper.userToGetUserDto(user);
     }
 
-    public GetUserDto getMe(User user) {
-        return userMapper.userToGetMeDto(user);
+    public GetUserDto get(User user) {
+        return userMapper.userToGetUserDto(user);
     }
 
     public boolean existsByUsernameOrEmail(String username, String email) {
         return userRepository.existsByUsernameOrEmail(username, email);
     }
 
-    public GetUserDto updateMe(PutUserDto putUserDto, User user) {
+    public GetUserDto update(PutUserDto putUserDto, User user) {
         String email = putUserDto.getEmail();
         String username = putUserDto.getUsername();
         boolean emailChanged = email != null && !email.equals(user.getEmail());
@@ -49,10 +49,10 @@ public class UserService {
         }
         user = userMapper.updateUserFromPutUserDto(putUserDto, user);
         userRepository.save(user);
-        return userMapper.userToGetMeDto(user);
+        return userMapper.userToGetUserDto(user);
     }
 
-    public void deleteMe(User user) {
+    public void delete(User user) {
         userRepository.delete(user);
     }
 

@@ -30,17 +30,17 @@ public class UserResource {
 
     @GetMapping("/v1/users/me")
     public GetUserDto getMe(@AuthenticationPrincipal User user) {
-        return userService.getMe(user);
+        return userService.get(user);
     }
 
     @PutMapping("/v1/users/me")
     public GetUserDto updateMe(@RequestBody @Valid PutUserDto putUserDto, @AuthenticationPrincipal User user) {
-        return userService.updateMe(putUserDto, user);
+        return userService.update(putUserDto, user);
     }
 
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     @DeleteMapping("/v1/users/me")
     public void deleteMe(@AuthenticationPrincipal User user) {
-        userService.deleteMe(user);
+        userService.delete(user);
     }
 }
