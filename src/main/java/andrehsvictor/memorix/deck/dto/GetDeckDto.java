@@ -11,6 +11,10 @@ public class GetDeckDto {
     private String name;
     private String slug;
     private String description;
-    private int cardsCount;
+    private Long cardsCount;
+    private String coverUrl;
+    private String accentColor;
+    private String createdAt;
+    private String updatedAt;
 
 }
