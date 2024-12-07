@@ -21,21 +21,24 @@ import lombok.RequiredArgsConstructor;
 public class UserResource {
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @PostMapping("/v1/users")
     @ResponseStatus(code = HttpStatus.CREATED)
     public GetUserDto create(@RequestBody @Valid PostUserDto postUserDto) {
-        return userService.create(postUserDto);
+        User user = userService.create(postUserDto);
+        return userMapper.userToGetUserDto(user);
     }
 
     @GetMapping("/v1/users/me")
     public GetUserDto getMe(@AuthenticationPrincipal User user) {
-        return userService.get(user);
+        return userMapper.userToGetUserDto(user);
     }
 
     @PutMapping("/v1/users/me")
     public GetUserDto updateMe(@RequestBody @Valid PutUserDto putUserDto, @AuthenticationPrincipal User user) {
-        return userService.update(putUserDto, user);
+        user = userService.update(putUserDto, user);
+        return userMapper.userToGetUserDto(user);
     }
 
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
