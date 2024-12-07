@@ -4,7 +4,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.exception.ResourceAlreadyExistsException;
-import andrehsvictor.memorix.user.dto.GetUserDto;
 import andrehsvictor.memorix.user.dto.PostUserDto;
 import andrehsvictor.memorix.user.dto.PutUserDto;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public GetUserDto create(PostUserDto postUserDto) {
+    public User create(PostUserDto postUserDto) {
         String username = postUserDto.getUsername();
         String email = postUserDto.getEmail();
         if (existsByUsernameOrEmail(username, email)) {
@@ -25,19 +24,14 @@ public class UserService {
         }
         User user = userMapper.postUserDtoToUser(postUserDto);
         encodePassword(user);
-        userRepository.save(user);
-        return userMapper.userToGetUserDto(user);
-    }
-
-    public GetUserDto get(User user) {
-        return userMapper.userToGetUserDto(user);
+        return userRepository.save(user);
     }
 
     public boolean existsByUsernameOrEmail(String username, String email) {
         return userRepository.existsByUsernameOrEmail(username, email);
     }
 
-    public GetUserDto update(PutUserDto putUserDto, User user) {
+    public User update(PutUserDto putUserDto, User user) {
         String email = putUserDto.getEmail();
         String username = putUserDto.getUsername();
         boolean emailChanged = email != null && !email.equals(user.getEmail());
@@ -48,8 +42,7 @@ public class UserService {
             }
         }
         user = userMapper.updateUserFromPutUserDto(putUserDto, user);
-        userRepository.save(user);
-        return userMapper.userToGetUserDto(user);
+        return userRepository.save(user);
     }
 
     public void delete(User user) {
