@@ -38,6 +38,7 @@ public class SecurityConfig {
     private static final String[] ALLOWED_PATHS_WITH_GET_METHOD = {
         "/swagger-ui/**",
         "/v3/api-docs/**",
+        "/images/**",
     };
 
     @Bean
