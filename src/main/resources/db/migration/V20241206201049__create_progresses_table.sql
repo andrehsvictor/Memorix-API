@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS progresses (
     card_id UUID NOT NULL,
     user_id UUID NOT NULL,
-    easiness_factor DOUBLE NOT NULL DEFAULT 2.5,
+    easiness_factor FLOAT NOT NULL DEFAULT 2.5,
     repetitions INT NOT NULL DEFAULT 0,
     interval INT NOT NULL DEFAULT 1,
     next_repetition TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
