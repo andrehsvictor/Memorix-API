@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.hibernate.annotations.Formula;
+
 import andrehsvictor.memorix.user.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -44,6 +46,16 @@ public class Deck implements Serializable {
 
     private String coverUrl;
     private String accentColor;
+    private Long cardsCount = 0L;
+
+    @Formula("""
+            (SELECT COUNT(*)
+            FROM cards c
+            JOIN progresses p ON c.id = p.card_id
+            WHERE c.deck_id = id AND p.user_id = user_id AND p.next_repetition <= CURRENT_TIMESTAMP)
+            """)
+    private Long scheduledCardsCount = 0L;
+
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
 
