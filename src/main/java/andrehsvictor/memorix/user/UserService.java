@@ -1,9 +1,12 @@
 package andrehsvictor.memorix.user;
 
+import java.util.UUID;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.exception.ResourceAlreadyExistsException;
+import andrehsvictor.memorix.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.user.dto.PostUserDto;
 import andrehsvictor.memorix.user.dto.PutUserDto;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,11 @@ public class UserService {
         User user = userMapper.postUserDtoToUser(postUserDto);
         encodePassword(user);
         return userRepository.save(user);
+    }
+
+    public User getById(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID '" + id + "'"));
     }
 
     public boolean existsByUsernameOrEmail(String username, String email) {
