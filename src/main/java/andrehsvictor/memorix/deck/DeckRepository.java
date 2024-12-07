@@ -11,4 +11,6 @@ public interface DeckRepository extends JpaRepository<Deck, UUID> {
 
     void deleteBySlug(String slug);
 
+    boolean existsBySlugAndUserId(String slug, UUID userId);
+
 }
