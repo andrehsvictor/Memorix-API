@@ -35,3 +35,4 @@ build/
 ### Memorix ###
 .env
 .keys/
+images/
