@@ -17,14 +17,14 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class TokenFacade {
+public class TokenService {
 
     private final JwtService jwtService;
     private final AuthenticationService authenticationService;
     private final TokenRenewalService tokenRenewalService;
     private final TokenBlacklistService tokenBlacklistService;
 
-    public GetTokenDto request(PostTokenDto postTokenDto) {
+    public GetTokenDto get(PostTokenDto postTokenDto) {
         String username = postTokenDto.getUsername();
         String password = postTokenDto.getPassword();
         UserDetailsImpl userDetails = (UserDetailsImpl) authenticationService.authenticate(username, password)
