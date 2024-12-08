@@ -33,14 +33,12 @@ public class User implements Serializable {
     private UUID id;
 
     private String displayName;
-    private String username;
     private String email;
     private boolean emailVerified = false;
 
     @Column(name = "password_hash")
     private String password;
 
-    private String bio;
     private String avatarUrl;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
