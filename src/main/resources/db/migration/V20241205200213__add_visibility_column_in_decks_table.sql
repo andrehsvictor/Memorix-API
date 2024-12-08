@@ -1,1 +1,0 @@
-ALTER TABLE decks ADD COLUMN visibility VARCHAR(255) NOT NULL;
