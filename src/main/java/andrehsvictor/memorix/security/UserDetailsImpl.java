@@ -31,7 +31,7 @@ public class UserDetailsImpl implements UserDetails, CredentialsContainer {
 
     @Override
     public boolean isEnabled() {
-        return user.isEnabled();
+        return user.isEmailVerified();
     }
 
     @Override
