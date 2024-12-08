@@ -8,5 +8,11 @@ CREATE TABLE IF NOT EXISTS users (
     bio            TEXT,
     avatar_url     VARCHAR(255),
     created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    updated_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE (username),
+    UNIQUE (email)
 );
+
+CREATE INDEX IF NOT EXISTS idx_users_username ON users (username);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
