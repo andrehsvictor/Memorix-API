@@ -3,6 +3,7 @@ package andrehsvictor.memorix.config;
 import java.time.Duration;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.CacheControl;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -13,7 +14,8 @@ public class ImageConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/images/**")
                 .addResourceLocations("file:./images/")
-                .setCachePeriod((int) Duration.ofDays(1).toMillis());
+                .setCacheControl(CacheControl.maxAge(Duration.ofDays(1)))
+                .resourceChain(true);
     }
 
 }
