@@ -20,9 +20,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public User create(PostUserDto postUserDto) {
-        String username = postUserDto.getUsername();
         String email = postUserDto.getEmail();
-        if (existsByUsernameOrEmail(username, email)) {
+        if (existsByEmail(email)) {
             throw new ResourceAlreadyExistsException("Username or e-mail already in use");
         }
         User user = userMapper.postUserDtoToUser(postUserDto);
@@ -35,17 +34,15 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID '" + id + "'"));
     }
 
-    public boolean existsByUsernameOrEmail(String username, String email) {
-        return userRepository.existsByUsernameOrEmail(username, email);
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     public User update(PutUserDto putUserDto, User user) {
         String email = putUserDto.getEmail();
-        String username = putUserDto.getUsername();
         boolean emailChanged = email != null && !email.equals(user.getEmail());
-        boolean usernameChanged = username != null && !username.equals(user.getUsername());
-        if (emailChanged || usernameChanged) {
-            if (existsByUsernameOrEmail(username, email)) {
+        if (emailChanged) {
+            if (existsByEmail(email)) {
                 throw new ResourceAlreadyExistsException("Username or e-mail already in use");
             }
         }
