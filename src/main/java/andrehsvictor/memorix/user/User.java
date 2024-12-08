@@ -40,8 +40,6 @@ public class User implements Serializable {
     @Column(name = "password_hash")
     private String password;
 
-    private boolean enabled = false;
-
     private String bio;
     private String avatarUrl;
     private LocalDateTime createdAt = LocalDateTime.now();
