@@ -1,0 +1,1 @@
+ALTER TABLE decks ADD COLUMN cards_count INT NOT NULL DEFAULT 0;
