@@ -22,9 +22,6 @@ public interface UserMapper {
 
     @AfterMapping
     default void afterMapping(PutUserDto putUserDto, @MappingTarget User user) {
-        if (putUserDto.getBio() != null && putUserDto.getBio().isBlank()) {
-            user.setBio(null);
-        }
         if (putUserDto.getAvatarUrl() != null && putUserDto.getAvatarUrl().isBlank()) {
             user.setAvatarUrl(null);
         }
