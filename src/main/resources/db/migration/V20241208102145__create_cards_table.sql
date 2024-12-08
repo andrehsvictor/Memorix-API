@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS cards (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    deck_id UUID NOT NULL REFERENCES decks (id) ON DELETE CASCADE,
+    question TEXT NOT NULL,
+    hint TEXT,
+    template VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_cards_deck_id ON cards (deck_id);
