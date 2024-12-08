@@ -13,9 +13,6 @@ public class PutUserDto {
     @Size(min = 3, max = 50, message = "Display name must be between 1 and 50 characters")
     private String displayName;
 
-    @Size(min = 3, max = 50, message = "Username must be between 1 and 50 characters")
-    private String username;
-
     @Email(message = "E-mail must be valid")
     @Size(min = 5, max = 255, message = "E-mail must be between 5 and 255 characters")
     private String email;
