@@ -1,19 +1,24 @@
 package andrehsvictor.memorix.deck;
 
 import java.net.URI;
+import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import andrehsvictor.memorix.deck.dto.GetDeckDto;
 import andrehsvictor.memorix.deck.dto.PostDeckDto;
+import andrehsvictor.memorix.deck.dto.PutDeckDto;
 import andrehsvictor.memorix.user.User;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -35,5 +40,26 @@ public class DeckResource {
     public GetDeckDto getBySlug(@PathVariable String slug, @AuthenticationPrincipal User user) {
         Deck deck = deckService.getBySlugAndUserId(slug, user.getId());
         return deckMapper.deckToGetDeckDto(deck);
+    }
+
+    @PutMapping("/v1/decks/{slug}")
+    public GetDeckDto updateBySlug(@PathVariable String slug, @RequestBody @Valid PutDeckDto putDeckDto,
+            @AuthenticationPrincipal User user) {
+        Deck deck = deckService.updateBySlug(slug, user.getId(), putDeckDto);
+        return deckMapper.deckToGetDeckDto(deck);
+    }
+
+    @DeleteMapping("/v1/decks/{slug}")
+    public ResponseEntity<Void> deleteBySlug(@PathVariable String slug, @AuthenticationPrincipal User user) {
+        deckService.deleteBySlug(slug, user.getId());
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/v1/decks")
+    public ResponseEntity<Void> deleteAllBySlugs(
+            @RequestBody @Valid @NotEmpty(message = "Slugs must not be empty") Set<String> slugs,
+            @AuthenticationPrincipal User user) {
+        deckService.deleteAllBySlugsAndUserId(slugs, user.getId());
+        return ResponseEntity.noContent().build();
     }
 }
