@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface DeckRepository extends JpaRepository<Deck, UUID> {
@@ -23,7 +22,6 @@ public interface DeckRepository extends JpaRepository<Deck, UUID> {
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM Deck d WHERE d.slug IN :slugs AND d.user.id = :userId")
-    void deleteAllWithSlugsAndUserId(Set<String> slugs, UUID userId);
+    Integer deleteAllBySlugInAndUserId(Set<String> slugs, UUID userId);
 
 }
