@@ -35,3 +35,7 @@
 - Get all cards by deck slug
 - Bulk delete cards
 
+## Image
+
+- Upload image
+- Get image by name
