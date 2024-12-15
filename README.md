@@ -23,6 +23,7 @@
 - Delete deck
 - Get deck information by slug
 - Get all your decks
+- Bulk delete decks
 
 ## Card
 
