@@ -1,20 +1,16 @@
-package andrehsvictor.memorix.card;
+package andrehsvictor.memorix.answer;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
-import andrehsvictor.memorix.answer.Answer;
-import andrehsvictor.memorix.deck.Deck;
+import andrehsvictor.memorix.card.Card;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
@@ -29,31 +25,27 @@ import lombok.ToString;
 @NoArgsConstructor
 @Table(name = "cards")
 @EqualsAndHashCode(of = "id")
-@ToString(exclude = { "deck" })
-public class Card implements Serializable {
+@ToString(exclude = { "card" })
+public class Answer implements Serializable {
 
-    private static final long serialVersionUID = 3333994900161536206L;
+    private static final long serialVersionUID = -8077272231391356081L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "deck_id")
-    private Deck deck;
+    @JoinColumn(name = "card_id")
+    private Card card;
 
-    @OneToMany(mappedBy = "card")
-    private Set<Answer> answers = new HashSet<>();
-
-    private String question;
-    private String hint;
-    private String template;
+    private String answer;
+    private boolean correct;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     @PreUpdate
     void preUpdate() {
-        updatedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
 }
