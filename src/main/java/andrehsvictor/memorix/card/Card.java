@@ -9,6 +9,8 @@ import java.util.UUID;
 import andrehsvictor.memorix.answer.Answer;
 import andrehsvictor.memorix.deck.Deck;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -47,7 +49,10 @@ public class Card implements Serializable {
 
     private String question;
     private String hint;
-    private String template;
+
+    @Enumerated(EnumType.STRING)
+    private CardTemplate template = CardTemplate.DEFAULT;
+    
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
 
