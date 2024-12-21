@@ -1,1 +1,1 @@
-DROP TABLE cards;
+DROP TABlE cards CASCADE;
