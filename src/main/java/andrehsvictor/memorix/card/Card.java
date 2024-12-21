@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import andrehsvictor.memorix.deck.Deck;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -43,9 +45,11 @@ public class Card implements Serializable {
     private Boolean booleanAnswer;
 
     @ElementCollection
-    private Set<String> options;
+    @CollectionTable(name = "alternatives", joinColumns = @JoinColumn(name = "card_id"))
+    @Column(name = "alternative")
+    private Set<String> alternatives;
 
-    private Integer correctOptionIndex;
+    private Integer answerIndex;
 
     @Enumerated(EnumType.STRING)
     private CardType type;
