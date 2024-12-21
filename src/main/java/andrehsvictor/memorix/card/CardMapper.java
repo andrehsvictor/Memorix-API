@@ -1,9 +1,11 @@
 package andrehsvictor.memorix.card;
 
 import org.mapstruct.AfterMapping;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import andrehsvictor.memorix.card.dto.GetCardDto;
 import andrehsvictor.memorix.card.dto.PostCardDto;
@@ -15,6 +17,7 @@ public interface CardMapper {
 
     Card postCardDtoToCard(PostCardDto postCardDto);
 
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Card updateCardDtoFromPutCardDto(PutCardDto putCardDto, @MappingTarget Card card);
 
     @Mapping(target = "answer", ignore = true)
@@ -24,7 +27,6 @@ public interface CardMapper {
     default void afterMapping(@MappingTarget GetCardDto getCardDto, Card card) {
         switch (card.getType()) {
             case BOOLEAN:
-                getCardDto.setAnswer(card.getCorrect().toString());
                 break;
             case MULTIPLE_CHOICE:
                 getCardDto.setAnswer(card.getAlternatives().toArray()[card.getAnswerIndex()].toString());
