@@ -35,7 +35,7 @@ public class DeckService {
         return deckRepository.save(deck);
     }
 
-    public Deck updateBySlug(String slug, UUID userId, PutDeckDto putDeckDto) {
+    public Deck update(String slug, UUID userId, PutDeckDto putDeckDto) {
         Deck deck = getBySlugAndUserId(slug, userId);
         String newSlug = slugify.slugify(putDeckDto.getName());
         if (!slug.equals(newSlug) && existsBySlugAndUserId(newSlug, userId)) {
@@ -45,7 +45,7 @@ public class DeckService {
         return deckRepository.save(deck);
     }
 
-    public void deleteBySlug(String slug, UUID userId) {
+    public void deleteBySlugAndUserId(String slug, UUID userId) {
         if (!existsBySlugAndUserId(slug, userId)) {
             throw new ResourceNotFoundException("Deck not found with slug '" + slug + "'");
         }

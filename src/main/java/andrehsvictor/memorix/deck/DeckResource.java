@@ -53,13 +53,13 @@ public class DeckResource {
     @PutMapping("/v1/decks/{slug}")
     public GetDeckDto updateBySlug(@PathVariable String slug, @RequestBody @Valid PutDeckDto putDeckDto,
             @AuthenticationPrincipal User user) {
-        Deck deck = deckService.updateBySlug(slug, user.getId(), putDeckDto);
+        Deck deck = deckService.update(slug, user.getId(), putDeckDto);
         return deckMapper.deckToGetDeckDto(deck);
     }
 
     @DeleteMapping("/v1/decks/{slug}")
     public ResponseEntity<Void> deleteBySlug(@PathVariable String slug, @AuthenticationPrincipal User user) {
-        deckService.deleteBySlug(slug, user.getId());
+        deckService.deleteBySlugAndUserId(slug, user.getId());
         return ResponseEntity.noContent().build();
     }
 
