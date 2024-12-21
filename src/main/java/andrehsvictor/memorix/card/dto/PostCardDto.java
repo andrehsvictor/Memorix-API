@@ -22,7 +22,9 @@ public class PostCardDto {
     @NotBlank(message = "Question is required")
     private String question;
 
-    private Object answer;
+    private String answer;
+
+    private Boolean correct;
 
     @Size(min = 2, max = 4, message = "Options must have at least 2 elements and at most 4")
     private List<String> alternatives;
