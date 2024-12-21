@@ -16,10 +16,8 @@ public class GetCardDto {
     private String type;
     private GetDeckDto deck;
     private String question;
-    private String answer;
-    private boolean booleanAnswer;
+    private Object answer;
     private Set<String> options;
-    private Integer correctOptionIndex;
     private String createdAt;
     private String updatedAt;
 }
