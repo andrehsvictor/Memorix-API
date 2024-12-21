@@ -37,6 +37,7 @@ public class Review implements Serializable {
     @JoinColumn(name = "progress_id")
     private Progress progress;
 
+    private Integer rating;
     private Integer timeToAnswer;
     private Boolean hit;
     private LocalDateTime createdAt = LocalDateTime.now();
