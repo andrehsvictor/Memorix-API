@@ -15,8 +15,8 @@ public class BooleanCardProcessor implements CardProcessor {
             throw new MalformedRequestException("Answer is required for boolean type");
         }
         card.setAnswer(null);
-        card.setOptions(null);
-        card.setCorrectOptionIndex(null);
+        card.setAlternatives(null);
+        card.setAnswerIndex(null);
     }
 
 }
