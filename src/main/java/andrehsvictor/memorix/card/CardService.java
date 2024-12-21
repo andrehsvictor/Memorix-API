@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.card.dto.PostCardDto;
 import andrehsvictor.memorix.card.dto.PutCardDto;
+import andrehsvictor.memorix.card.dto.ReviewDto;
 import andrehsvictor.memorix.deck.Deck;
 import andrehsvictor.memorix.deck.DeckService;
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
+import andrehsvictor.memorix.progress.ProgressService;
+import andrehsvictor.memorix.user.User;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -20,16 +23,23 @@ public class CardService {
     private final CardRepository cardRepository;
     private final DeckService deckService;
     private final CardProcessorFactory cardProcessorFactory;
+    private final ProgressService progressService;
     private final CardMapper cardMapper;
 
-    public Card create(PostCardDto postCardDto, String deckSlug, UUID userId) {
-        Deck deck = deckService.getBySlugAndUserId(deckSlug, userId);
+    public Card create(PostCardDto postCardDto, String deckSlug, User user) {
+        Deck deck = deckService.getBySlugAndUserId(deckSlug, user.getId());
         Card card = cardMapper.postCardDtoToCard(postCardDto);
         CardProcessor cardProcessor = cardProcessorFactory.create(card.getType());
         cardProcessor.process(card);
         card.setDeck(deck);
+        card.setProgress(progressService.create(user, card));
         deckService.incrementCardsCount(deck);
         return cardRepository.save(card);
+    }
+
+    public void review(UUID id, UUID userId, ReviewDto reviewDto) {
+        Card card = getByIdAndDeckUserId(id, userId);
+        progressService.review(card.getProgress(), reviewDto.getRating(), reviewDto.getTimeToAnswer());
     }
 
     public Card getByIdAndDeckUserId(UUID id, UUID userId) {
