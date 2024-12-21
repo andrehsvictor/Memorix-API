@@ -1,0 +1,1 @@
+ALTER TABLE progresses ADD COLUMN reviews_count INT DEFAULT 0;
