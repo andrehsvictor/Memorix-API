@@ -40,7 +40,7 @@ public class Card implements Serializable {
 
     private String question;
     private String answer;
-    private boolean booleanAnswer;
+    private Boolean booleanAnswer;
 
     @ElementCollection
     private Set<String> options;
