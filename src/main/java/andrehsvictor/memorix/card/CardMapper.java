@@ -24,7 +24,7 @@ public interface CardMapper {
     default void afterMapping(@MappingTarget GetCardDto getCardDto, Card card) {
         switch (card.getType()) {
             case BOOLEAN:
-                getCardDto.setAnswer(card.getBooleanAnswer());
+                getCardDto.setAnswer(card.getCorrect());
                 break;
             case MULTIPLE_CHOICE:
                 getCardDto.setAnswer(card.getAlternatives().toArray()[card.getAnswerIndex()].toString());

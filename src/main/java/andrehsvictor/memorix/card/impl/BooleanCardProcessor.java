@@ -11,7 +11,7 @@ public class BooleanCardProcessor implements CardProcessor {
 
     @Override
     public void process(Card card) {
-        if (card.getBooleanAnswer() == null || card.getBooleanAnswer().toString().isEmpty()) {
+        if (card.getCorrect() == null || card.getCorrect().toString().isEmpty()) {
             throw new MalformedRequestException("Answer is required for boolean type");
         }
         card.setAnswer(null);

@@ -22,7 +22,7 @@ public class MultipleChoiceCardProcessor implements CardProcessor {
             throw new MalformedRequestException("Correct option index is out of bounds");
         }
         card.setAnswer(null);
-        card.setBooleanAnswer(null);
+        card.setCorrect(null);
     }
 
 }

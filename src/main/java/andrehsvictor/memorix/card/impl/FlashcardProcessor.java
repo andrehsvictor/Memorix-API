@@ -14,7 +14,7 @@ public class FlashcardProcessor implements CardProcessor {
         if (card.getAnswer() == null) {
             throw new MalformedRequestException("Answer is required for flashcard type");
         }
-        card.setBooleanAnswer(null);
+        card.setCorrect(null);
         card.setAlternatives(null);
         card.setAnswerIndex(null);
     }

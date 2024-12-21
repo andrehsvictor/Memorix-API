@@ -42,7 +42,7 @@ public class Card implements Serializable {
 
     private String question;
     private String answer;
-    private Boolean booleanAnswer;
+    private Boolean correct;
 
     @ElementCollection
     @CollectionTable(name = "alternatives", joinColumns = @JoinColumn(name = "card_id"))
