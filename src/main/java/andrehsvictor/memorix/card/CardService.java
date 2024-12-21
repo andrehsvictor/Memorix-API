@@ -28,6 +28,7 @@ public class CardService {
         CardProcessor cardProcessor = cardProcessorFactory.create(card.getType());
         cardProcessor.process(card);
         card.setDeck(deck);
+        deckService.incrementCardsCount(deck);
         return cardRepository.save(card);
     }
 
@@ -37,10 +38,9 @@ public class CardService {
     }
 
     public void deleteByIdAndDeckUserId(UUID id, UUID userId) {
-        if (!existsByIdAndDeckUserId(id, userId)) {
-            throw new ResourceNotFoundException("Card not found with ID '" + id + "'");
-        }
-        cardRepository.deleteByIdAndDeckUserId(id, userId);
+        Card card = getByIdAndDeckUserId(id, userId);
+        cardRepository.deleteById(id);
+        deckService.decrementCardsCount(card.getDeck());
     }
 
     public boolean existsByIdAndDeckUserId(UUID id, UUID userId) {

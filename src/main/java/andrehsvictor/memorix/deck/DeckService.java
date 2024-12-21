@@ -52,6 +52,16 @@ public class DeckService {
         deckRepository.deleteBySlugAndUserId(slug, userId);
     }
 
+    public void incrementCardsCount(Deck deck) {
+        deck.setCardsCount(deck.getCardsCount() + 1);
+        deckRepository.save(deck);
+    }
+
+    public void decrementCardsCount(Deck deck) {
+        deck.setCardsCount(deck.getCardsCount() - 1);
+        deckRepository.save(deck);
+    }
+
     public boolean existsBySlugAndUserId(String slug, UUID userId) {
         return deckRepository.existsBySlugAndUserId(slug, userId);
     }
