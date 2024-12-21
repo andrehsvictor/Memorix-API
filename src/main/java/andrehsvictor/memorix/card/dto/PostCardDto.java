@@ -25,7 +25,7 @@ public class PostCardDto {
     @Size(min = 1, max = 1000, message = "Answer must be between 1 and 1000 characters")
     private String answer;
 
-    private boolean booleanAnswer;
+    private Boolean booleanAnswer;
 
     @Min(value = 2, message = "Options must have at least 2 elements")
     @Max(value = 4, message = "Options must have at most 4 elements")
