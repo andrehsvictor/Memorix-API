@@ -16,11 +16,12 @@ public class GetCardDto {
     private String type;
     private GetDeckDto deck;
     private String question;
-    private Object answer;
+    private String answer;
+    private Boolean correct;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<String> alternatives;
-    
+
     private Integer answerIndex;
     private String createdAt;
     private String updatedAt;

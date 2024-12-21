@@ -22,6 +22,7 @@ public class PostCardDto {
     @NotBlank(message = "Question is required")
     private String question;
 
+    @Size(min = 1, max = 1000, message = "Answer must be between 1 and 1000 characters")
     private String answer;
 
     private Boolean correct;

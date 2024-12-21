@@ -16,7 +16,10 @@ public class PutCardDto {
     @Size(min = 1, max = 1000, message = "Question must be between 1 and 1000 characters")
     private String question;
 
-    private Object answer;
+    @Size(min = 1, max = 1000, message = "Answer must be between 1 and 1000 characters")
+    private String answer;
+
+    private Boolean correct;
 
     @Size(min = 2, max = 4, message = "Options must have at least 2 elements and at most 4")
     private Set<String> alternatives;
