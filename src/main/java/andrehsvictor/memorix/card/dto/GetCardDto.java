@@ -17,8 +17,11 @@ public class GetCardDto {
     private GetDeckDto deck;
     private String question;
     private Object answer;
-    private Set<String> options;
-    private Integer correctOptionIndex;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private Set<String> alternatives;
+    
+    private Integer answerIndex;
     private String createdAt;
     private String updatedAt;
 }
