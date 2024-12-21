@@ -14,7 +14,7 @@ public class ImageResourceConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/images/**")
                 .addResourceLocations("file:./images/")
-                .setCacheControl(CacheControl.maxAge(Duration.ofDays(1)))
+                .setCacheControl(CacheControl.maxAge(Duration.ofDays(365)))
                 .resourceChain(true);
     }
 
