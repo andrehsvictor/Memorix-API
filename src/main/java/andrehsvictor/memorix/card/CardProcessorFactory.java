@@ -8,18 +8,18 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class CardTypeValidatorFactory {
+public class CardProcessorFactory {
 
-    private final Map<String, CardTypeValidator> validators;
+    private final Map<String, CardProcessor> processors;
 
-    public CardTypeValidator get(CardType cardType) {
+    public CardProcessor get(CardType cardType) {
         switch (cardType) {
             case FLASHCARD:
-                return validators.get("flashcardTypeValidator");
+                return processors.get("flashcardProcessor");
             case MULTIPLE_CHOICE:
-                return validators.get("multipleChoiceTypeValidator");
+                return processors.get("multipleChoiceCardProcessor");
             case BOOLEAN:
-                return validators.get("booleanTypeValidator");
+                return processors.get("booleanCardProcessor");
             default:
                 throw new IllegalArgumentException("Invalid card type");
         }
