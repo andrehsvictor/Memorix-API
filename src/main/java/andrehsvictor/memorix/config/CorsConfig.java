@@ -10,10 +10,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
-    @Value("${memorix.cors.allowed-origins:*}")
+    @Value("${memorix.security.cors.allowed-origins:*}")
     private String[] allowedOrigins = { "*" };
 
-    @Value("${memorix.cors.allowed-methods:GET,POST,PUT,DELETE,PATCH}")
+    @Value("${memorix.security.cors.allowed-methods:GET,POST,PUT,DELETE,PATCH}")
     private String[] allowedMethods = { "GET", "POST", "PUT", "DELETE", "PATCH" };
 
     @Override
