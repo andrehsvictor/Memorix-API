@@ -18,6 +18,7 @@ public class GetCardDto {
     private String question;
     private Object answer;
     private Set<String> options;
+    private Integer correctOptionIndex;
     private String createdAt;
     private String updatedAt;
 }

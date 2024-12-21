@@ -2,6 +2,8 @@ package andrehsvictor.memorix.card;
 
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.card.dto.PostCardDto;
@@ -29,8 +31,8 @@ public class CardService {
         return cardRepository.save(card);
     }
 
-    public Card getById(UUID id) {
-        return cardRepository.findById(id).orElseThrow(
+    public Card getByIdAndDeckUserId(UUID id, UUID userId) {
+        return cardRepository.findByIdAndDeckUserId(id, userId).orElseThrow(
                 () -> new ResourceNotFoundException("Card not found with ID '" + id + "'"));
     }
 
@@ -46,14 +48,19 @@ public class CardService {
     }
 
     public Card update(UUID id, PutCardDto putCardDto, UUID userId) {
-        if (!existsByIdAndDeckUserId(id, userId)) {
-            throw new ResourceNotFoundException("Card not found with ID '" + id + "'");
-        }
-        Card card = getById(id);
+        Card card = getByIdAndDeckUserId(id, userId);
         cardMapper.updateCardDtoFromPutCardDto(putCardDto, card);
         CardProcessor cardProcessor = cardProcessorFactory.get(card.getType());
         cardProcessor.process(card);
         return cardRepository.save(card);
+    }
+
+    public Page<Card> getAllByDeckUserIdAndDeckSlug(UUID userId, String deckSlug, Pageable pageable) {
+        return cardRepository.findAllByDeckUserIdAndDeckSlug(userId, deckSlug, pageable);
+    }
+
+    public Page<Card> getAllByDeckUserId(UUID userId, Pageable pageable) {
+        return cardRepository.findAllByDeckUserId(userId, pageable);
     }
 
 }
