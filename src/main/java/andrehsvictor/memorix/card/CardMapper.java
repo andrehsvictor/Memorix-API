@@ -27,7 +27,7 @@ public interface CardMapper {
                 getCardDto.setAnswer(card.getBooleanAnswer());
                 break;
             case MULTIPLE_CHOICE:
-                getCardDto.setAnswer(card.getOptions().toArray()[card.getCorrectOptionIndex()].toString());
+                getCardDto.setAnswer(card.getAlternatives().toArray()[card.getAnswerIndex()].toString());
                 break;
             case FLASHCARD:
                 getCardDto.setAnswer(card.getAnswer());
