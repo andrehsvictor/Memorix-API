@@ -54,6 +54,10 @@ public class UserService {
         userRepository.delete(user);
     }
 
+    public void deleteById(UUID id) {
+        userRepository.deleteById(id);
+    }
+
     private void encodePassword(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
     }
