@@ -1,0 +1,1 @@
+ALTER TABLE alternatives RENAME COLUMN value TO alternative;

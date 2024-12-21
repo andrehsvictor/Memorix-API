@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS alternatives (
+    card_id UUID NOT NULL REFERENCES cards (id) ON DELETE CASCADE,
+    value TEXT NOT NULL
+);
