@@ -3,6 +3,8 @@ package andrehsvictor.memorix.deck;
 import java.net.URI;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +29,12 @@ public class DeckResource {
 
     private final DeckService deckService;
     private final DeckMapper deckMapper;
+
+    @GetMapping("/v1/decks")
+    public Page<GetDeckDto> getAll(Pageable pageable, @AuthenticationPrincipal User user) {
+        Page<Deck> decks = deckService.getAllByUserId(user.getId(), pageable);
+        return decks.map(deckMapper::deckToGetDeckDto);
+    }
 
     @PostMapping("/v1/decks")
     public ResponseEntity<GetDeckDto> create(@RequestBody @Valid PostDeckDto postDeckDto,

@@ -3,8 +3,6 @@ package andrehsvictor.memorix.deck;
 import java.util.Set;
 import java.util.UUID;
 
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,7 +17,6 @@ import andrehsvictor.memorix.user.User;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@CacheConfig(cacheNames = "deck")
 @RequiredArgsConstructor
 public class DeckService {
 
@@ -27,7 +24,6 @@ public class DeckService {
     private final DeckMapper deckMapper;
     private final Slugify slugify;
 
-    @CachePut(key = "#result.slug")
     public Deck create(PostDeckDto postDeckDto, User user) {
         String slug = slugify.slugify(postDeckDto.getName());
         if (existsBySlugAndUserId(slug, user.getId())) {
