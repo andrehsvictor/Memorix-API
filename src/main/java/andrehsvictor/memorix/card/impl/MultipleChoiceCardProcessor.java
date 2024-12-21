@@ -12,14 +12,14 @@ public class MultipleChoiceCardProcessor implements CardProcessor {
     @Override
     public void process(Card card) {
         if (card.getAlternatives() == null) {
-            throw new MalformedRequestException("Options are required for multiple choice type");
+            throw new MalformedRequestException("Alternatives are required for multiple choice type");
         }
         if (card.getAnswerIndex() == null) {
-            throw new MalformedRequestException("Correct option index is required for multiple choice type");
+            throw new MalformedRequestException("Correct answer index is required for multiple choice type");
         }
         if (card.getAnswerIndex() < 0
                 || card.getAnswerIndex() >= card.getAlternatives().size()) {
-            throw new MalformedRequestException("Correct option index is out of bounds");
+            throw new MalformedRequestException("Correct answer index is out of bounds");
         }
         card.setAnswer(null);
         card.setCorrect(null);
