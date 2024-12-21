@@ -12,7 +12,7 @@ public class CardProcessorFactory {
 
     private final Map<String, CardProcessor> processors;
 
-    public CardProcessor get(CardType cardType) {
+    public CardProcessor create(CardType cardType) {
         switch (cardType) {
             case FLASHCARD:
                 return processors.get("flashcardProcessor");

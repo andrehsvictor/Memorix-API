@@ -25,7 +25,7 @@ public class CardService {
     public Card create(PostCardDto postCardDto, String deckSlug, UUID userId) {
         Deck deck = deckService.getBySlugAndUserId(deckSlug, userId);
         Card card = cardMapper.postCardDtoToCard(postCardDto);
-        CardProcessor cardProcessor = cardProcessorFactory.get(card.getType());
+        CardProcessor cardProcessor = cardProcessorFactory.create(card.getType());
         cardProcessor.process(card);
         card.setDeck(deck);
         return cardRepository.save(card);
@@ -50,7 +50,7 @@ public class CardService {
     public Card update(UUID id, PutCardDto putCardDto, UUID userId) {
         Card card = getByIdAndDeckUserId(id, userId);
         cardMapper.updateCardDtoFromPutCardDto(putCardDto, card);
-        CardProcessor cardProcessor = cardProcessorFactory.get(card.getType());
+        CardProcessor cardProcessor = cardProcessorFactory.create(card.getType());
         cardProcessor.process(card);
         return cardRepository.save(card);
     }
