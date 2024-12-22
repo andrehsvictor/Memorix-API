@@ -32,7 +32,7 @@ import lombok.ToString;
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(name = "progress")
+@Table(name = "progresses")
 @EqualsAndHashCode(of = "id")
 @ToString(exclude = { "user", "card" })
 public class Progress implements Serializable {

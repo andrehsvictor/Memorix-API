@@ -1,10 +1,12 @@
 package andrehsvictor.memorix.progress;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.card.Card;
+import andrehsvictor.memorix.exception.ForbiddenActionException;
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.user.User;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,9 @@ public class ProgressService {
     }
 
     public Progress review(Progress progress, Integer rating, Integer timeToAnswer) {
+        if (progress.getNextRepetition().isAfter(LocalDateTime.now())) {
+            throw new ForbiddenActionException("Cannot review a card that is not due");
+        }
         progress.review(rating, timeToAnswer);
         return progressRepository.save(progress);
     }
