@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import andrehsvictor.memorix.progress.Progress;
+import andrehsvictor.memorix.card.Card;
+import andrehsvictor.memorix.user.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,7 +25,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Table(name = "reviews")
 @EqualsAndHashCode(of = "id")
-@ToString(exclude = { "progress" })
+@ToString(exclude = { "user", "card" })
 public class Review implements Serializable {
 
     private static final long serialVersionUID = -7848260923496685040L;
@@ -34,8 +35,12 @@ public class Review implements Serializable {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "progress_id")
-    private Progress progress;
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "card_id")
+    private Card card;
 
     private Integer rating;
     private Integer timeToAnswer;

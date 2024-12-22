@@ -3,12 +3,9 @@ package andrehsvictor.memorix.progress;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import andrehsvictor.memorix.card.Card;
-import andrehsvictor.memorix.review.Review;
 import andrehsvictor.memorix.user.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,7 +15,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -51,9 +47,6 @@ public class Progress implements Serializable {
     @JoinColumn(name = "card_id")
     private Card card;
 
-    @OneToMany(mappedBy = "progress")
-    private Set<Review> reviews = new HashSet<>();
-
     @Enumerated(EnumType.STRING)
     private ProgressStatus status = ProgressStatus.NEW;
 
@@ -75,12 +68,6 @@ public class Progress implements Serializable {
     }
 
     public void review(Integer rating, Integer timeToAnswer) {
-        Review review = new Review();
-        review.setRating(rating);
-        review.setProgress(this);
-        review.setTimeToAnswer(timeToAnswer);
-        review.setHit(rating >= 3);
-        this.reviews.add(review);
         this.reviewsCount++;
 
         this.easeFactor = this.easeFactor + (0.1f - (5 - rating) * (0.08f + (5 - rating) * 0.02f));
