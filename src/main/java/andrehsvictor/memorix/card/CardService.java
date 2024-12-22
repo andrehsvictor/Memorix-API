@@ -32,9 +32,10 @@ public class CardService {
         CardProcessor cardProcessor = cardProcessorFactory.create(card.getType());
         cardProcessor.process(card);
         card.setDeck(deck);
-        card.setProgress(progressService.create(user, card));
         deckService.incrementCardsCount(deck);
-        return cardRepository.save(card);
+        card = cardRepository.save(card);
+        progressService.create(user, card);
+        return card;
     }
 
     public void review(UUID id, UUID userId, ReviewDto reviewDto) {
