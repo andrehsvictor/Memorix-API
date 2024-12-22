@@ -11,9 +11,6 @@ import andrehsvictor.memorix.card.dto.PutCardDto;
 import andrehsvictor.memorix.deck.Deck;
 import andrehsvictor.memorix.deck.DeckService;
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
-import andrehsvictor.memorix.progress.ProgressService;
-import andrehsvictor.memorix.user.User;
-import andrehsvictor.memorix.user.UserService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -23,51 +20,46 @@ public class CardService {
     private final CardRepository cardRepository;
     private final DeckService deckService;
     private final CardProcessorFactory cardProcessorFactory;
-    private final ProgressService progressService;
-    private final UserService userService;
     private final CardMapper cardMapper;
 
     public Card create(PostCardDto postCardDto, String deckSlug, UUID userId) {
         Deck deck = deckService.getBySlugAndUserId(deckSlug, userId);
-        User user = userService.getById(userId);
         Card card = cardMapper.postCardDtoToCard(postCardDto);
         CardProcessor cardProcessor = cardProcessorFactory.create(card.getType());
         cardProcessor.process(card);
         card.setDeck(deck);
         deckService.incrementCardsCount(deck);
-        card = cardRepository.save(card);
-        progressService.create(user, card);
-        return card;
+        return cardRepository.save(card);
     }
 
-    public Card getByIdAndDeckUserId(UUID id, UUID userId) {
+    public Card getByIdAndUserId(UUID id, UUID userId) {
         return cardRepository.findByIdAndDeckUserId(id, userId).orElseThrow(
                 () -> new ResourceNotFoundException("Card not found with ID '" + id + "'"));
     }
 
-    public void deleteByIdAndDeckUserId(UUID id, UUID userId) {
-        Card card = getByIdAndDeckUserId(id, userId);
+    public void deleteByIdAndUserId(UUID id, UUID userId) {
+        Card card = getByIdAndUserId(id, userId);
         cardRepository.deleteById(id);
         deckService.decrementCardsCount(card.getDeck());
     }
 
-    public boolean existsByIdAndDeckUserId(UUID id, UUID userId) {
+    public boolean existsByIdAndUserId(UUID id, UUID userId) {
         return cardRepository.existsByIdAndDeckUserId(id, userId);
     }
 
     public Card update(UUID id, PutCardDto putCardDto, UUID userId) {
-        Card card = getByIdAndDeckUserId(id, userId);
+        Card card = getByIdAndUserId(id, userId);
         cardMapper.updateCardDtoFromPutCardDto(putCardDto, card);
         CardProcessor cardProcessor = cardProcessorFactory.create(card.getType());
         cardProcessor.process(card);
         return cardRepository.save(card);
     }
 
-    public Page<Card> getAllByDeckUserIdAndDeckSlug(UUID userId, String deckSlug, Pageable pageable) {
+    public Page<Card> getAllByUserIdAndDeckSlug(UUID userId, String deckSlug, Pageable pageable) {
         return cardRepository.findAllByDeckUserIdAndDeckSlug(userId, deckSlug, pageable);
     }
 
-    public Page<Card> getAllByDeckUserId(UUID userId, Pageable pageable) {
+    public Page<Card> getAllByUserId(UUID userId, Pageable pageable) {
         return cardRepository.findAllByDeckUserId(userId, pageable);
     }
 

@@ -30,19 +30,19 @@ public class CardResource {
 
     @GetMapping("/v1/cards")
     public Page<GetCardDto> getAll(Pageable pageable, @AuthenticationPrincipal UUID userId) {
-        return cardService.getAllByDeckUserId(userId, pageable).map(cardMapper::cardToGetCardDto);
+        return cardService.getAllByUserId(userId, pageable).map(cardMapper::cardToGetCardDto);
     }
 
     @GetMapping("/v1/decks/{deckSlug}/cards")
     public Page<GetCardDto> getAllByDeckSlug(@PathVariable String deckSlug, Pageable pageable,
             @AuthenticationPrincipal UUID userId) {
-        return cardService.getAllByDeckUserIdAndDeckSlug(userId, deckSlug, pageable)
+        return cardService.getAllByUserIdAndDeckSlug(userId, deckSlug, pageable)
                 .map(cardMapper::cardToGetCardDto);
     }
 
     @GetMapping("/v1/cards/{id}")
     public GetCardDto getById(@PathVariable UUID id, @AuthenticationPrincipal UUID userId) {
-        return cardMapper.cardToGetCardDto(cardService.getByIdAndDeckUserId(id, userId));
+        return cardMapper.cardToGetCardDto(cardService.getByIdAndUserId(id, userId));
     }
 
     @PostMapping("/v1/decks/{deckSlug}/cards")
@@ -64,7 +64,7 @@ public class CardResource {
 
     @DeleteMapping("/v1/cards/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id, @AuthenticationPrincipal UUID userId) {
-        cardService.deleteByIdAndDeckUserId(id, userId);
+        cardService.deleteByIdAndUserId(id, userId);
         return ResponseEntity.noContent().build();
     }
 
