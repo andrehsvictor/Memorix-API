@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import andrehsvictor.memorix.card.dto.GetCardDto;
 import andrehsvictor.memorix.card.dto.PostCardDto;
 import andrehsvictor.memorix.card.dto.PutCardDto;
-import andrehsvictor.memorix.review.dto.PostReviewDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -69,11 +68,4 @@ public class CardResource {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/v1/cards/{id}/reviews")
-    public ResponseEntity<Void> review(@PathVariable UUID id,
-            @RequestBody @Valid PostReviewDto postReviewDto,
-            @AuthenticationPrincipal UUID userId) {
-        cardService.review(id, postReviewDto, userId);
-        return ResponseEntity.noContent().build();
-    }
 }
