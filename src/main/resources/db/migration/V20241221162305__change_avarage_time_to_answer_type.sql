@@ -1,1 +1,1 @@
-ALTER TABLE progress ALTER COLUMN average_time_to_answer TYPE FLOAT USING average_time_to_answer::FLOAT;
+ALTER TABLE progresses ALTER COLUMN average_time_to_answer TYPE FLOAT USING average_time_to_answer::FLOAT;

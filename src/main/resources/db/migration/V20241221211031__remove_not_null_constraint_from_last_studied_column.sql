@@ -1,0 +1,1 @@
+ALTER TABLE progresses ALTER COLUMN last_studied DROP NOT NULL;
