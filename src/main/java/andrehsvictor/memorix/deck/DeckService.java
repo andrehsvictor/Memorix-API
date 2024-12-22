@@ -14,6 +14,7 @@ import andrehsvictor.memorix.deck.dto.PutDeckDto;
 import andrehsvictor.memorix.exception.ResourceAlreadyExistsException;
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.user.User;
+import andrehsvictor.memorix.user.UserService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -22,11 +23,13 @@ public class DeckService {
 
     private final DeckRepository deckRepository;
     private final DeckMapper deckMapper;
+    private final UserService userService;
     private final Slugify slugify;
 
-    public Deck create(PostDeckDto postDeckDto, User user) {
+    public Deck create(PostDeckDto postDeckDto, UUID userId) {
         String slug = slugify.slugify(postDeckDto.getName());
-        if (existsBySlugAndUserId(slug, user.getId())) {
+        User user = userService.getById(userId);
+        if (existsBySlugAndUserId(slug, userId)) {
             throw new ResourceAlreadyExistsException("Deck with name '" + postDeckDto.getName() + "' already exists");
         }
         Deck deck = deckMapper.postDeckDtoToDeck(postDeckDto);

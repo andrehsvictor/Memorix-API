@@ -38,8 +38,9 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    public User update(PutUserDto putUserDto, User user) {
+    public User update(UUID id, PutUserDto putUserDto) {
         String email = putUserDto.getEmail();
+        User user = getById(id);
         boolean emailChanged = email != null && !email.equals(user.getEmail());
         if (emailChanged) {
             if (existsByEmail(email)) {
@@ -50,8 +51,8 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void delete(User user) {
-        userRepository.delete(user);
+    public boolean existsById(UUID id) {
+        return userRepository.existsById(id);
     }
 
     public void deleteById(UUID id) {

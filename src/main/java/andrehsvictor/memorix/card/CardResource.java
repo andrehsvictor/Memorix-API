@@ -20,7 +20,6 @@ import andrehsvictor.memorix.card.dto.GetCardDto;
 import andrehsvictor.memorix.card.dto.PostCardDto;
 import andrehsvictor.memorix.card.dto.PutCardDto;
 import andrehsvictor.memorix.review.dto.PostReviewDto;
-import andrehsvictor.memorix.user.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -32,28 +31,28 @@ public class CardResource {
     private final CardMapper cardMapper;
 
     @GetMapping("/v1/cards")
-    public Page<GetCardDto> getAll(Pageable pageable, @AuthenticationPrincipal User user) {
-        return cardService.getAllByDeckUserId(user.getId(), pageable).map(cardMapper::cardToGetCardDto);
+    public Page<GetCardDto> getAll(Pageable pageable, @AuthenticationPrincipal UUID userId) {
+        return cardService.getAllByDeckUserId(userId, pageable).map(cardMapper::cardToGetCardDto);
     }
 
     @GetMapping("/v1/decks/{deckSlug}/cards")
     public Page<GetCardDto> getAllByDeckSlug(@PathVariable String deckSlug, Pageable pageable,
-            @AuthenticationPrincipal User user) {
-        return cardService.getAllByDeckUserIdAndDeckSlug(user.getId(), deckSlug, pageable)
+            @AuthenticationPrincipal UUID userId) {
+        return cardService.getAllByDeckUserIdAndDeckSlug(userId, deckSlug, pageable)
                 .map(cardMapper::cardToGetCardDto);
     }
 
     @GetMapping("/v1/cards/{id}")
-    public GetCardDto getById(@PathVariable UUID id, @AuthenticationPrincipal User user) {
-        return cardMapper.cardToGetCardDto(cardService.getByIdAndDeckUserId(id, user.getId()));
+    public GetCardDto getById(@PathVariable UUID id, @AuthenticationPrincipal UUID userId) {
+        return cardMapper.cardToGetCardDto(cardService.getByIdAndDeckUserId(id, userId));
     }
 
     @PostMapping("/v1/decks/{deckSlug}/cards")
     public ResponseEntity<GetCardDto> create(@PathVariable String deckSlug,
             @RequestBody @Valid PostCardDto postCardDto,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal UUID userId) {
         GetCardDto getCardDto = cardMapper.cardToGetCardDto(
-                cardService.create(postCardDto, deckSlug, user));
+                cardService.create(postCardDto, deckSlug, userId));
         URI location = URI.create("/v1/cards/" + getCardDto.getId());
         return ResponseEntity.created(location).body(getCardDto);
     }
@@ -61,21 +60,21 @@ public class CardResource {
     @PutMapping("/v1/cards/{id}")
     public GetCardDto update(@PathVariable UUID id,
             @RequestBody @Valid PutCardDto putCardDto,
-            @AuthenticationPrincipal User user) {
-        return cardMapper.cardToGetCardDto(cardService.update(id, putCardDto, user.getId()));
+            @AuthenticationPrincipal UUID userId) {
+        return cardMapper.cardToGetCardDto(cardService.update(id, putCardDto, userId));
     }
 
     @DeleteMapping("/v1/cards/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id, @AuthenticationPrincipal User user) {
-        cardService.deleteByIdAndDeckUserId(id, user.getId());
+    public ResponseEntity<Void> delete(@PathVariable UUID id, @AuthenticationPrincipal UUID userId) {
+        cardService.deleteByIdAndDeckUserId(id, userId);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/v1/cards/{id}/review")
     public ResponseEntity<Void> review(@PathVariable UUID id,
             @RequestBody @Valid PostReviewDto postReviewDto,
-            @AuthenticationPrincipal User user) {
-        cardService.review(id, postReviewDto, user);
+            @AuthenticationPrincipal UUID userId) {
+        cardService.review(id, postReviewDto, userId);
         return ResponseEntity.noContent().build();
     }
 }

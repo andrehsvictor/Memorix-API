@@ -1,5 +1,7 @@
 package andrehsvictor.memorix.user;
 
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,19 +33,20 @@ public class UserResource {
     }
 
     @GetMapping("/v1/users/me")
-    public GetUserDto getMe(@AuthenticationPrincipal User user) {
+    public GetUserDto getMe(@AuthenticationPrincipal UUID userId) {
+        User user = userService.getById(userId);
         return userMapper.userToGetUserDto(user);
     }
 
     @PutMapping("/v1/users/me")
-    public GetUserDto updateMe(@RequestBody @Valid PutUserDto putUserDto, @AuthenticationPrincipal User user) {
-        user = userService.update(putUserDto, user);
-        return userMapper.userToGetUserDto(user);
+    public GetUserDto updateMe(@RequestBody @Valid PutUserDto putUserDto, @AuthenticationPrincipal UUID userId) {
+        User updatedUser = userService.update(userId, putUserDto);
+        return userMapper.userToGetUserDto(updatedUser);
     }
 
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     @DeleteMapping("/v1/users/me")
-    public void deleteMe(@AuthenticationPrincipal User user) {
-        userService.delete(user);
+    public void deleteMe(@AuthenticationPrincipal UUID userId) {
+        userService.deleteById(userId);
     }
 }
