@@ -2,14 +2,16 @@ package andrehsvictor.memorix.progress;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.card.Card;
-import andrehsvictor.memorix.exception.ResourceNotFoundException;
+import andrehsvictor.memorix.card.CardService;
 import andrehsvictor.memorix.review.dto.PostReviewDto;
 import andrehsvictor.memorix.user.User;
+import andrehsvictor.memorix.user.UserService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -17,18 +19,20 @@ import lombok.RequiredArgsConstructor;
 public class ProgressService {
 
     private final ProgressRepository progressRepository;
-
-    public Progress create(User user, Card card) {
-        Progress progress = new Progress();
-        progress.setUser(user);
-        progress.setCard(card);
-        return progressRepository.save(progress);
-    }
+    private final UserService userService;
+    private final CardService cardService;
 
     public Progress getByUserIdAndCardId(UUID userId, UUID cardId) {
-        return progressRepository.findByUserIdAndCardId(userId, cardId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Progress not found with user ID '" + userId + "' and card ID '" + cardId + "'"));
+        Optional<Progress> optProgress = progressRepository.findByUserIdAndCardId(userId, cardId);
+        if (optProgress.isEmpty()) {
+            Progress progress = new Progress();
+            User user = userService.getById(userId);
+            Card card = cardService.getByIdAndUserId(cardId, userId);
+            progress.setUser(user);
+            progress.setCard(card);
+            return progressRepository.save(progress);
+        }
+        return optProgress.get();
     }
 
     public void progress(Progress progress, PostReviewDto postReviewDto) {
