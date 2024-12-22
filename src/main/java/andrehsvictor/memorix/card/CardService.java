@@ -1,6 +1,5 @@
 package andrehsvictor.memorix.card;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -11,12 +10,8 @@ import andrehsvictor.memorix.card.dto.PostCardDto;
 import andrehsvictor.memorix.card.dto.PutCardDto;
 import andrehsvictor.memorix.deck.Deck;
 import andrehsvictor.memorix.deck.DeckService;
-import andrehsvictor.memorix.exception.ForbiddenActionException;
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
-import andrehsvictor.memorix.progress.Progress;
 import andrehsvictor.memorix.progress.ProgressService;
-import andrehsvictor.memorix.review.ReviewService;
-import andrehsvictor.memorix.review.dto.PostReviewDto;
 import andrehsvictor.memorix.user.User;
 import andrehsvictor.memorix.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +25,6 @@ public class CardService {
     private final CardProcessorFactory cardProcessorFactory;
     private final ProgressService progressService;
     private final UserService userService;
-    private final ReviewService reviewService;
     private final CardMapper cardMapper;
 
     public Card create(PostCardDto postCardDto, String deckSlug, UUID userId) {
@@ -44,17 +38,6 @@ public class CardService {
         card = cardRepository.save(card);
         progressService.create(user, card);
         return card;
-    }
-
-    public void review(UUID id, PostReviewDto postReviewDto, UUID userId) {
-        Card card = getByIdAndDeckUserId(id, userId);
-        Progress progress = progressService.getByUserIdAndCardId(userId, id);
-        User user = userService.getById(userId);
-        if (progress.getNextRepetition().isAfter(LocalDateTime.now())) {
-            throw new ForbiddenActionException("You can't review this card yet");
-        }
-        reviewService.create(postReviewDto, user, card);
-        progressService.progress(progress, postReviewDto);
     }
 
     public Card getByIdAndDeckUserId(UUID id, UUID userId) {
