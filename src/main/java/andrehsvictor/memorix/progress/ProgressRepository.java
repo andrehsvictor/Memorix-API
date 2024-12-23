@@ -12,6 +12,8 @@ public interface ProgressRepository extends JpaRepository<Progress, UUID> {
 
     Page<Progress> findAllByUserId(UUID userId, Pageable pageable);
 
+    Optional<Progress> findByIdAndUserId(UUID progressId, UUID userId);
+
     @Query("SELECT p FROM Progress p WHERE p.user.id = :userId AND p.card.deck.id = :deckId")
     Page<Progress> findAllByUserIdAndDeckId(UUID userId, UUID deckId, Pageable pageable);
 
