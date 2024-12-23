@@ -38,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
             String token = bearerToken.substring(BEARER_PREFIX.length());
             Jwt jwt = jwtService.decode(token);
             UUID userId = UUID.fromString(jwt.getSubject());
-            if (tokenBlacklistService.exists(jwt.getId()) || !jwt.getClaim("type").equals("access")
+            if (tokenBlacklistService.isRevoked(jwt.getId()) || !jwt.getClaim("type").equals("access")
                     || !userService.existsById(userId)) {
                 sendUnauthorizedResponse(response);
                 return;
