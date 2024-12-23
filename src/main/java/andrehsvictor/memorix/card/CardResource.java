@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import andrehsvictor.memorix.card.dto.GetCardDto;
@@ -29,8 +30,14 @@ public class CardResource {
     private final CardMapper cardMapper;
 
     @GetMapping("/v1/cards")
-    public Page<GetCardDto> getAll(Pageable pageable, @AuthenticationPrincipal UUID userId) {
-        return cardService.getAllByUserId(userId, pageable).map(cardMapper::cardToGetCardDto);
+    public Page<GetCardDto> getAll(Pageable pageable, @AuthenticationPrincipal UUID userId,
+            @RequestParam(defaultValue = "false") boolean toReview) {
+        if (toReview) {
+            return cardService.getAllToReviewByUserId(userId, pageable)
+                    .map(cardMapper::cardToGetCardDto);
+        }
+        return cardService.getAllByUserId(userId, pageable)
+                .map(cardMapper::cardToGetCardDto);
     }
 
     @GetMapping("/v1/decks/{deckId}/cards")
