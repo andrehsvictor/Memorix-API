@@ -2,7 +2,7 @@ package andrehsvictor.memorix.card;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 import andrehsvictor.memorix.deck.Deck;
@@ -49,7 +49,7 @@ public class Card implements Serializable {
     @ElementCollection
     @CollectionTable(name = "alternatives", joinColumns = @JoinColumn(name = "card_id"))
     @Column(name = "alternative")
-    private Set<String> alternatives;
+    private List<String> alternatives;
 
     private Integer answerIndex;
 
