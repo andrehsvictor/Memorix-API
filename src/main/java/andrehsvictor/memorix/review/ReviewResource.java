@@ -25,7 +25,7 @@ public class ReviewResource {
     private final ReviewService reviewService;
     private final ReviewMapper reviewMapper;
 
-    @PostMapping("/v1/cards/{id}/reviews")
+    @PostMapping("/v1/cards/{cardId}/reviews")
     public ResponseEntity<GetReviewDto> create(@PathVariable UUID cardId,
             @RequestBody @Valid PostReviewDto postReviewDto,
             @AuthenticationPrincipal UUID userId) {
@@ -42,7 +42,14 @@ public class ReviewResource {
         return ResponseEntity.ok(getReviewDtos);
     }
 
-    @GetMapping("/v1/cards/{id}/reviews")
+    @GetMapping("/v1/reviews/{id}")
+    public ResponseEntity<GetReviewDto> getById(@PathVariable UUID id, @AuthenticationPrincipal UUID userId) {
+        Review review = reviewService.getByIdAndUserId(id, userId);
+        GetReviewDto getReviewDto = reviewMapper.reviewToGetReviewDto(review);
+        return ResponseEntity.ok(getReviewDto);
+    }
+
+    @GetMapping("/v1/cards/{cardId}/reviews")
     public ResponseEntity<Page<GetReviewDto>> getAllByCardId(@PathVariable UUID cardId,
             @AuthenticationPrincipal UUID userId,
             Pageable pageable) {

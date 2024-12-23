@@ -1,5 +1,6 @@
 package andrehsvictor.memorix.review;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -13,5 +14,7 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
     Page<Review> findAllByUserIdAndCardId(UUID userId, UUID cardId, Pageable pageable);
 
     Page<Review> findAllByUserIdAndCardDeckSlug(UUID userId, String slug, Pageable pageable);
+
+    Optional<Review> findByIdAndUserId(UUID id, UUID userId);
 
 }

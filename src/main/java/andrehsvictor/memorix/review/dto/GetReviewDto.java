@@ -1,7 +1,5 @@
 package andrehsvictor.memorix.review.dto;
 
-import java.time.LocalDateTime;
-
 import andrehsvictor.memorix.card.dto.GetCardDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +12,6 @@ public class GetReviewDto {
     private GetCardDto card;
     private Integer rating;
     private Integer timeToAnswer;
-    private LocalDateTime createdAt;
+    private String createdAt;
 
 }

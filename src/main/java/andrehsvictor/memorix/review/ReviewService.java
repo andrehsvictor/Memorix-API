@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import andrehsvictor.memorix.card.Card;
 import andrehsvictor.memorix.card.CardService;
 import andrehsvictor.memorix.exception.ForbiddenActionException;
+import andrehsvictor.memorix.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.progress.Progress;
 import andrehsvictor.memorix.progress.ProgressService;
 import andrehsvictor.memorix.review.dto.PostReviewDto;
@@ -37,9 +38,15 @@ public class ReviewService {
         Review review = reviewMapper.postReviewDtoToReview(postReviewDto);
         review.setUser(user);
         review.setCard(card);
+        review.setHit(postReviewDto.getRating() >= 3);
         review = reviewRepository.save(review);
         progressService.progress(progress, postReviewDto);
         return review;
+    }
+
+    public Review getByIdAndUserId(UUID id, UUID userId) {
+        return reviewRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Review not found with ID '" + id + "'"));
     }
 
     public Page<Review> getAllByUserId(UUID userId, Pageable pageable) {
