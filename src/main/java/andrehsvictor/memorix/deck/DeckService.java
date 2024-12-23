@@ -1,6 +1,6 @@
 package andrehsvictor.memorix.deck;
 
-import java.util.Set;
+import java.util.Collection;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -76,7 +76,7 @@ public class DeckService {
         return deckRepository.findAllByUserId(userId, pageable);
     }
 
-    public void deleteAllByIdsAndUserId(Set<UUID> ids, UUID userId) {
+    public void deleteAllByIdsAndUserId(Collection<UUID> ids, UUID userId) {
         deckRepository.deleteAllByIdInAndUserId(ids, userId);
     }
 }

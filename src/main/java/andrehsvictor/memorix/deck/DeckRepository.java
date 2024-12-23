@@ -1,7 +1,7 @@
 package andrehsvictor.memorix.deck;
 
+import java.util.Collection;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -18,12 +18,14 @@ public interface DeckRepository extends JpaRepository<Deck, UUID> {
 
     boolean existsByNameAndUserId(String name, UUID userId);
 
+    @Modifying
+    @Transactional
     void deleteByIdAndUserId(UUID id, UUID userId);
 
     Page<Deck> findAllByUserId(UUID userId, Pageable pageable);
 
     @Modifying
     @Transactional
-    Integer deleteAllByIdInAndUserId(Set<UUID> ids, UUID userId);
+    Integer deleteAllByIdInAndUserId(Collection<UUID> ids, UUID userId);
 
 }

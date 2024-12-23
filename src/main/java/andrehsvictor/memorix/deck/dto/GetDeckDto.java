@@ -9,7 +9,6 @@ public class GetDeckDto {
 
     private String id;
     private String name;
-    private String slug;
     private String description;
     private Long cardsCount;
     private String coverUrl;

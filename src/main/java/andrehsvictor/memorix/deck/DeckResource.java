@@ -1,7 +1,6 @@
 package andrehsvictor.memorix.deck;
 
 import java.net.URI;
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -16,11 +15,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import andrehsvictor.memorix.deck.dto.DeleteDecksDto;
 import andrehsvictor.memorix.deck.dto.GetDeckDto;
 import andrehsvictor.memorix.deck.dto.PostDeckDto;
 import andrehsvictor.memorix.deck.dto.PutDeckDto;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -66,9 +65,9 @@ public class DeckResource {
 
     @DeleteMapping("/v1/decks")
     public ResponseEntity<Void> deleteAllByIds(
-            @RequestBody @Valid @NotEmpty(message = "At least one deck ID must be provided") Set<UUID> ids,
+            @RequestBody @Valid DeleteDecksDto deleteDecksDto,
             @AuthenticationPrincipal UUID userId) {
-        deckService.deleteAllByIdsAndUserId(ids, userId);
+        deckService.deleteAllByIdsAndUserId(deleteDecksDto.getIds(), userId);
         return ResponseEntity.noContent().build();
     }
 }
