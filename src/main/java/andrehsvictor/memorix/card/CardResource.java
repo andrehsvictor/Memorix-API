@@ -41,8 +41,14 @@ public class CardResource {
     }
 
     @GetMapping("/v1/decks/{deckId}/cards")
-    public Page<GetCardDto> getAllByDeckId(@PathVariable UUID deckId, Pageable pageable,
+    public Page<GetCardDto> getAllByDeckId(@PathVariable UUID deckId,
+            Pageable pageable,
+            @RequestParam(defaultValue = "false") boolean toReview,
             @AuthenticationPrincipal UUID userId) {
+        if (toReview) {
+            return cardService.getAllToReviewByUserIdAndDeckId(userId, deckId, pageable)
+                    .map(cardMapper::cardToGetCardDto);
+        }
         return cardService.getAllByUserIdAndDeckId(userId, deckId, pageable)
                 .map(cardMapper::cardToGetCardDto);
     }

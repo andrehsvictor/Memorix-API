@@ -25,4 +25,7 @@ public interface CardRepository extends JpaRepository<Card, UUID> {
     Page<Card> findAllByDeckUserIdAndProgressNextRepetitionBefore(UUID userId, LocalDateTime nextRepetition,
             Pageable pageable);
 
+    Page<Card> findAllByDeckIdAndDeckUserIdAndProgressNextRepetitionBefore(UUID deckId, UUID userId,
+            LocalDateTime nextRepetition, Pageable pageable);
+
 }

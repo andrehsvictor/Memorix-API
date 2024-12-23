@@ -42,6 +42,11 @@ public class CardService {
         return cardRepository.findAllByDeckUserIdAndProgressNextRepetitionBefore(userId, LocalDateTime.now(), pageable);
     }
 
+    public Page<Card> getAllToReviewByUserIdAndDeckId(UUID userId, UUID deckId, Pageable pageable) {
+        return cardRepository.findAllByDeckIdAndDeckUserIdAndProgressNextRepetitionBefore(deckId, userId,
+                LocalDateTime.now(), pageable);
+    }
+
     public Integer countAllToReviewByUserId(UUID userId) {
         return cardRepository.countByDeckUserIdAndProgressNextRepetitionBefore(userId, LocalDateTime.now());
     }
