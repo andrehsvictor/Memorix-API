@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.card.Card;
@@ -33,6 +35,10 @@ public class ProgressService {
             return progressRepository.save(progress);
         }
         return optProgress.get();
+    }
+
+    public Page<Progress> getAllByUserId(UUID userId, Pageable pageable) {
+        return progressRepository.findAllByUserId(userId, pageable);
     }
 
     public void progress(Progress progress, PostReviewDto postReviewDto) {
@@ -74,6 +80,7 @@ public class ProgressService {
 
         progress.setLastStudied(LocalDateTime.now());
         progress.setNextRepetition(calculateNextRepetition(progress.getInterval()));
+        progressRepository.save(progress);
     }
 
     private LocalDateTime calculateNextRepetition(Integer interval) {
