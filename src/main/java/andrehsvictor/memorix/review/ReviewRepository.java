@@ -13,7 +13,7 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
 
     Page<Review> findAllByUserIdAndCardId(UUID userId, UUID cardId, Pageable pageable);
 
-    Page<Review> findAllByUserIdAndCardDeckSlug(UUID userId, String slug, Pageable pageable);
+    Page<Review> findAllByUserIdAndCardDeckId(UUID userId, UUID deckId, Pageable pageable);
 
     Optional<Review> findByIdAndUserId(UUID id, UUID userId);
 

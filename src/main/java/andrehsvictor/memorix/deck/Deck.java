@@ -35,7 +35,6 @@ public class Deck implements Serializable {
     private UUID id;
 
     private String name;
-    private String slug;
     private String description;
     private String accentColor;
     private String coverUrl;

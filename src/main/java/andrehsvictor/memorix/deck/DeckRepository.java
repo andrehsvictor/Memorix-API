@@ -12,16 +12,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface DeckRepository extends JpaRepository<Deck, UUID> {
 
-    Optional<Deck> findBySlugAndUserId(String slug, UUID userId);
+    Optional<Deck> findByIdAndUserId(UUID id, UUID userId);
 
-    boolean existsBySlugAndUserId(String slug, UUID userId);
+    boolean existsByIdAndUserId(UUID id, UUID userId);
 
-    void deleteBySlugAndUserId(String slug, UUID userId);
+    boolean existsByNameAndUserId(String name, UUID userId);
+
+    void deleteByIdAndUserId(UUID id, UUID userId);
 
     Page<Deck> findAllByUserId(UUID userId, Pageable pageable);
 
     @Modifying
     @Transactional
-    Integer deleteAllBySlugInAndUserId(Set<String> slugs, UUID userId);
+    Integer deleteAllByIdInAndUserId(Set<UUID> ids, UUID userId);
 
 }

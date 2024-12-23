@@ -57,8 +57,8 @@ public class ReviewService {
         return reviewRepository.findAllByUserIdAndCardId(userId, cardId, pageable);
     }
 
-    public Page<Review> getAllByUserIdAndDeckSlug(UUID userId, String slug, Pageable pageable) {
-        return reviewRepository.findAllByUserIdAndCardDeckSlug(userId, slug, pageable);
+    public Page<Review> getAllByUserIdAndDeckId(UUID userId, UUID deckId, Pageable pageable) {
+        return reviewRepository.findAllByUserIdAndCardDeckId(userId, deckId, pageable);
     }
 
 }

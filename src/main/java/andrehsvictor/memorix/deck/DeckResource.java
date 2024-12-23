@@ -40,35 +40,35 @@ public class DeckResource {
     public ResponseEntity<GetDeckDto> create(@RequestBody @Valid PostDeckDto postDeckDto,
             @AuthenticationPrincipal UUID userId) {
         Deck deck = deckService.create(postDeckDto, userId);
-        URI location = URI.create("/v1/decks/" + deck.getSlug());
+        URI location = URI.create("/v1/decks/" + deck.getId());
         return ResponseEntity.created(location).body(deckMapper.deckToGetDeckDto(deck));
     }
 
-    @GetMapping("/v1/decks/{slug}")
-    public GetDeckDto getBySlug(@PathVariable String slug, @AuthenticationPrincipal UUID userId) {
-        Deck deck = deckService.getBySlugAndUserId(slug, userId);
+    @GetMapping("/v1/decks/{id}")
+    public GetDeckDto getById(@PathVariable UUID id, @AuthenticationPrincipal UUID userId) {
+        Deck deck = deckService.getByIdAndUserId(id, userId);
         return deckMapper.deckToGetDeckDto(deck);
     }
 
-    @PutMapping("/v1/decks/{slug}")
-    public GetDeckDto updateBySlug(@PathVariable String slug,
+    @PutMapping("/v1/decks/{id}")
+    public GetDeckDto updateById(@PathVariable UUID id,
             @RequestBody @Valid PutDeckDto putDeckDto,
             @AuthenticationPrincipal UUID userId) {
-        Deck deck = deckService.update(slug, userId, putDeckDto);
+        Deck deck = deckService.update(id, putDeckDto, userId);
         return deckMapper.deckToGetDeckDto(deck);
     }
 
-    @DeleteMapping("/v1/decks/{slug}")
-    public ResponseEntity<Void> deleteBySlug(@PathVariable String slug, @AuthenticationPrincipal UUID userId) {
-        deckService.deleteBySlugAndUserId(slug, userId);
+    @DeleteMapping("/v1/decks/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id, @AuthenticationPrincipal UUID userId) {
+        deckService.deleteByIdAndUserId(id, userId);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/v1/decks")
-    public ResponseEntity<Void> deleteAllBySlugs(
-            @RequestBody @Valid @NotEmpty(message = "Slugs must not be empty") Set<String> slugs,
+    public ResponseEntity<Void> deleteAllByIds(
+            @RequestBody @Valid @NotEmpty(message = "At least one deck ID must be provided") Set<UUID> ids,
             @AuthenticationPrincipal UUID userId) {
-        deckService.deleteAllBySlugsAndUserId(slugs, userId);
+        deckService.deleteAllByIdsAndUserId(ids, userId);
         return ResponseEntity.noContent().build();
     }
 }

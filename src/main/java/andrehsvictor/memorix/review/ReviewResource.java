@@ -58,11 +58,11 @@ public class ReviewResource {
         return ResponseEntity.ok(getReviewDtos);
     }
 
-    @GetMapping("/v1/decks/{slug}/reviews")
-    public ResponseEntity<Page<GetReviewDto>> getAllByDeckSlug(@PathVariable String slug,
+    @GetMapping("/v1/decks/{deckId}/reviews")
+    public ResponseEntity<Page<GetReviewDto>> getAllByDeckId(@PathVariable UUID deckId,
             @AuthenticationPrincipal UUID userId,
             Pageable pageable) {
-        Page<Review> reviews = reviewService.getAllByUserIdAndDeckSlug(userId, slug, pageable);
+        Page<Review> reviews = reviewService.getAllByUserIdAndDeckId(userId, deckId, pageable);
         Page<GetReviewDto> getReviewDtos = reviews.map(reviewMapper::reviewToGetReviewDto);
         return ResponseEntity.ok(getReviewDtos);
     }

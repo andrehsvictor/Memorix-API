@@ -22,8 +22,8 @@ public class CardService {
     private final CardProcessorFactory cardProcessorFactory;
     private final CardMapper cardMapper;
 
-    public Card create(PostCardDto postCardDto, String deckSlug, UUID userId) {
-        Deck deck = deckService.getBySlugAndUserId(deckSlug, userId);
+    public Card create(PostCardDto postCardDto, UUID deckId, UUID userId) {
+        Deck deck = deckService.getByIdAndUserId(deckId, userId);
         Card card = cardMapper.postCardDtoToCard(postCardDto);
         CardProcessor cardProcessor = cardProcessorFactory.create(card.getType());
         cardProcessor.process(card);
@@ -55,8 +55,8 @@ public class CardService {
         return cardRepository.save(card);
     }
 
-    public Page<Card> getAllByUserIdAndDeckSlug(UUID userId, String deckSlug, Pageable pageable) {
-        return cardRepository.findAllByDeckUserIdAndDeckSlug(userId, deckSlug, pageable);
+    public Page<Card> getAllByUserIdAndDeckId(UUID userId, UUID deckId, Pageable pageable) {
+        return cardRepository.findAllByDeckUserIdAndDeckId(userId, deckId, pageable);
     }
 
     public Page<Card> getAllByUserId(UUID userId, Pageable pageable) {

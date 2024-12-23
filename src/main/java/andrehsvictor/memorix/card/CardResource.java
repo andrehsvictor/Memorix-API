@@ -33,10 +33,10 @@ public class CardResource {
         return cardService.getAllByUserId(userId, pageable).map(cardMapper::cardToGetCardDto);
     }
 
-    @GetMapping("/v1/decks/{deckSlug}/cards")
-    public Page<GetCardDto> getAllByDeckSlug(@PathVariable String deckSlug, Pageable pageable,
+    @GetMapping("/v1/decks/{deckId}/cards")
+    public Page<GetCardDto> getAllByDeckId(@PathVariable UUID deckId, Pageable pageable,
             @AuthenticationPrincipal UUID userId) {
-        return cardService.getAllByUserIdAndDeckSlug(userId, deckSlug, pageable)
+        return cardService.getAllByUserIdAndDeckId(userId, deckId, pageable)
                 .map(cardMapper::cardToGetCardDto);
     }
 
@@ -45,12 +45,12 @@ public class CardResource {
         return cardMapper.cardToGetCardDto(cardService.getByIdAndUserId(id, userId));
     }
 
-    @PostMapping("/v1/decks/{deckSlug}/cards")
-    public ResponseEntity<GetCardDto> create(@PathVariable String deckSlug,
+    @PostMapping("/v1/decks/{deckId}/cards")
+    public ResponseEntity<GetCardDto> create(@PathVariable UUID deckId,
             @RequestBody @Valid PostCardDto postCardDto,
             @AuthenticationPrincipal UUID userId) {
         GetCardDto getCardDto = cardMapper.cardToGetCardDto(
-                cardService.create(postCardDto, deckSlug, userId));
+                cardService.create(postCardDto, deckId, userId));
         URI location = URI.create("/v1/cards/" + getCardDto.getId());
         return ResponseEntity.created(location).body(getCardDto);
     }

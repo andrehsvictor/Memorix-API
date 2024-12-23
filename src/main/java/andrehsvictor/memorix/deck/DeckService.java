@@ -7,8 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.github.slugify.Slugify;
-
 import andrehsvictor.memorix.deck.dto.PostDeckDto;
 import andrehsvictor.memorix.deck.dto.PutDeckDto;
 import andrehsvictor.memorix.exception.ResourceAlreadyExistsException;
@@ -24,35 +22,31 @@ public class DeckService {
     private final DeckRepository deckRepository;
     private final DeckMapper deckMapper;
     private final UserService userService;
-    private final Slugify slugify;
 
     public Deck create(PostDeckDto postDeckDto, UUID userId) {
-        String slug = slugify.slugify(postDeckDto.getName());
         User user = userService.getById(userId);
-        if (existsBySlugAndUserId(slug, userId)) {
+        if (existsByNameAndUserId(postDeckDto.getName(), userId)) {
             throw new ResourceAlreadyExistsException("Deck with name '" + postDeckDto.getName() + "' already exists");
         }
         Deck deck = deckMapper.postDeckDtoToDeck(postDeckDto);
-        deck.setSlug(slug);
         deck.setUser(user);
         return deckRepository.save(deck);
     }
 
-    public Deck update(String slug, UUID userId, PutDeckDto putDeckDto) {
-        Deck deck = getBySlugAndUserId(slug, userId);
-        String newSlug = slugify.slugify(putDeckDto.getName());
-        if (!slug.equals(newSlug) && existsBySlugAndUserId(newSlug, userId)) {
+    public Deck update(UUID id, PutDeckDto putDeckDto, UUID userId) {
+        Deck deck = getByIdAndUserId(id, userId);
+        if (existsByNameAndUserId(putDeckDto.getName(), userId) && !deck.getName().equals(putDeckDto.getName())) {
             throw new ResourceAlreadyExistsException("Deck with name '" + putDeckDto.getName() + "' already exists");
         }
         deckMapper.updateDeckFromPutDeckDto(putDeckDto, deck);
         return deckRepository.save(deck);
     }
 
-    public void deleteBySlugAndUserId(String slug, UUID userId) {
-        if (!existsBySlugAndUserId(slug, userId)) {
-            throw new ResourceNotFoundException("Deck not found with slug '" + slug + "'");
+    public void deleteByIdAndUserId(UUID id, UUID userId) {
+        if (!existsByIdAndUserId(id, userId)) {
+            throw new ResourceNotFoundException("Deck not found with ID '" + id + "'");
         }
-        deckRepository.deleteBySlugAndUserId(slug, userId);
+        deckRepository.deleteByIdAndUserId(id, userId);
     }
 
     public void incrementCardsCount(Deck deck) {
@@ -65,20 +59,24 @@ public class DeckService {
         deckRepository.save(deck);
     }
 
-    public boolean existsBySlugAndUserId(String slug, UUID userId) {
-        return deckRepository.existsBySlugAndUserId(slug, userId);
+    public boolean existsByIdAndUserId(UUID id, UUID userId) {
+        return deckRepository.existsByIdAndUserId(id, userId);
     }
 
-    public Deck getBySlugAndUserId(String slug, UUID userId) {
-        return deckRepository.findBySlugAndUserId(slug, userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Deck not found with slug '" + slug + "'"));
+    public boolean existsByNameAndUserId(String slug, UUID userId) {
+        return deckRepository.existsByNameAndUserId(slug, userId);
+    }
+
+    public Deck getByIdAndUserId(UUID id, UUID userId) {
+        return deckRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Deck not found with ID '" + id + "'"));
     }
 
     public Page<Deck> getAllByUserId(UUID userId, Pageable pageable) {
         return deckRepository.findAllByUserId(userId, pageable);
     }
 
-    public void deleteAllBySlugsAndUserId(Set<String> slugs, UUID userId) {
-        deckRepository.deleteAllBySlugInAndUserId(slugs, userId);
+    public void deleteAllByIdsAndUserId(Set<UUID> ids, UUID userId) {
+        deckRepository.deleteAllByIdInAndUserId(ids, userId);
     }
 }
