@@ -15,7 +15,7 @@ public class TokenBlacklistService {
 
     private static final String PREFIX = "revoked_token:";
 
-    public void save(String jti, Duration lifespan) {
+    public void revoke(String jti, Duration lifespan) {
         redisTemplate.opsForValue().set(PREFIX + jti, jti, lifespan);
     }
 
@@ -23,7 +23,7 @@ public class TokenBlacklistService {
         return redisTemplate.opsForValue().get(PREFIX + jti);
     }
 
-    public boolean exists(String jti) {
+    public boolean isRevoked(String jti) {
         return redisTemplate.hasKey(PREFIX + jti);
     }
 }
