@@ -1,5 +1,6 @@
 package andrehsvictor.memorix.card;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -35,6 +36,14 @@ public class CardService {
     public Card getByIdAndUserId(UUID id, UUID userId) {
         return cardRepository.findByIdAndDeckUserId(id, userId).orElseThrow(
                 () -> new ResourceNotFoundException("Card not found with ID '" + id + "'"));
+    }
+
+    public Page<Card> getAllToReviewByUserId(UUID userId, Pageable pageable) {
+        return cardRepository.findAllByDeckUserIdAndProgressNextRepetitionBefore(userId, LocalDateTime.now(), pageable);
+    }
+
+    public Integer countAllToReviewByUserId(UUID userId) {
+        return cardRepository.countByDeckUserIdAndProgressNextRepetitionBefore(userId, LocalDateTime.now());
     }
 
     public void deleteByIdAndUserId(UUID id, UUID userId) {
