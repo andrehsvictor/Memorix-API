@@ -21,7 +21,7 @@ public class TokenService {
 
     private final JwtService jwtService;
     private final AuthenticationService authenticationService;
-    private final TokenRenewalService tokenRenewalService;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final TokenBlacklistService tokenBlacklistService;
 
     public GetTokenDto get(PostTokenDto postTokenDto) {
@@ -36,24 +36,24 @@ public class TokenService {
 
     public void revoke(TokenDto tokenDto) {
         Jwt jwt = jwtService.decode(tokenDto.getToken());
-        tokenBlacklistService.save(jwt.getId(), getRemainingDuration(jwt));
+        tokenBlacklistService.revoke(jwt.getId(), getRemainingDuration(jwt));
     }
 
     public GetTokenDto refresh(TokenDto tokenDto) {
         Jwt jwt = jwtService.decode(tokenDto.getToken());
-        boolean isRevoked = tokenBlacklistService.exists(jwt.getId());
-        boolean isValid = tokenRenewalService.exists(jwt.getId());
+        boolean isRevoked = tokenBlacklistService.isRevoked(jwt.getId());
+        boolean isValid = refreshTokenRepository.exists(jwt.getId());
         if (isRevoked || !isValid) {
             throw new UnauthorizedException("Refresh token is invalid or revoked.");
         }
-        tokenRenewalService.delete(jwt.getId());
+        refreshTokenRepository.delete(jwt.getId());
         return getTokenDto(jwt.getSubject());
     }
 
     private GetTokenDto getTokenDto(String subject) {
         Jwt accessToken = jwtService.issueAccessToken(subject);
         Jwt refreshToken = jwtService.issueRefreshToken(subject);
-        tokenRenewalService.save(refreshToken.getId(), getDuration(refreshToken));
+        refreshTokenRepository.save(refreshToken.getId(), getDuration(refreshToken));
         return GetTokenDto.builder()
                 .accessToken(accessToken.getTokenValue())
                 .refreshToken(refreshToken.getTokenValue())
