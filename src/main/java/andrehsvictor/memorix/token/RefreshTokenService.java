@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class RefreshTokenRepository {
+public class RefreshTokenService {
 
     private final RedisTemplate<String, String> redisTemplate;
 
