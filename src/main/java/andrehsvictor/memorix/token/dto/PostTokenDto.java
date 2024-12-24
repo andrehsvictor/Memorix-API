@@ -8,8 +8,8 @@ import lombok.Setter;
 @Setter
 public class PostTokenDto {
 
-    @NotBlank(message = "Username is required")
-    private String username;
+    @NotBlank(message = "E-mail is required")
+    private String email;
 
     @NotBlank(message = "Password is required")
     private String password;
