@@ -34,6 +34,17 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID '" + id + "'"));
     }
 
+    public User getByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with e-mail '" + email + "'"));
+    }
+
+    public void verifyEmail(UUID id) {
+        User user = getById(id);
+        user.setEmailVerified(true);
+        userRepository.save(user);
+    }
+
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }

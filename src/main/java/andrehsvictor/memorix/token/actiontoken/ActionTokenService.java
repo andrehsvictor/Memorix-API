@@ -36,6 +36,10 @@ public class ActionTokenService {
         return actionTokenRepository.findByToken(token);
     }
 
+    public void delete(String token) {
+        actionTokenRepository.deleteByToken(token);
+    }
+
     private String generateBase64UUID() {
         return Base64.getEncoder().encodeToString(UUID.randomUUID().toString().getBytes());
     }
