@@ -5,6 +5,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import andrehsvictor.memorix.token.actiontoken.ActionTokenService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -12,10 +13,23 @@ import lombok.RequiredArgsConstructor;
 public class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
+    private final ActionTokenService actionTokenService;
 
     public Authentication authenticate(String username, String password) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,
                 password);
         return authenticationManager.authenticate(authenticationToken);
+    }
+
+    public void sendVerificationEmail(String email) {
+
+    }
+
+    public void sendPasswordResetEmail(String email) {
+
+    }
+
+    public void resetPassword(String token, String newPassword) {
+        
     }
 }
