@@ -35,6 +35,8 @@ memorix:
       lifespan: ${ACCESS_TOKEN_LIFESPAN:15m}
     refresh-token:
       lifespan: ${REFRESH_TOKEN_LIFESPAN:30d}
+    action-token:
+      lifespan: ${ACTION_TOKEN_LIFESPAN:1h}
     cors:
       allowed-origins: ${CORS_ALLOWED_ORIGINS:*}
       allowed-methods: ${CORS_ALLOWED_METHODS:*}
