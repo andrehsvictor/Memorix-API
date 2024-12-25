@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import andrehsvictor.memorix.email.EmailService;
 import andrehsvictor.memorix.email.dto.EmailDto;
 import andrehsvictor.memorix.exception.ResourceAlreadyExistsException;
+import andrehsvictor.memorix.exception.UnauthorizedException;
 import andrehsvictor.memorix.file.FileService;
+import andrehsvictor.memorix.token.actiontoken.ActionToken;
 import andrehsvictor.memorix.token.actiontoken.ActionTokenService;
 import andrehsvictor.memorix.token.actiontoken.ActionType;
 import andrehsvictor.memorix.user.User;
@@ -42,7 +44,12 @@ public class EmailVerificationService {
     }
 
     public void verifyEmail(String token) {
-        String email = actionTokenService.get(token).getEmail();
+        ActionToken actionToken = actionTokenService.get(token);
+        System.out.println(actionToken);
+        if (!actionTokenService.isValid(token) || !actionToken.getAction().equals(ActionType.VERIFY_EMAIL)) {
+            throw new UnauthorizedException("Invalid or expired token");
+        }
+        String email = actionToken.getEmail();
         User user = userService.getByEmail(email);
         userService.verifyEmail(user.getId());
         actionTokenService.delete(token);
