@@ -45,7 +45,6 @@ public class EmailVerificationService {
 
     public void verifyEmail(String token) {
         ActionToken actionToken = actionTokenService.get(token);
-        System.out.println(actionToken);
         if (!actionTokenService.isValid(token) || !actionToken.getAction().equals(ActionType.VERIFY_EMAIL)) {
             throw new UnauthorizedException("Invalid or expired token");
         }
