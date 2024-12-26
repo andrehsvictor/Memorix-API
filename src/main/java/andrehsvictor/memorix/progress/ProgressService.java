@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.card.Card;
@@ -12,15 +13,20 @@ import andrehsvictor.memorix.card.CardService;
 import andrehsvictor.memorix.review.dto.PostReviewDto;
 import andrehsvictor.memorix.user.User;
 import andrehsvictor.memorix.user.UserService;
-import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 public class ProgressService {
 
     private final ProgressRepository progressRepository;
     private final UserService userService;
     private final CardService cardService;
+
+    public ProgressService(ProgressRepository progressRepository, UserService userService,
+            @Lazy CardService cardService) {
+        this.progressRepository = progressRepository;
+        this.userService = userService;
+        this.cardService = cardService;
+    }
 
     public Progress getByUserIdAndCardId(UUID userId, UUID cardId) {
         Optional<Progress> optProgress = progressRepository.findByUserIdAndCardId(userId, cardId);
