@@ -5,14 +5,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
 
+import andrehsvictor.memorix.file.FileService;
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.SetBucketPolicyArgs;
 import jakarta.validation.constraints.Size;
+import lombok.RequiredArgsConstructor;
 
-@Configuration
 @Validated
+@Configuration
+@RequiredArgsConstructor
 public class MinioConfig {
 
     @Value("${minio.url:http://localhost:9000}")
@@ -28,6 +31,8 @@ public class MinioConfig {
 
     @Value("${minio.default-bucket:memorix}")
     private String defaultBucket = "memorix";
+
+    private final FileService fileService;
 
     @Bean
     MinioClient minioClient() {
@@ -45,9 +50,11 @@ public class MinioConfig {
                         .build();
                 minioClient.makeBucket(makeBucketArgs);
             }
+            String config = fileService.read("classpath:static/json/bucket-policy.json");
+            config = config.replace("{{bucketName}}", defaultBucket);
             SetBucketPolicyArgs policyArgs = SetBucketPolicyArgs.builder()
                     .bucket(defaultBucket)
-                    .config("public-read")
+                    .config(config)
                     .build();
             minioClient.setBucketPolicy(policyArgs);
         } catch (Exception e) {
