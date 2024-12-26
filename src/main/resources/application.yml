@@ -33,6 +33,12 @@ spring:
           starttls:
             enable: true
 
+minio:
+  url: ${MINIO_URL:http://localhost:9000}
+  root-user: ${MINIO_ROOT_USER:root}
+  root-password: ${MINIO_ROOT_PASSWORD:root}
+  default-buckets: ${MINIO_DEFAULT_BUCKETS:memorix}
+
 memorix:
   security:
     jwt:
