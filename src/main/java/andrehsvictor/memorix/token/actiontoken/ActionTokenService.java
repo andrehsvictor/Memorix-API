@@ -37,7 +37,8 @@ public class ActionTokenService {
     }
 
     public void delete(String token) {
-        actionTokenRepository.deleteByToken(token);
+        ActionToken actionToken = get(token);
+        actionTokenRepository.delete(actionToken);
     }
 
     private String generateBase64UUID() {
