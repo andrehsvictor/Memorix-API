@@ -12,6 +12,7 @@ import andrehsvictor.memorix.card.dto.PutCardDto;
 import andrehsvictor.memorix.deck.Deck;
 import andrehsvictor.memorix.deck.DeckService;
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
+import andrehsvictor.memorix.progress.ProgressService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -20,6 +21,7 @@ public class CardService {
 
     private final CardRepository cardRepository;
     private final DeckService deckService;
+    private final ProgressService progressService;
     private final CardProcessorFactory cardProcessorFactory;
     private final CardMapper cardMapper;
 
@@ -30,7 +32,9 @@ public class CardService {
         cardProcessor.process(card);
         card.setDeck(deck);
         deckService.incrementCardsCount(deck);
-        return cardRepository.save(card);
+        card = cardRepository.save(card);
+        progressService.create(userId, card.getId());
+        return card;
     }
 
     public Card getByIdAndUserId(UUID id, UUID userId) {
