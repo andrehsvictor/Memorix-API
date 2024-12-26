@@ -65,6 +65,7 @@ public class SecurityConfig {
         });
         http.oauth2ResourceServer((oauth2) -> oauth2.jwt((jwt) -> jwt.decoder(jwtDecoder)));
         http.addFilterAfter(jwtFilter, AuthorizationFilter.class);
+        http.cors((cors) -> cors.configurationSource(corsConfigurationSource()));
         return http.build();
     }
 
@@ -76,7 +77,8 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+        corsConfiguration
+                .setAllowedOrigins(Arrays.asList(allowedOrigins));
         corsConfiguration.setAllowedMethods(Arrays.asList(allowedMethods));
         corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
         corsConfiguration.setMaxAge(3600L);
