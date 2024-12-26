@@ -12,8 +12,8 @@ public class ResetPasswordDto {
     @NotBlank(message = "Token is required")
     private String token;
 
-    @Pattern(message = "New password must contain at least one letter and one number.", regexp = "^(?=.*[A-Za-z])(?=.*\\d).*$")
-    @NotBlank(message = "New password is required")
-    private String newPassword;
+    @Pattern(message = "Password must contain at least one letter and one number.", regexp = "^(?=.*[A-Za-z])(?=.*\\d).*$")
+    @NotBlank(message = "Password is required")
+    private String password;
 
 }
