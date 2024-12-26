@@ -35,6 +35,30 @@ public class ProgressService {
         return optProgress.get();
     }
 
+    public Progress create(UUID userId, UUID cardId) {
+        Progress progress = new Progress();
+        User user = userService.getById(userId);
+        Card card = cardService.getByIdAndUserId(cardId, userId);
+        progress.setUser(user);
+        progress.setCard(card);
+        return progressRepository.save(progress);
+    }
+
+    public Progress reset(UUID userId, UUID cardId) {
+        Progress progress = getByUserIdAndCardId(userId, cardId);
+        progress.setRepetitions(0);
+        progress.setInterval(1);
+        progress.setEaseFactor(2.5f);
+        progress.setMisses(0);
+        progress.setHits(0);
+        progress.setReviewsCount(0);
+        progress.setAverageTimeToAnswer(0f);
+        progress.setStatus(ProgressStatus.NEW);
+        progress.setLastStudied(null);
+        progress.setNextRepetition(null);
+        return progressRepository.save(progress);
+    }
+
     public void progress(Progress progress, PostReviewDto postReviewDto) {
         Integer rating = postReviewDto.getRating();
         Integer timeToAnswer = postReviewDto.getTimeToAnswer();
