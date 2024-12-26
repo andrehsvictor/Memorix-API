@@ -26,21 +26,21 @@ services:
     networks:
       - memorix-network
   minio:
-    image: minio/minio
+    image: quay.io/minio/minio
     container_name: memorix-minio
     ports:
       - ${MINIO_PORT:-9000}:9000
       - ${MINIO_CONSOLE_PORT:-9001}:9001
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-root}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-root}
-      MINIO_DEFAULT_BUCKETS: ${MINIO_DEFAULT_BUCKETS:-memorix}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-rootadmin}
     volumes:
       - minio-data:/data
     networks:
       - memorix-network
     env_file:
       - .env
+    command: server /data --console-address ":${MINIO_CONSOLE_PORT:-9001}"
 networks:
   memorix-network:
     driver: bridge
