@@ -3,11 +3,11 @@ services:
     image: postgres
     container_name: memorix-db
     ports:
-      - ${DB_PORT}:5432
+      - ${DB_PORT:-5432}:5432
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-memorix}
     networks:
       - memorix-network
     env_file:
@@ -16,16 +16,37 @@ services:
     image: redis
     container_name: memorix-cache
     ports:
-      - ${CACHE_PORT}:6379
+      - ${CACHE_PORT:-6379}:6379
     environment:
-      REDIS_PASSWORD: ${CACHE_PASSWORD}
-      REDIS_USERNAME: ${CACHE_USERNAME}
-      REDIS_DB: ${CACHE_DB}
+      REDIS_PASSWORD: ${CACHE_PASSWORD:-root}
+      REDIS_USERNAME: ${CACHE_USERNAME:-root}
+      REDIS_DB: ${CACHE_DB:-0}
     env_file:
       - .env
     networks:
       - memorix-network
+  minio:
+    image: minio/minio
+    container_name: memorix-minio
+    ports:
+      - ${MINIO_PORT:-9000}:9000
+      - ${MINIO_CONSOLE_PORT:-9001}:9001
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-root}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-root}
+      MINIO_DEFAULT_BUCKETS: ${MINIO_DEFAULT_BUCKETS:-memorix}
+    volumes:
+      - minio-data:/data
+    networks:
+      - memorix-network
+    env_file:
+      - .env
 networks:
   memorix-network:
     driver: bridge
     name: memorix-network
+
+volumes:
+  minio-data:
+    name: minio-data
+    driver: local
