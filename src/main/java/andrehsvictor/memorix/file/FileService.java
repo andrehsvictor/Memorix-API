@@ -24,7 +24,7 @@ public class FileService {
             }
             return new String(Files.readAllBytes(filePath));
         } catch (Exception e) {
-            throw new RuntimeException("Failed to import file as text", e);
+            throw new RuntimeException("Failed to read file: " + path, e);
         }
     }
 }
