@@ -3,6 +3,7 @@ package andrehsvictor.memorix.file;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,7 +13,7 @@ import andrehsvictor.memorix.minio.MinioService;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor = @__(@Lazy))
 public class FileService {
 
     private final MinioService minioService;
