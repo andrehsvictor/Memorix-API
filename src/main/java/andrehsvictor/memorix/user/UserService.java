@@ -45,6 +45,13 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void updatePassword(UUID id, String password) {
+        User user = getById(id);
+        String encodedPassword = passwordEncoder.encode(password);
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
+    }
+
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }

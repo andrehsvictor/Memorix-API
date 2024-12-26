@@ -10,7 +10,7 @@ import andrehsvictor.memorix.exception.UnauthorizedException;
 import andrehsvictor.memorix.security.UserDetailsImpl;
 import andrehsvictor.memorix.token.dto.GetTokenDto;
 import andrehsvictor.memorix.token.dto.PostTokenDto;
-import andrehsvictor.memorix.token.dto.TokenDto;
+import andrehsvictor.memorix.token.dto.JwtTokenDto;
 import andrehsvictor.memorix.token.jwt.JwtService;
 import andrehsvictor.memorix.user.User;
 import lombok.RequiredArgsConstructor;
@@ -34,13 +34,13 @@ public class TokenService {
         return getTokenDto(subject);
     }
 
-    public void revoke(TokenDto tokenDto) {
-        Jwt jwt = jwtService.decode(tokenDto.getToken());
+    public void revoke(JwtTokenDto jwtTokenDto) {
+        Jwt jwt = jwtService.decode(jwtTokenDto.getToken());
         tokenBlacklistService.revoke(jwt.getId(), getRemainingDuration(jwt));
     }
 
-    public GetTokenDto refresh(TokenDto tokenDto) {
-        Jwt jwt = jwtService.decode(tokenDto.getToken());
+    public GetTokenDto refresh(JwtTokenDto jwtTokenDto) {
+        Jwt jwt = jwtService.decode(jwtTokenDto.getToken());
         boolean isRevoked = tokenBlacklistService.isRevoked(jwt.getId());
         boolean isValid = refreshTokenService.exists(jwt.getId());
         if (isRevoked || !isValid) {

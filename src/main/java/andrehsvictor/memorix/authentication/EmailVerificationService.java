@@ -33,7 +33,7 @@ public class EmailVerificationService {
             throw new ResourceAlreadyExistsException("E-mail already verified");
         }
         String token = actionTokenService.issue(ActionType.VERIFY_EMAIL, email).getToken();
-        String text = fileService.importFileAsText("classpath:email/verify-email.html");
+        String text = fileService.read("classpath:email/verify-email.html");
         EmailDto emailDto = EmailDto.builder()
                 .to(email)
                 .text(text.replace("{{name}}", user.getDisplayName())

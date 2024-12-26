@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FileService {
 
-    public String importFileAsText(String path) {
+    public String read(String path) {
         try {
             Path filePath;
             if (path.startsWith("file://")) {
