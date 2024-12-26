@@ -42,8 +42,10 @@ public class SecurityConfig {
             "/v1/auth/token",
             "/v1/auth/token/refresh",
             "/v1/auth/token/revoke",
-            "/v1/auth/send-verification-email",
+            "/v1/auth/send-action-email",
             "/v1/auth/verify-email",
+            "/v1/auth/reset-password",
+            "/v1/files",
     };
 
     private static final String[] ALLOWED_PATHS_WITH_GET_METHOD = {
