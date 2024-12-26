@@ -48,7 +48,7 @@ public class ResetPasswordService {
             throw new UnauthorizedException("Invalid or expired token");
         }
         User user = userService.getByEmail(actionToken.getEmail());
-        userService.updatePassword(user.getId(), resetPasswordDto.getNewPassword());
+        userService.updatePassword(user, resetPasswordDto.getNewPassword());
         actionTokenService.delete(resetPasswordDto.getToken());
     }
 }

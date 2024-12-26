@@ -39,14 +39,12 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with e-mail '" + email + "'"));
     }
 
-    public void verifyEmail(UUID id) {
-        User user = getById(id);
+    public void verifyEmail(User user) {
         user.setEmailVerified(true);
         userRepository.save(user);
     }
 
-    public void updatePassword(UUID id, String password) {
-        User user = getById(id);
+    public void updatePassword(User user, String password) {
         String encodedPassword = passwordEncoder.encode(password);
         user.setPassword(encodedPassword);
         userRepository.save(user);

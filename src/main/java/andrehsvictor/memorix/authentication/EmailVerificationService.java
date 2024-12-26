@@ -50,7 +50,7 @@ public class EmailVerificationService {
         }
         String email = actionToken.getEmail();
         User user = userService.getByEmail(email);
-        userService.verifyEmail(user.getId());
+        userService.verifyEmail(user);
         actionTokenService.delete(token);
     }
 }
