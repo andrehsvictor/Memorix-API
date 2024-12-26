@@ -1,5 +1,8 @@
 package andrehsvictor.memorix.config;
 
+import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,6 +16,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import andrehsvictor.memorix.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +32,12 @@ public class SecurityConfig {
     private final JwtDecoder jwtDecoder;
     private final JwtFilter jwtFilter;
 
+    @Value("${memorix.security.cors.allowed-origins:*}")
+    private String[] allowedOrigins = { "*" };
+
+    @Value("${memorix.security.cors.allowed-methods:*}")
+    private String[] allowedMethods = { "*" };
+
     private static final String[] ALLOWED_PATHS_WITH_POST_METHOD = {
             "/v1/auth/token",
             "/v1/auth/token/refresh",
@@ -35,9 +47,9 @@ public class SecurityConfig {
     };
 
     private static final String[] ALLOWED_PATHS_WITH_GET_METHOD = {
-        "/swagger-ui/**",
-        "/v3/api-docs/**",
-        "/images/**",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/images/**",
     };
 
     @Bean
@@ -58,5 +70,17 @@ public class SecurityConfig {
     AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
-    
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+        corsConfiguration.setAllowedMethods(Arrays.asList(allowedMethods));
+        corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
+        corsConfiguration.setMaxAge(3600L);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return source;
+    }
+
 }
