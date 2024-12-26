@@ -30,7 +30,7 @@ public class ResetPasswordService {
     public void sendResetPasswordEmail(String email) {
         User user = userService.getByEmail(email);
         ActionToken actionToken = actionTokenService.issue(ActionType.RESET_PASSWORD, email);
-        String text = fileService.read("classpath:email/reset-password.html");
+        String text = fileService.read("classpath:static/email/reset-password.html");
         text = text.replace("{{name}}", user.getDisplayName());
         text = text.replace("{{resetUrl}}", resetPasswordUrl + "?token=" + actionToken.getToken());
         EmailDto emailDto = EmailDto.builder()
