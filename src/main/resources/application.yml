@@ -36,7 +36,7 @@ spring:
 minio:
   url: ${MINIO_URL:http://localhost:9000}
   root-user: ${MINIO_ROOT_USER:root}
-  root-password: ${MINIO_ROOT_PASSWORD:rootadmin}
+  root-password: ${MINIO_ROOT_PASSWORD}
   default-bucket: ${MINIO_DEFAULT_BUCKET:memorix}
 
 memorix:
