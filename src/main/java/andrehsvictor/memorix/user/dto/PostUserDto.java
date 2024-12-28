@@ -24,9 +24,6 @@ public class PostUserDto {
     @Pattern(message = "Password must contain at least one letter and one number.", regexp = "^(?=.*[A-Za-z])(?=.*\\d).*$")
     private String password;
 
-    @Size(max = 255, message = "Bio must be at most 255 characters")
-    private String bio;
-
     @Pattern(message = "Avatar URL must be a valid URL", regexp = "^(http|https)://.*$")
     @Size(max = 255, message = "Avatar URL must be at most 255 characters")
     private String avatarUrl;
