@@ -26,8 +26,8 @@ public class MinioConfig {
     private String rootUser = "root";
 
     @Size(min = 8, message = "Root password must be at least 8 characters long")
-    @Value("${minio.root-password:rootadmin}")
-    private String rootPassword = "rootadmin";
+    @Value("${minio.root-password}")
+    private String rootPassword;
 
     @Value("${minio.default-bucket:memorix}")
     private String defaultBucket = "memorix";
