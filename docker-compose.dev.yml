@@ -6,7 +6,7 @@ services:
       - ${DB_PORT:-5432}:5432
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME:-memorix}
     networks:
       - memorix-network
@@ -18,7 +18,7 @@ services:
     ports:
       - ${CACHE_PORT:-6379}:6379
     environment:
-      REDIS_PASSWORD: ${CACHE_PASSWORD:-root}
+      REDIS_PASSWORD: ${CACHE_PASSWORD}
       REDIS_USERNAME: ${CACHE_USERNAME:-root}
       REDIS_DB: ${CACHE_DB:-0}
     env_file:
@@ -33,7 +33,7 @@ services:
       - ${MINIO_CONSOLE_PORT:-9001}:9001
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-root}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-rootadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     volumes:
       - minio-data:/data
     networks:
