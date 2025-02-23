@@ -1,3 +1,9 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
-    name: memorix
+    name: @project.artifactId@
+    version: @project.version@
+  threads:
+    virtual:
+      enabled: true
