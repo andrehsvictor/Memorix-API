@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS decks (
+    id SERIAL PRIMARY KEY,
+    author_id INTEGER NOT NULL REFERENCES users(id),
+    title VARCHAR(255) NOT NULL,
+    visibility VARCHAR(255) NOT NULL,
+    cover_url VARCHAR(255),
+    accent_color VARCHAR(255) NOT NULL,
+    likes_count INTEGER NOT NULL DEFAULT 0,
+    "description" TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
