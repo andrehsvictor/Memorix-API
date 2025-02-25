@@ -1,25 +1,13 @@
 spring:
+  profiles:
+    active: dev
   config:
     import: optional:file:.env[.properties]
   application:
     name: @project.artifactId@
-    version: @project.version@
   threads:
     virtual:
       enabled: true
   jpa:
     hibernate:
       ddl-auto: none
-    show-sql: true
-
-  datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:memorix}
-    username: ${POSTGRES_USER:postgres}
-    password: ${POSTGRES_PASSWORD:postgres}
-    driver-class-name: org.postgresql.Driver
-
-  data:
-    redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6379}
-
