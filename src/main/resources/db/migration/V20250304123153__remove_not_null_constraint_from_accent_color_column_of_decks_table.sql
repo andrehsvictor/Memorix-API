@@ -1,0 +1,1 @@
+ALTER TABLE decks ALTER COLUMN accent_color DROP NOT NULL;
