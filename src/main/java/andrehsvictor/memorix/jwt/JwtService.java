@@ -7,11 +7,13 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.exception.UnauthorizedException;
@@ -36,6 +38,11 @@ public class JwtService {
 
     @Value("${jwt.refresh-token.lifespan:1d}")
     private Duration refreshTokenLifespan = Duration.ofDays(1);
+
+    public Long getCurrentUserId() {
+        JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        return Long.parseLong(token.getToken().getSubject());
+    }
 
     public Jwt decode(String token) {
         try {
