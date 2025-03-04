@@ -12,6 +12,13 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          audiences:
+          - ${JWT_AUDIENCE:memorix}
+          issuer-uri: ${JWT_ISSUER:http://localhost:8080}
 
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:memorix}
