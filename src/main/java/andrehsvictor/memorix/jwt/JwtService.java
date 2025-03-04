@@ -9,10 +9,12 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
+import andrehsvictor.memorix.exception.UnauthorizedException;
 import andrehsvictor.memorix.user.User;
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class JwtService {
 
     private final JwtEncoder jwtEncoder;
+    private final JwtDecoder jwtDecoder;
 
     @Value("${jwt.audience:memorix}")
     private String audience = "memorix";
@@ -33,6 +36,14 @@ public class JwtService {
 
     @Value("${jwt.refresh-token.lifespan:1d}")
     private Duration refreshTokenLifespan = Duration.ofDays(1);
+
+    public Jwt decode(String token) {
+        try {
+            return jwtDecoder.decode(token);
+        } catch (Exception e) {
+            throw new UnauthorizedException("Invalid token");
+        }
+    }
 
     public Jwt issue(User user, JwtType type) {
         switch (type) {
