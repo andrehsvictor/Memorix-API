@@ -1,18 +1,15 @@
 package andrehsvictor.memorix.deck.dto;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class CreateDeckDto {
+public class UpdateDeckDto {
 
-    @NotEmpty(message = "Title is required")
     @Size(min = 1, max = 255, message = "Title must be between 1 and 255 characters")
     private String title;
 
-    @NotEmpty(message = "Visibility is required")
     @Pattern(regexp = "^(PUBLIC|PRIVATE)$", message = "Invalid visibility")
     private String visibility;
 
