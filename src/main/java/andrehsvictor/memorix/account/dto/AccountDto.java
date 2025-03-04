@@ -1,5 +1,19 @@
 package andrehsvictor.memorix.account.dto;
 
-public class AccountDto {
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
+public class AccountDto {
+    private Long id;
+    private String username;
+    private String email;
+    private String displayName;
+    private String bio;
+    private String pictureUrl;
+    private boolean emailVerified;
+    private String provider;
+    private String createdAt;
+    private String updatedAt;
 }
