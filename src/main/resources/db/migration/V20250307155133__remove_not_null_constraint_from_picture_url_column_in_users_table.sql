@@ -1,0 +1,1 @@
+ALTER TABLE users ALTER COLUMN picture_url DROP NOT NULL;
