@@ -33,4 +33,9 @@ public class UserDetailsImpl implements UserDetails {
         return user.getUsername();
     }
 
+    @Override
+    public boolean isEnabled() {
+        return user.isEmailVerified();
+    }
+
 }
