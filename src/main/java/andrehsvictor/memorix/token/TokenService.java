@@ -34,9 +34,16 @@ public class TokenService {
         Jwt accessToken = jwtService.issue(user, JwtType.ACCESS);
         Jwt refreshToken = jwtService.issue(user, JwtType.REFRESH);
 
+        return accessTokenDto(accessToken, refreshToken);
+    }
+
+    private AccessTokenDto accessTokenDto(Jwt accessToken, Jwt refreshToken) {
+        Long expiresIn = accessToken.getExpiresAt().getEpochSecond() - accessToken.getIssuedAt().getEpochSecond();
         return AccessTokenDto.builder()
                 .accessToken(accessToken.getTokenValue())
                 .refreshToken(refreshToken.getTokenValue())
+                .expiresIn(expiresIn)
+                .tokenType("Bearer")
                 .build();
     }
 
@@ -45,10 +52,7 @@ public class TokenService {
         Jwt accessToken = jwtService.issue(refreshToken, JwtType.ACCESS);
         Jwt newRefreshToken = jwtService.issue(refreshToken, JwtType.REFRESH);
         revokedTokenService.revoke(refreshToken);
-        return AccessTokenDto.builder()
-                .accessToken(accessToken.getTokenValue())
-                .refreshToken(newRefreshToken.getTokenValue())
-                .build();
+        return accessTokenDto(accessToken, newRefreshToken);
     }
 
     public void revoke(TokenDto tokenDto) {
