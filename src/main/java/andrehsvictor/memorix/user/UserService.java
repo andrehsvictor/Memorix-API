@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import andrehsvictor.memorix.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 
@@ -21,5 +22,14 @@ public class UserService {
     public Page<UserDto> getAllDto(Pageable pageable) {
         Page<User> users = userRepository.findAll(pageable);
         return users.map(userMapper::userToUserDto);
+    }
+
+    public User getById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(User.class, "ID", id));
+    }
+
+    public User getByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException(User.class, "email", email));
     }
 }
