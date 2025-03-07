@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import andrehsvictor.memorix.exception.ErrorsDto;
+import andrehsvictor.memorix.exception.ResourceConflictException;
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
@@ -29,5 +30,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public final ResponseEntity<ErrorsDto<String>> handleUnauthorizedException(UnauthorizedException ex) {
         return ResponseEntity.status(401).body(ErrorsDto.of(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ResourceConflictException.class)
+    public final ResponseEntity<ErrorsDto<String>> handleResourceConflictException(ResourceConflictException ex) {
+        return ResponseEntity.status(409).body(ErrorsDto.of(ex.getMessage()));
     }
 }

@@ -8,4 +8,8 @@ public class ResourceNotFoundException extends RuntimeException {
         super(String.format("%s not found with '%s': %s", clazz.getSimpleName(), key, value));
     }
 
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
+
 }
