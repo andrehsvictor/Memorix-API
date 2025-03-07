@@ -15,12 +15,14 @@ public class RevokedTokenService {
 
     private final StringRedisTemplate redisTemplate;
 
+    private static final String PREFIX = "revoked_token:";
+
     public void revoke(Jwt jwt) {
         Duration duration = Duration.between(Instant.now(), jwt.getExpiresAt());
-        redisTemplate.opsForValue().set(jwt.getId(), "", duration);
+        redisTemplate.opsForValue().set(PREFIX + jwt.getId(), "", duration);
     }
 
     public boolean isRevoked(Jwt jwt) {
-        return redisTemplate.hasKey(jwt.getId());
+        return redisTemplate.hasKey(PREFIX + jwt.getId());
     }
 }
