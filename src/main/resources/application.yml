@@ -17,8 +17,8 @@ spring:
       resourceserver:
         jwt:
           audiences:
-          - ${JWT_AUDIENCE:memorix}
-          issuer-uri: ${JWT_ISSUER:http://localhost:8080}
+          - ${token.jwt.audience}
+          issuer-uri: ${token.jwt.issuer}
 
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:memorix}
@@ -30,6 +30,18 @@ spring:
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
+  
+  mail:
+    host: ${SMTP_HOST}
+    port: ${SMTP_PORT}
+    username: ${SMTP_USERNAME}
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: ${SMTP_AUTH:true}
+          starttls:
+            enable: ${SMTP_TLS:true}
 
 rsa:
   public-key:
@@ -41,8 +53,13 @@ cors:
   allowed-origins: ${CORS_ALLOWED_ORIGINS:*}
   allowed-methods: ${CORS_ALLOWED_METHODS:*}
 
-jwt:
-  access-token:
-    lifespan: ${JWT_ACCESS_TOKEN_LIFESPAN:15m}
-  refresh-token:
-    lifespan: ${JWT_REFRESH_TOKEN_LIFESPAN:1d}
+token:
+  jwt:
+    access-token:
+      lifespan: ${JWT_ACCESS_TOKEN_LIFESPAN:15m}
+    refresh-token:
+      lifespan: ${JWT_REFRESH_TOKEN_LIFESPAN:1d}
+    audience: ${JWT_AUDIENCE:memorix}
+    issuer: ${JWT_ISSUER:http://localhost:8080}
+  activation:
+    lifespan: ${ACTIVATION_TOKEN_LIFESPAN:6h}
