@@ -27,16 +27,16 @@ public class JwtService {
     private final JwtEncoder jwtEncoder;
     private final JwtDecoder jwtDecoder;
 
-    @Value("${jwt.audience:memorix}")
+    @Value("${token.jwt.audience:memorix}")
     private String audience = "memorix";
 
-    @Value("${jwt.issuer}")
+    @Value("${token.jwt.issuer}")
     private String issuer;
 
-    @Value("${jwt.access-token.lifespan:15m}")
+    @Value("${token.jwt.access-token.lifespan:15m}")
     private Duration accessTokenLifespan = Duration.ofMinutes(15);
 
-    @Value("${jwt.refresh-token.lifespan:1d}")
+    @Value("${token.jwt.refresh-token.lifespan:1d}")
     private Duration refreshTokenLifespan = Duration.ofDays(1);
 
     public Long getCurrentUserId() {
@@ -77,11 +77,6 @@ public class JwtService {
     private Jwt issueAccessToken(User user) {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .subject(user.getId().toString())
-                .claim("email", user.getEmail())
-                .claim("name", user.getDisplayName())
-                .claim("preferred_username", user.getUsername())
-                .claim("email_verified", user.isEmailVerified())
-                .claim("picture", user.getPictureUrl())
                 .claim("jti", UUID.randomUUID().toString())
                 .claim("type", "access")
                 .audience(List.of(audience))
@@ -121,11 +116,6 @@ public class JwtService {
                 .issuer(issuer)
                 .expiresAt(Instant.now().plus(accessTokenLifespan))
                 .issuedAt(Instant.now())
-                .claim("email", claims.get("email"))
-                .claim("name", claims.get("name"))
-                .claim("preferred_username", claims.get("preferred_username"))
-                .claim("email_verified", claims.get("email_verified"))
-                .claim("picture", claims.get("picture"))
                 .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(newClaims));
