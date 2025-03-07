@@ -23,7 +23,7 @@ public class TokenService {
     private final AuthenticationService authenticationService;
     private final RevokedTokenService revokedTokenService;
 
-    public AccessTokenDto generate(CredentialsDto credentials) {
+    public AccessTokenDto request(CredentialsDto credentials) {
         Authentication authentication = authenticationService.authenticate(
                 credentials.getUsername(),
                 credentials.getPassword());
