@@ -110,7 +110,7 @@ public class JwtService {
     private Jwt issueAccessToken(Jwt refreshToken) {
         Map<String, Object> claims = refreshToken.getClaims();
         if (!claims.get("type").equals("refresh")) {
-            throw new IllegalArgumentException("Token is not a refresh token");
+            throw new UnauthorizedException("Token is not a refresh token");
         }
 
         JwtClaimsSet newClaims = JwtClaimsSet.builder()
@@ -134,7 +134,7 @@ public class JwtService {
     private Jwt issueRefreshToken(Jwt refreshToken) {
         Map<String, Object> claims = refreshToken.getClaims();
         if (!claims.get("type").equals("refresh")) {
-            throw new IllegalArgumentException("Token is not a refresh token");
+            throw new UnauthorizedException("Token is not a refresh token");
         }
 
         JwtClaimsSet newClaims = JwtClaimsSet.builder()
