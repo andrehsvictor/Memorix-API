@@ -28,6 +28,15 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(User.class, "ID", id));
     }
 
+    public UserDto getDtoById(Long id) {
+        return userMapper.userToUserDto(getById(id));
+    }
+
+    public Page<UserDto> getDtosByQuery(String query, Pageable pageable) {
+        Page<User> users = userRepository.findAllByQuery(query, pageable);
+        return users.map(userMapper::userToUserDto);
+    }
+
     public User getByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(User.class, "email", email));
