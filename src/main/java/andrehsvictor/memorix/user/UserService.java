@@ -15,10 +15,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public User save(User user) {
-        return userRepository.save(user);
-    }
-
     public Page<UserDto> getAllDto(Pageable pageable) {
         Page<User> users = userRepository.findAll(pageable);
         return users.map(userMapper::userToUserDto);
@@ -40,5 +36,15 @@ public class UserService {
     public User getByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(User.class, "email", email));
+    }
+
+    public boolean isEmailVerified(String email) {
+        return getByEmail(email).isEmailVerified();
+    }
+
+    public void setEmailVerified(String email, boolean verified) {
+        User user = getByEmail(email);
+        user.setEmailVerified(verified);
+        userRepository.save(user);
     }
 }
