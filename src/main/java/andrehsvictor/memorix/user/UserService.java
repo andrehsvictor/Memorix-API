@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.user.dto.CreateUserDto;
-import andrehsvictor.memorix.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,35 +23,29 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Page<UserDto> getAllDto(Pageable pageable) {
-        Page<User> users = userRepository.findAll(pageable);
-        return users.map(userMapper::userToUserDto);
+    public Page<User> findAll(String query, Pageable pageable) {
+        if (query != null && !query.isEmpty()) {
+            return userRepository.findAllByQuery(query, pageable);
+        }
+        return userRepository.findAll(pageable);
     }
 
-    public User getById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(User.class, "ID", id));
+    public User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(User.class, "ID", id));
     }
 
-    public UserDto getDtoById(Long id) {
-        return userMapper.userToUserDto(getById(id));
-    }
-
-    public Page<UserDto> getDtosByQuery(String query, Pageable pageable) {
-        Page<User> users = userRepository.findAllByQuery(query, pageable);
-        return users.map(userMapper::userToUserDto);
-    }
-
-    public User getByEmail(String email) {
+    public User findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(User.class, "email", email));
     }
 
     public boolean isEmailVerified(String email) {
-        return getByEmail(email).isEmailVerified();
+        return findByEmail(email).isEmailVerified();
     }
 
     public void setEmailVerified(String email, boolean verified) {
-        User user = getByEmail(email);
+        User user = findByEmail(email);
         user.setEmailVerified(verified);
         userRepository.save(user);
     }

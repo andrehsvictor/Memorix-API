@@ -26,7 +26,7 @@ public class AccountService {
     }
 
     public AccountDto get() {
-        User user = userService.getById(jwtService.getCurrentUserId());
+        User user = userService.findById(jwtService.getCurrentUserId());
         return accountMapper.userToAccountDto(user);
     }
 
