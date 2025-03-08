@@ -29,14 +29,13 @@ public class EmailVerifier {
         emailService.send(to, subject, text);
     }
 
-    public boolean verify(String token) {
-        if (activationTokenRepository.exists(token)) {
-            String email = activationTokenRepository.get(token);
-            userService.setEmailVerified(email, true);
-            activationTokenRepository.delete(token);
-            return true;
+    public void verify(String token) {
+        if (!activationTokenRepository.exists(token)) {
+            throw new UnauthorizedException("Invalid token");
         }
-        throw new UnauthorizedException("Invalid token");
+        String email = activationTokenRepository.get(token);
+        userService.setEmailVerified(email, true);
+        activationTokenRepository.delete(token);
     }
 
 }
