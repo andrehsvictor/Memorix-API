@@ -36,6 +36,7 @@ public class JwtConfig {
     private final RevokedJwtValidator revokedJwtValidator;
 
     @Bean
+    @SuppressWarnings("unchecked")
     JwtDecoder jwtDecoder() {
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withPublicKey(publicKey).build();
         OAuth2TokenValidator<Jwt> validators = JwtValidators.createDefaultWithValidators(revokedJwtValidator);
