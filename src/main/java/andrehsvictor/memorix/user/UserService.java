@@ -2,9 +2,11 @@ package andrehsvictor.memorix.user;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
+import andrehsvictor.memorix.user.dto.CreateUserDto;
 import andrehsvictor.memorix.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 
@@ -14,6 +16,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+
+    public User create(CreateUserDto createUserDto) {
+        User user = userMapper.createUserDtoToUser(createUserDto);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
 
     public Page<UserDto> getAllDto(Pageable pageable) {
         Page<User> users = userRepository.findAll(pageable);

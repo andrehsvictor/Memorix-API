@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import andrehsvictor.memorix.account.dto.AccountDto;
-import andrehsvictor.memorix.account.dto.CreateAccountDto;
 import andrehsvictor.memorix.account.dto.SendActionEmailDto;
 import andrehsvictor.memorix.account.dto.TokenDto;
+import andrehsvictor.memorix.user.dto.CreateUserDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -24,9 +24,9 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping("/api/v1/account")
-    public ResponseEntity<AccountDto> create(@RequestBody @Valid CreateAccountDto createAccountDto) {
+    public ResponseEntity<AccountDto> create(@RequestBody @Valid CreateUserDto createUserDto) {
         URI location = URI.create("/api/v1/account");
-        return ResponseEntity.created(location).body(accountService.create(createAccountDto));
+        return ResponseEntity.created(location).body(accountService.create(createUserDto));
     }
 
     @PostMapping("/api/v1/account/send-action-email")
