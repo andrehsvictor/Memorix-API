@@ -8,6 +8,7 @@ import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import andrehsvictor.memorix.deckuser.AccessLevel;
 import andrehsvictor.memorix.deckuser.DeckUser;
 import andrehsvictor.memorix.user.User;
 import jakarta.persistence.Entity;
@@ -20,6 +21,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -69,4 +71,13 @@ public class Deck implements Serializable {
 
     @OneToMany(mappedBy = "deck")
     private Set<DeckUser> usersWithAccess = new HashSet<>();
+
+    @PrePersist
+    public void prePersist() {
+        DeckUser deckUser = new DeckUser();
+        deckUser.setDeck(this);
+        deckUser.setUser(author);
+        deckUser.setAccessLevel(AccessLevel.OWNER);
+        usersWithAccess.add(deckUser);
+    }
 }
