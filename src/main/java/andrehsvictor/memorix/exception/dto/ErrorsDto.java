@@ -1,4 +1,4 @@
-package andrehsvictor.memorix.exception;
+package andrehsvictor.memorix.exception.dto;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import andrehsvictor.memorix.exception.ErrorsDto;
 import andrehsvictor.memorix.exception.ForbiddenOperationException;
 import andrehsvictor.memorix.exception.ResourceConflictException;
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.exception.UnauthorizedException;
+import andrehsvictor.memorix.exception.dto.ErrorsDto;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
