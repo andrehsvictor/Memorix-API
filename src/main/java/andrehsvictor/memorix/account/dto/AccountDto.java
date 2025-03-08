@@ -1,10 +1,8 @@
 package andrehsvictor.memorix.account.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class AccountDto {
     private Long id;
     private String username;

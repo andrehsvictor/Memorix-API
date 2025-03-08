@@ -3,11 +3,9 @@ package andrehsvictor.memorix.account.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class SendActionEmailDto {
 
     @Pattern(regexp = "^(RESET_PASSWORD|VERIFY_EMAIL)$", message = "Type is invalid")

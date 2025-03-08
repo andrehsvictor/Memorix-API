@@ -1,11 +1,9 @@
 package andrehsvictor.memorix.token.dto;
 
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class CredentialsDto {
 
     @NotEmpty(message = "Username is required")
@@ -13,5 +11,5 @@ public class CredentialsDto {
 
     @NotEmpty(message = "Password is required")
     private String password;
-    
+
 }

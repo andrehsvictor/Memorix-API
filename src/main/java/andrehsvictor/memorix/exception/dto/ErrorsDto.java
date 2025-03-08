@@ -3,11 +3,9 @@ package andrehsvictor.memorix.exception.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class ErrorsDto<T> {
     private List<T> errors = new ArrayList<>();
 

@@ -4,11 +4,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class CreateUserDto {
 
     @NotEmpty(message = "Username is required")
@@ -35,5 +33,5 @@ public class CreateUserDto {
 
     @Size(max = 500, message = "Bio must be less than 500 characters")
     private String bio;
-    
+
 }

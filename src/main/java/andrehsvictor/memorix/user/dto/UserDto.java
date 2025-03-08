@@ -1,10 +1,8 @@
 package andrehsvictor.memorix.user.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class UserDto {
 
     private Long id;
@@ -13,5 +11,5 @@ public class UserDto {
     private String pictureUrl;
     private String bio;
     private String createdAt;
-    
+
 }

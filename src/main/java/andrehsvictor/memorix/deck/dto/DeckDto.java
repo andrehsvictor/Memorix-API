@@ -1,11 +1,9 @@
 package andrehsvictor.memorix.deck.dto;
 
 import andrehsvictor.memorix.user.dto.UserDto;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class DeckDto {
     private Long id;
     private String title;
