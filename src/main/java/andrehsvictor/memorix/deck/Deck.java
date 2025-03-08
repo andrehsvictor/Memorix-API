@@ -33,7 +33,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Table(name = "decks")
 @EqualsAndHashCode(of = { "id" })
-@ToString(exclude = { "author", "sharedWithUsers" })
+@ToString(exclude = { "author", "usersWithAccess" })
 public class Deck implements Serializable {
 
     private static final long serialVersionUID = 1824506724294082916L;
@@ -68,5 +68,5 @@ public class Deck implements Serializable {
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "deck")
-    private Set<DeckUser> sharedWithUsers = new HashSet<>();
+    private Set<DeckUser> usersWithAccess = new HashSet<>();
 }
