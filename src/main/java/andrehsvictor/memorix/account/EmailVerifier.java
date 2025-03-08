@@ -6,7 +6,6 @@ import andrehsvictor.memorix.email.EmailService;
 import andrehsvictor.memorix.exception.ResourceConflictException;
 import andrehsvictor.memorix.exception.UnauthorizedException;
 import andrehsvictor.memorix.file.FileService;
-import andrehsvictor.memorix.user.User;
 import andrehsvictor.memorix.user.UserService;
 import lombok.RequiredArgsConstructor;
 
@@ -20,8 +19,7 @@ public class EmailVerifier {
     private final VerificationTokenRepository activationTokenRepository;
 
     public void sendVerificationEmail(String to, String redirectUrl) {
-        User user = userService.getByEmail(to);
-        if (user.isEmailVerified()) {
+        if (userService.isEmailVerified(to)) {
             throw new ResourceConflictException("Email already verified");
         }
         String subject = "Verify your email";
@@ -34,9 +32,7 @@ public class EmailVerifier {
     public boolean verify(String token) {
         if (activationTokenRepository.exists(token)) {
             String email = activationTokenRepository.get(token);
-            User user = userService.getByEmail(email);
-            user.setEmailVerified(true);
-            userService.save(user);
+            userService.setEmailVerified(email, true);
             activationTokenRepository.delete(token);
             return true;
         }
