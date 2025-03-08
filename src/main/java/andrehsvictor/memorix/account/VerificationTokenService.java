@@ -19,7 +19,7 @@ public class VerificationTokenService {
 
     private final static String PREFIX = "verification_token:";
 
-    @Value("${token.activation.ttl:6h}")
+    @Value("${token.verification.lifespan:6h}")
     private Duration ttl = Duration.ofHours(6);
 
     public String get(String token) {
