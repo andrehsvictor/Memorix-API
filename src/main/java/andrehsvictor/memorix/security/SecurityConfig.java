@@ -16,10 +16,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import andrehsvictor.memorix.jwt.JwtTypeFilter;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -28,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final JwtDecoder jwtDecoder;
+    private final JwtTypeFilter jwtTypeFilter;
 
     @Value("${cors.allowed-origins:*}")
     private String[] allowedOrigins = { "*" };
@@ -65,6 +68,7 @@ public class SecurityConfig {
             authorize.anyRequest().authenticated();
         });
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder)));
+        http.addFilterBefore(jwtTypeFilter, AuthorizationFilter.class);
         return http.build();
     }
 
