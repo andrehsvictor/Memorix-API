@@ -61,5 +61,5 @@ token:
       lifespan: ${JWT_REFRESH_TOKEN_LIFESPAN:1d}
     audience: ${JWT_AUDIENCE:memorix}
     issuer: ${JWT_ISSUER:http://localhost:8080}
-  activation:
-    lifespan: ${ACTIVATION_TOKEN_LIFESPAN:6h}
+  verification:
+    lifespan: ${VERIFICATION_TOKEN_LIFESPAN:6h}
