@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
+import andrehsvictor.memorix.jwt.JwtService;
 import andrehsvictor.memorix.user.dto.CreateUserDto;
 import lombok.RequiredArgsConstructor;
 
@@ -16,6 +17,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public User create(CreateUserDto createUserDto) {
         User user = userMapper.createUserDtoToUser(createUserDto);
@@ -38,6 +40,10 @@ public class UserService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(User.class, "email", email));
+    }
+
+    public User findMyself() {
+        return findById(jwtService.getCurrentUserId());
     }
 
     public boolean isEmailVerified(String email) {
