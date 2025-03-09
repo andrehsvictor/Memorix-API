@@ -5,9 +5,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import andrehsvictor.memorix.exception.BadRequestException;
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.jwt.JwtService;
 import andrehsvictor.memorix.user.dto.CreateUserDto;
+import andrehsvictor.memorix.user.dto.UpdatePasswordDto;
+import andrehsvictor.memorix.user.dto.UpdateUserDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -21,7 +24,7 @@ public class UserService {
 
     public User create(CreateUserDto createUserDto) {
         User user = userMapper.createUserDtoToUser(createUserDto);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        setPassword(user, createUserDto.getPassword());
         return userRepository.save(user);
     }
 
@@ -30,6 +33,21 @@ public class UserService {
             return userRepository.findAllByQuery(query, pageable);
         }
         return userRepository.findAll(pageable);
+    }
+
+    public User update(Long id, UpdateUserDto updateUserDto) {
+        User user = findById(id);
+        userMapper.updateUserFromUpdateUserDto(updateUserDto, user);
+        return userRepository.save(user);
+    }
+
+    public void updatePassword(Long id, UpdatePasswordDto updatePasswordDto) {
+        User user = findById(id);
+        if (!matchesPassword(updatePasswordDto.getOldPassword(), user.getPassword())) {
+            throw new BadRequestException("Old password is incorrect");
+        }
+        setPassword(user, updatePasswordDto.getNewPassword());
+        userRepository.save(user);
     }
 
     public User findById(Long id) {
@@ -54,5 +72,13 @@ public class UserService {
         User user = findByEmail(email);
         user.setEmailVerified(verified);
         userRepository.save(user);
+    }
+
+    private void setPassword(User user, String password) {
+        user.setPassword(passwordEncoder.encode(password));
+    }
+
+    private boolean matchesPassword(String password, String encodedPassword) {
+        return passwordEncoder.matches(password, encodedPassword);
     }
 }
