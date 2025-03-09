@@ -18,8 +18,7 @@ public interface DeckRepository extends JpaRepository<Deck, Long> {
 
     @Query("SELECT DISTINCT d FROM Deck d LEFT JOIN d.usersWithAccess du " +
             "WHERE d.author.id = ?1 " +
-            "OR du.user.id = ?1" +
-            "OR d.visibility = 'PUBLIC'")
+            "OR du.user.id = ?1")
     Page<Deck> findAllAccessibleByUserId(Long userId, Pageable pageable);
 
     Page<Deck> findAllByAuthorIdAndVisibility(Long authorId, DeckVisibility visibility, Pageable pageable);
