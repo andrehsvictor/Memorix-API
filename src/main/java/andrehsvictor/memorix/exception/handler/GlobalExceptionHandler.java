@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import andrehsvictor.memorix.exception.BadRequestException;
 import andrehsvictor.memorix.exception.ForbiddenOperationException;
 import andrehsvictor.memorix.exception.ResourceConflictException;
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
@@ -59,6 +60,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             errors.getErrors().add(fieldError);
         });
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public final ResponseEntity<ErrorsDto<String>> handleBadRequestException(BadRequestException ex) {
+        return ResponseEntity.badRequest().body(ErrorsDto.of(ex.getMessage()));
     }
 
 }
