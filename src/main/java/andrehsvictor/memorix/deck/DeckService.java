@@ -3,6 +3,7 @@ package andrehsvictor.memorix.deck;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.deck.dto.CreateDeckDto;
+import andrehsvictor.memorix.deck.dto.DeckDto;
 import andrehsvictor.memorix.deck.dto.UpdateDeckDto;
 import andrehsvictor.memorix.deckuser.AccessLevel;
 import andrehsvictor.memorix.deckuser.DeckUserService;
@@ -21,6 +22,10 @@ public class DeckService {
     private final JwtService jwtService;
     private final DeckMapper deckMapper;
     private final DeckUserService deckUserService;
+
+    public DeckDto toDto(Deck deck) {
+        return deckMapper.deckToDeckDto(deck);
+    }
 
     public Deck create(CreateDeckDto createDeckDto) {
         Deck deck = deckMapper.createDeckDtoToDeck(createDeckDto);
