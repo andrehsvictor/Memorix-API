@@ -11,6 +11,7 @@ import andrehsvictor.memorix.jwt.JwtService;
 import andrehsvictor.memorix.user.dto.CreateUserDto;
 import andrehsvictor.memorix.user.dto.UpdatePasswordDto;
 import andrehsvictor.memorix.user.dto.UpdateUserDto;
+import andrehsvictor.memorix.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -21,6 +22,10 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+
+    public UserDto toDto(User user) {
+        return userMapper.userToUserDto(user);
+    }
 
     public User create(CreateUserDto createUserDto) {
         User user = userMapper.createUserDtoToUser(createUserDto);

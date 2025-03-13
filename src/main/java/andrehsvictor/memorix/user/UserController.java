@@ -14,21 +14,20 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
     private final UserService userService;
-    private final UserMapper userMapper;
 
     @GetMapping("/api/v1/users")
     public Page<UserDto> findAll(@RequestParam(required = false, name = "q") String query, Pageable pageable) {
-        return userService.findAll(query, pageable).map(userMapper::userToUserDto);
+        return userService.findAll(query, pageable).map(user -> userService.toDto(user));
     }
 
     @GetMapping("/api/v1/users/{id}")
     public UserDto findById(Long id) {
-        return userMapper.userToUserDto(userService.findById(id));
+        return userService.toDto(userService.findById(id));
     }
 
     @GetMapping("/api/v1/users/me")
     public UserDto findMyself() {
-        return userMapper.userToUserDto(userService.findMyself());
+        return userService.toDto(userService.findMyself());
     }
 
 }
