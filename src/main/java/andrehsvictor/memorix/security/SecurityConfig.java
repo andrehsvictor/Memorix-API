@@ -42,7 +42,6 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/swagger-ui.html",
-            "/account/verify"
     };
 
     private static final String[] ALLOWED_PATHS_WITH_POST_METHOD = {
