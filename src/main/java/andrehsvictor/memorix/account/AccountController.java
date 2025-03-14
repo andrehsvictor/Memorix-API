@@ -5,6 +5,7 @@ import java.net.URI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +16,7 @@ import andrehsvictor.memorix.account.dto.ResetPasswordDto;
 import andrehsvictor.memorix.account.dto.SendActionEmailDto;
 import andrehsvictor.memorix.account.dto.TokenDto;
 import andrehsvictor.memorix.user.dto.CreateUserDto;
+import andrehsvictor.memorix.user.dto.UpdatePasswordDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +36,12 @@ public class AccountController {
     public ResponseEntity<Void> sendVerificationEmail(
             @RequestBody @Valid SendActionEmailDto sendActionEmailDto) {
         accountService.sendActionEmail(sendActionEmailDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/api/v1/account/password")
+    public ResponseEntity<Void> updatePassword(@RequestBody @Valid UpdatePasswordDto updatePasswordDto) {
+        accountService.updatePassword(updatePasswordDto);
         return ResponseEntity.noContent().build();
     }
 

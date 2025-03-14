@@ -10,6 +10,8 @@ import andrehsvictor.memorix.jwt.JwtService;
 import andrehsvictor.memorix.user.User;
 import andrehsvictor.memorix.user.UserService;
 import andrehsvictor.memorix.user.dto.CreateUserDto;
+import andrehsvictor.memorix.user.dto.UpdatePasswordDto;
+import andrehsvictor.memorix.user.dto.UpdateUserDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -54,6 +56,15 @@ public class AccountService {
 
     public void resetPassword(ResetPasswordDto resetPasswordDto) {
         passwordResetService.resetPassword(resetPasswordDto.getToken(), resetPasswordDto.getPassword());
+    }
+
+    public AccountDto update(UpdateUserDto updateUserDto) {
+        User user = userService.update(jwtService.getCurrentUserId(), updateUserDto);
+        return accountMapper.userToAccountDto(user);
+    }
+
+    public void updatePassword(UpdatePasswordDto updatePasswordDto) {
+        userService.updatePassword(jwtService.getCurrentUserId(), updatePasswordDto);
     }
 
 }
