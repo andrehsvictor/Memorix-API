@@ -29,6 +29,7 @@ public interface DeckRepository extends JpaRepository<Deck, Long> {
     @Query("""
             SELECT DISTINCT d FROM Deck d
             LEFT JOIN d.usersWithAccess du
+            ON d.id = du.deck.id
             AND (
                 d.author.id = :userId
                 OR du.user.id = :userId
@@ -62,6 +63,7 @@ public interface DeckRepository extends JpaRepository<Deck, Long> {
     @Query("""
             SELECT d FROM Deck d
             LEFT JOIN d.usersWithAccess du
+            ON d.id = du.deck.id
             WHERE d.id = :id
             AND (
                 d.author.id = :userId
