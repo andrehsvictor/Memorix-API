@@ -72,7 +72,7 @@ public class Deck implements Serializable {
     @OneToMany(mappedBy = "deck")
     private Set<DeckUser> usersWithAccess = new HashSet<>();
 
-    @ManyToMany(mappedBy = "likedDecks")
+    @ManyToMany
     @JoinTable(name = "decks_users_likes", joinColumns = @JoinColumn(name = "deck_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> likers = new HashSet<>();
 
