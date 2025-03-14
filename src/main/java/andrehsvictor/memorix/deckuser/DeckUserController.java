@@ -24,7 +24,7 @@ public class DeckUserController {
     @GetMapping("/api/v1/decks/{id}/users")
     public ResponseEntity<Page<DeckUserDto>> findAllByDeckId(@PathVariable Long id,
             @RequestParam(required = false, name = "q") String query,
-            @RequestParam(required = false, name = "access_level") String accessLevel,
+            @RequestParam(required = false) String accessLevel,
             Pageable pageable) {
         Page<DeckUser> deckUsers = deckUserService.findAllByDeckId(query, id, accessLevel, pageable);
         return ResponseEntity.ok(deckUsers.map(deckUserService::toDto));
