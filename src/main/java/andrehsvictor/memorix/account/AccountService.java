@@ -3,6 +3,7 @@ package andrehsvictor.memorix.account;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.account.dto.AccountDto;
+import andrehsvictor.memorix.account.dto.ResetPasswordDto;
 import andrehsvictor.memorix.account.dto.SendActionEmailDto;
 import andrehsvictor.memorix.account.dto.TokenDto;
 import andrehsvictor.memorix.jwt.JwtService;
@@ -18,6 +19,7 @@ public class AccountService {
     private final AccountMapper accountMapper;
     private final UserService userService;
     private final EmailVerificationService emailVerificationService;
+    private final PasswordResetService passwordResetService;
     private final JwtService jwtService;
 
     public AccountDto create(CreateUserDto createUserDto) {
@@ -34,7 +36,9 @@ public class AccountService {
         SendActionEmailType sendActionEmailType = SendActionEmailType.valueOf(sendActionEmailDto.getType());
         switch (sendActionEmailType) {
             case RESET_PASSWORD:
-                throw new UnsupportedOperationException("Not implemented yet");
+                passwordResetService.sendPasswordResetEmail(sendActionEmailDto.getEmail(),
+                        sendActionEmailDto.getRedirectUrl());
+                break;
             case VERIFY_EMAIL:
                 emailVerificationService.sendVerificationEmail(sendActionEmailDto.getEmail(),
                         sendActionEmailDto.getRedirectUrl());
@@ -46,6 +50,10 @@ public class AccountService {
 
     public void verify(TokenDto tokenDto) {
         emailVerificationService.verify(tokenDto.getToken());
+    }
+
+    public void resetPassword(ResetPasswordDto resetPasswordDto) {
+        passwordResetService.resetPassword(resetPasswordDto.getToken(), resetPasswordDto.getPassword());
     }
 
 }

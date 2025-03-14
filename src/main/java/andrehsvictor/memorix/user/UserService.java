@@ -70,9 +70,15 @@ public class UserService {
         return findByEmail(email).isEmailVerified();
     }
 
-    public void setEmailVerified(String email, boolean verified) {
-        User user = findByEmail(email);
+    public void setEmailVerified(Long id, boolean verified) {
+        User user = findById(id);
         user.setEmailVerified(verified);
+        userRepository.save(user);
+    }
+
+    public void setPassword(Long id, String password) {
+        User user = findById(id);
+        setPassword(user, password);
         userRepository.save(user);
     }
 

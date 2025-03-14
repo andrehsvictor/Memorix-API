@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import andrehsvictor.memorix.account.dto.AccountDto;
+import andrehsvictor.memorix.account.dto.ResetPasswordDto;
 import andrehsvictor.memorix.account.dto.SendActionEmailDto;
 import andrehsvictor.memorix.account.dto.TokenDto;
 import andrehsvictor.memorix.user.dto.CreateUserDto;
@@ -42,12 +43,28 @@ public class AccountController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/api/v1/account/reset-password")
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordDto resetPasswordDto) {
+        accountService.resetPassword(resetPasswordDto);
+        return ResponseEntity.noContent().build();
+    }
+
     @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("/account/verify")
     public ResponseEntity<Void> verifyWithGet(@RequestParam String token) {
         TokenDto tokenDto = new TokenDto();
         tokenDto.setToken(token);
         accountService.verify(tokenDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @CrossOrigin(origins = "http://localhost:8080")
+    @GetMapping("/account/reset-password")
+    public ResponseEntity<Void> resetPasswordWithGet(@RequestParam String token, @RequestParam String password) {
+        ResetPasswordDto resetPasswordDto = new ResetPasswordDto();
+        resetPasswordDto.setToken(token);
+        resetPasswordDto.setPassword(password);
+        accountService.resetPassword(resetPasswordDto);
         return ResponseEntity.noContent().build();
     }
 
