@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import andrehsvictor.memorix.deck.dto.CreateDeckDto;
 import andrehsvictor.memorix.deck.dto.DeckDto;
 import andrehsvictor.memorix.deck.dto.UpdateDeckDto;
+import andrehsvictor.memorix.deck.dto.UpdateDeckVisibilityDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -83,14 +84,38 @@ public class DeckController {
 
     @PatchMapping("/api/v1/decks/{id}/visibility")
     public ResponseEntity<Void> updateVisibility(@PathVariable Long id,
-            @Valid @RequestParam(required = true) @Pattern(regexp = "public|private") String visibility) {
-        deckService.updateVisibility(id, visibility);
+            @Valid @RequestBody UpdateDeckVisibilityDto updateDeckVisibilityDto) {
+        deckService.updateVisibility(id, updateDeckVisibilityDto);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/api/v1/decks/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         deckService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/api/v1/users/me/decks/{id}")
+    public ResponseEntity<Void> appendToCurrentUser(@PathVariable Long id) {
+        deckService.append(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/api/v1/users/me/decks/{id}")
+    public ResponseEntity<Void> removeFromCurrentUser(@PathVariable Long id) {
+        deckService.remove(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/api/v1/decks/{id}/likes")
+    public ResponseEntity<Void> like(@PathVariable Long id) {
+        deckService.like(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/api/v1/decks/{id}/likes")
+    public ResponseEntity<Void> unlike(@PathVariable Long id) {
+        deckService.unlike(id);
         return ResponseEntity.noContent().build();
     }
 

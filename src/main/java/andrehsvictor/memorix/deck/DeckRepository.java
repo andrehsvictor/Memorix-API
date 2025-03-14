@@ -5,7 +5,10 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.NativeQuery;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import andrehsvictor.memorix.deckuser.AccessLevel;
 
@@ -67,5 +70,22 @@ public interface DeckRepository extends JpaRepository<Deck, Long> {
             )
             """)
     Optional<Deck> findVisibleByIdAndUserId(Long id, Long userId);
+
+    @NativeQuery("""
+            SELECT COUNT(*) > 0 FROM decks_users_likes
+            WHERE user_id = :userId
+            AND deck_id = :deckId
+            """)
+    boolean isLikedByUser(Long deckId, Long userId);
+
+    @Modifying
+    @Transactional
+    @NativeQuery("INSERT INTO decks_users_likes (user_id, deck_id) VALUES (:userId, :deckId)")
+    void like(Long deckId, Long userId);
+
+    @Modifying
+    @Transactional
+    @NativeQuery("DELETE FROM decks_users_likes WHERE user_id = :userId AND deck_id = :deckId")
+    void unlike(Long deckId, Long userId);
 
 }

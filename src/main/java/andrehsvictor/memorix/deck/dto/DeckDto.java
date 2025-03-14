@@ -14,6 +14,7 @@ public class DeckDto {
     private String accentColor;
     private Long cardsCount;
     private Long likesCount;
+    private boolean liked;
     private String createdAt;
     private String updatedAt;
 }

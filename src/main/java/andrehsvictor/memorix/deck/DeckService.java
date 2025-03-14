@@ -4,13 +4,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import andrehsvictor.memorix.account.AccountController;
+
 import andrehsvictor.memorix.deck.dto.CreateDeckDto;
 import andrehsvictor.memorix.deck.dto.DeckDto;
 import andrehsvictor.memorix.deck.dto.UpdateDeckDto;
+import andrehsvictor.memorix.deck.dto.UpdateDeckVisibilityDto;
 import andrehsvictor.memorix.deckuser.AccessLevel;
 import andrehsvictor.memorix.deckuser.DeckUserService;
 import andrehsvictor.memorix.exception.ForbiddenOperationException;
+import andrehsvictor.memorix.exception.ResourceConflictException;
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.jwt.JwtService;
 import andrehsvictor.memorix.user.UserService;
@@ -19,8 +21,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class DeckService {
-
-    private final AccountController accountController;
 
     private final DeckRepository deckRepository;
     private final UserService userService;
@@ -86,30 +86,64 @@ public class DeckService {
     }
 
     @Transactional
-    public void updateVisibility(Long id, String visibility) {
+    public void updateVisibility(Long id, UpdateDeckVisibilityDto updateDeckVisibilityDto) {
         Deck deck = findById(id);
         Long userId = jwtService.getCurrentUserId();
         if (!isUserAuthor(userId, deck)) {
             throw new ForbiddenOperationException("You are not the author of this deck");
         }
-        deck.setVisibility(DeckVisibility.fromString(visibility));
+        deck.setVisibility(DeckVisibility.fromString(updateDeckVisibilityDto.getVisibility()));
         deckRepository.save(deck);
     }
 
+    @Transactional
     public void append(Long deckId) {
         Long userId = jwtService.getCurrentUserId();
         if (deckUserService.hasAccess(userId, deckId)) {
-            throw new ForbiddenOperationException("You already have access to this deck");
+            throw new ResourceConflictException("You already have access to this deck");
         }
         deckUserService.create(userId, deckId, AccessLevel.VIEWER);
     }
 
+    @Transactional
     public void remove(Long deckId) {
         Long userId = jwtService.getCurrentUserId();
         if (!deckUserService.hasAccess(userId, deckId)) {
             throw new ForbiddenOperationException("You do not have access to this deck");
         }
+        if (hasAccessLevel(userId, deckId, AccessLevel.OWNER)) {
+            throw new ForbiddenOperationException("You cannot remove the access to your own deck. Delete it instead.");
+        }
         deckUserService.delete(userId, deckId);
+    }
+
+    @Transactional
+    public void like(Long deckId) {
+        Long userId = jwtService.getCurrentUserId();
+        if (isLikedByCurrentUser(deckId)) {
+            return;
+        }
+        deckRepository.like(deckId, userId);
+        Deck deck = findById(deckId);
+        deck.setLikesCount(deck.getLikesCount() + 1);
+        deckRepository.save(deck);
+    }
+
+    @Transactional
+    public void unlike(Long deckId) {
+        Long userId = jwtService.getCurrentUserId();
+        if (!isLikedByCurrentUser(deckId)) {
+            return;
+        }
+        deckRepository.unlike(deckId, userId);
+        Deck deck = findById(deckId);
+        deck.setLikesCount(deck.getLikesCount() - 1);
+        deckRepository.save(deck);
+    }
+
+    public boolean isLikedByCurrentUser(Long deckId) {
+        Long userId = jwtService.getCurrentUserId();
+        return deckRepository.isLikedByUser(userId, deckId);
     }
 
     private boolean hasAccessLevel(Long userId, Long deckId, AccessLevel accessLevel) {

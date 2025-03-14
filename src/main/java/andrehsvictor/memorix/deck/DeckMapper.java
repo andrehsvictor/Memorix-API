@@ -2,23 +2,33 @@ package andrehsvictor.memorix.deck;
 
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import andrehsvictor.memorix.deck.dto.CreateDeckDto;
 import andrehsvictor.memorix.deck.dto.DeckDto;
 import andrehsvictor.memorix.deck.dto.UpdateDeckDto;
+import andrehsvictor.memorix.user.UserService;
 
 @Mapper(componentModel = "spring")
-public interface DeckMapper {
+public abstract class DeckMapper {
 
-    DeckDto deckToDeckDto(Deck deck);
+    @Autowired
+    protected UserService userService;
 
-    Deck createDeckDtoToDeck(CreateDeckDto createDeckDto);
+    @Autowired
+    protected DeckService deckService;
 
-    Deck updateDeckFromUpdateDeckDto(UpdateDeckDto updateDeckDto, @MappingTarget Deck deck);
+    @Mapping(target = "liked", expression = "java(deckService.isLikedByCurrentUser(deck.getId()))")
+    public abstract DeckDto deckToDeckDto(Deck deck);
+
+    public abstract Deck createDeckDtoToDeck(CreateDeckDto createDeckDto);
+
+    public abstract Deck updateDeckFromUpdateDeckDto(UpdateDeckDto updateDeckDto, @MappingTarget Deck deck);
 
     @AfterMapping
-    default void afterMapping(UpdateDeckDto updateDeckDto, @MappingTarget Deck deck) {
+    public void afterMapping(UpdateDeckDto updateDeckDto, @MappingTarget Deck deck) {
         if (updateDeckDto.getDescription() != null && updateDeckDto.getDescription().isBlank()) {
             deck.setDescription(null);
         }

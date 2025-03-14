@@ -19,6 +19,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
@@ -69,6 +71,10 @@ public class Deck implements Serializable {
 
     @OneToMany(mappedBy = "deck")
     private Set<DeckUser> usersWithAccess = new HashSet<>();
+
+    @ManyToMany(mappedBy = "likedDecks")
+    @JoinTable(name = "decks_users_likes", joinColumns = @JoinColumn(name = "deck_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> likers = new HashSet<>();
 
     @PrePersist
     void prePersist() {
