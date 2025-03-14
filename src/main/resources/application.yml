@@ -63,3 +63,5 @@ token:
     issuer: ${JWT_ISSUER:http://localhost:8080}
   verification:
     lifespan: ${VERIFICATION_TOKEN_LIFESPAN:6h}
+  reset-password:
+    lifespan: ${RESET_PASSWORD_TOKEN_LIFESPAN:1h}

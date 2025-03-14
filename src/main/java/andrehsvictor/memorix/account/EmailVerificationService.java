@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class EmailVerifier {
+public class EmailVerificationService {
 
     private final EmailService emailService;
     private final FileService fileService;

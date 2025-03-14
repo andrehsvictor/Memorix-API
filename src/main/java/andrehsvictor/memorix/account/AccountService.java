@@ -17,7 +17,7 @@ public class AccountService {
 
     private final AccountMapper accountMapper;
     private final UserService userService;
-    private final EmailVerifier emailVerifier;
+    private final EmailVerificationService emailVerificationService;
     private final JwtService jwtService;
 
     public AccountDto create(CreateUserDto createUserDto) {
@@ -36,7 +36,8 @@ public class AccountService {
             case RESET_PASSWORD:
                 throw new UnsupportedOperationException("Not implemented yet");
             case VERIFY_EMAIL:
-                emailVerifier.sendVerificationEmail(sendActionEmailDto.getEmail(), sendActionEmailDto.getRedirectUrl());
+                emailVerificationService.sendVerificationEmail(sendActionEmailDto.getEmail(),
+                        sendActionEmailDto.getRedirectUrl());
                 break;
             default:
                 throw new IllegalArgumentException("Type is invalid");
@@ -44,7 +45,7 @@ public class AccountService {
     }
 
     public void verify(TokenDto tokenDto) {
-        emailVerifier.verify(tokenDto.getToken());
+        emailVerificationService.verify(tokenDto.getToken());
     }
 
 }
