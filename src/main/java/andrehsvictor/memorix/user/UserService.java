@@ -34,10 +34,7 @@ public class UserService {
     }
 
     public Page<User> findAll(String query, Pageable pageable) {
-        if (query != null && !query.isEmpty()) {
-            return userRepository.findAllByQuery(query, pageable);
-        }
-        return userRepository.findAll(pageable);
+        return userRepository.findAll(query, pageable);
     }
 
     public User update(Long id, UpdateUserDto updateUserDto) {
