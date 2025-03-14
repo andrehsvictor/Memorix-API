@@ -1,5 +1,6 @@
 package andrehsvictor.memorix.deck;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ import andrehsvictor.memorix.user.UserService;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor = @__(@Lazy))
 public class DeckService {
 
     private final DeckRepository deckRepository;
