@@ -19,6 +19,8 @@ spring:
           audiences:
           - ${token.jwt.audience}
           issuer-uri: ${token.jwt.issuer}
+  main:
+    allow-circular-references: true
 
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:memorix}
