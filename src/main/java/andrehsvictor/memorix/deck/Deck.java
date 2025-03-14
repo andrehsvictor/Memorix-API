@@ -71,7 +71,7 @@ public class Deck implements Serializable {
     private Set<DeckUser> usersWithAccess = new HashSet<>();
 
     @PrePersist
-    public void prePersist() {
+    void prePersist() {
         DeckUser deckUser = new DeckUser();
         deckUser.setDeck(this);
         deckUser.setUser(author);

@@ -1,0 +1,97 @@
+package andrehsvictor.memorix.deck;
+
+import java.net.URI;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import andrehsvictor.memorix.deck.dto.CreateDeckDto;
+import andrehsvictor.memorix.deck.dto.DeckDto;
+import andrehsvictor.memorix.deck.dto.UpdateDeckDto;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequiredArgsConstructor
+public class DeckController {
+
+    private final DeckService deckService;
+
+    /*
+     * /api/v1/decks GET - List all decks accessible by the current user
+     * /api/v1/decks POST - Create a new deck
+     * /api/v1/decks/{id} GET - Get a deck by ID
+     * /api/v1/decks/{id} DELETE - Delete a deck by ID
+     * /api/v1/decks/{id} PUT - Update a deck by ID
+     * /api/v1/users/{id}/decks GET - List all decks accessible by a user
+     * /api/v1/users/me/decks GET - List all decks from the current user
+     * /api/v1/decks/{id}/visibility PATCH - Update a deck's visibility
+     * /api/v1/users/me/decks/{id} POST - Add a deck to the current user
+     * /api/v1/users/me/decks/{id} DELETE - Remove a deck from the current user
+     */
+
+    @GetMapping("/api/v1/decks")
+    public ResponseEntity<Page<DeckDto>> findAll(@RequestParam(required = false, name = "q") String query,
+            Pageable pageable) {
+        return ResponseEntity.ok(deckService.findAllPublic(query, pageable).map(deckService::toDto));
+    }
+
+    @GetMapping("/api/v1/users/me/decks")
+    public ResponseEntity<Page<DeckDto>> findAllMine(@RequestParam(required = false, name = "q") String query,
+            @Valid @RequestParam(required = false) @Pattern(regexp = "public|private") String visibility,
+            @Valid @RequestParam(required = false) @Pattern(regexp = "owner|viewer|editor") String accessLevel,
+            Pageable pageable) {
+        Page<Deck> decks = deckService.findAll(query, visibility, accessLevel, pageable);
+        return ResponseEntity.ok(decks.map(deckService::toDto));
+    }
+
+    @GetMapping("/api/v1/decks/{id}")
+    public ResponseEntity<DeckDto> findById(@PathVariable Long id) {
+        Deck deck = deckService.findById(id);
+        return ResponseEntity.ok(deckService.toDto(deck));
+    }
+
+    @GetMapping("/api/v1/users/{id}/decks")
+    public ResponseEntity<Page<DeckDto>> findAllByAuthorId(@PathVariable Long id,
+            @RequestParam(required = false, name = "q") String query, Pageable pageable) {
+        return ResponseEntity.ok(deckService.findAllByAuthorId(query, id, pageable).map(deckService::toDto));
+    }
+
+    @PostMapping("/api/v1/decks")
+    public ResponseEntity<DeckDto> create(@Valid @RequestBody CreateDeckDto createDeckDto) {
+        Deck deck = deckService.create(createDeckDto);
+        URI location = URI.create("/api/v1/decks/" + deck.getId());
+        return ResponseEntity.created(location).body(deckService.toDto(deck));
+    }
+
+    @PutMapping("/api/v1/decks/{id}")
+    public ResponseEntity<DeckDto> update(@PathVariable Long id, @Valid @RequestBody UpdateDeckDto updateDeckDto) {
+        Deck deck = deckService.update(id, updateDeckDto);
+        return ResponseEntity.ok(deckService.toDto(deck));
+    }
+
+    @PatchMapping("/api/v1/decks/{id}/visibility")
+    public ResponseEntity<Void> updateVisibility(@PathVariable Long id,
+            @Valid @RequestParam(required = true) @Pattern(regexp = "public|private") String visibility) {
+        deckService.updateVisibility(id, visibility);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/api/v1/decks/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        deckService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+}

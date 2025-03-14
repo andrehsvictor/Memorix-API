@@ -10,9 +10,6 @@ public class UpdateDeckDto {
     @Size(min = 1, max = 255, message = "Title must be between 1 and 255 characters")
     private String title;
 
-    @Pattern(regexp = "^(PUBLIC|PRIVATE)$", message = "Invalid visibility")
-    private String visibility;
-
     @Pattern(message = "Invalid URL", regexp = "^(http|https)://.*$")
     private String coverUrl;
 
