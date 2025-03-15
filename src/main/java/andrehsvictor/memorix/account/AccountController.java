@@ -3,6 +3,7 @@ package andrehsvictor.memorix.account;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,6 +59,12 @@ public class AccountController {
     @GetMapping("/api/v1/account")
     public ResponseEntity<AccountDto> get() {
         return ResponseEntity.ok(accountService.get());
+    }
+
+    @DeleteMapping("/api/v1/account")
+    public ResponseEntity<Void> delete() {
+        accountService.delete();
+        return ResponseEntity.noContent().build();
     }
 
 }

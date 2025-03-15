@@ -62,6 +62,10 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException(User.class, "email", email));
     }
 
+    public void delete(Long id) {
+        userRepository.deleteById(id);
+    }
+
     public User findMyself() {
         return findById(jwtService.getCurrentUserId());
     }
