@@ -3,6 +3,7 @@ package andrehsvictor.memorix.deckuser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import andrehsvictor.memorix.deck.Deck;
 import andrehsvictor.memorix.deck.DeckService;
@@ -37,6 +38,7 @@ public class DeckUserService {
         return deckUserRepository.existsByUserIdAndDeckId(userId, deckId);
     }
 
+    @Transactional
     public DeckUser create(Long userId, Long deckId, AccessLevel accessLevel) {
         DeckUser deckUser = new DeckUser();
         User user = userService.findById(userId);
@@ -47,6 +49,7 @@ public class DeckUserService {
         return deckUserRepository.save(deckUser);
     }
 
+    @Transactional
     public void delete(Long userId, Long deckId) {
         deckUserRepository.deleteByUserIdAndDeckId(userId, deckId);
     }
@@ -61,6 +64,7 @@ public class DeckUserService {
         return deckUserRepository.findAllByDeckIdAndAccessLevel(query, deckId, accessLevelEnum, pageable);
     }
 
+    @Transactional
     public void updateAccessLevel(Long userId, Long deckId, String accessLevel) {
         AccessLevel accessLevelEnum = convertToAccessLevel(accessLevel);
         if (accessLevelEnum != null && accessLevelEnum.equals(AccessLevel.OWNER)) {
@@ -74,6 +78,11 @@ public class DeckUserService {
         DeckUser deckUser = findByUserIdAndDeckId(userId, deckId);
         deckUser.setAccessLevel(accessLevelEnum);
         deckUserRepository.save(deckUser);
+    }
+
+    @Transactional
+    public void removeAccessFromAllByDeckIdAndAccessLevel(Long deckId, AccessLevel accessLevel) {
+        deckUserRepository.deleteAllByDeckIdAndAccessLevel(deckId, accessLevel);
     }
 
     public DeckUserDto toDto(DeckUser deckUser) {

@@ -94,6 +94,7 @@ public class DeckService {
             throw new ForbiddenOperationException("You are not the author of this deck");
         }
         deck.setVisibility(DeckVisibility.fromString(updateDeckVisibilityDto.getVisibility()));
+        deckUserService.removeAccessFromAllByDeckIdAndAccessLevel(id, AccessLevel.VIEWER);
         deckRepository.save(deck);
     }
 
