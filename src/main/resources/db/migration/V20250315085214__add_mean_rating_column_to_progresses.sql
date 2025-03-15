@@ -1,0 +1,1 @@
+ALTER TABLE progresses ADD COLUMN mean_rating FLOAT NOT NULL DEFAULT 0;

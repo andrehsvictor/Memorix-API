@@ -1,0 +1,1 @@
+ALTER TABLE progresses ADD COLUMN consecutive_correct_answers INTEGER NOT NULL DEFAULT 0;

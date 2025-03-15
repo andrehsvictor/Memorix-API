@@ -1,0 +1,1 @@
+ALTER TABLE progresses ADD COLUMN total_answers INTEGER NOT NULL DEFAULT 0;

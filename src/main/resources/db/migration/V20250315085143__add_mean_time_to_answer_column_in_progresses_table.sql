@@ -1,0 +1,1 @@
+ALTER TABLE progresses ADD COLUMN mean_time_to_answer FLOAT NOT NULL DEFAULT 0;
