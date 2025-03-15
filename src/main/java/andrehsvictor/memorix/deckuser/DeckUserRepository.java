@@ -23,7 +23,7 @@ public interface DeckUserRepository extends JpaRepository<DeckUser, DeckUserId> 
 
     @Modifying
     @Transactional
-    void deleteByUserIdAndDeckIdAndAccessLevel(Long userId, Long deckId, AccessLevel accessLevel);
+    void deleteAllByDeckIdAndAccessLevel(Long deckId, AccessLevel accessLevel);
 
     @Query("""
             SELECT du FROM DeckUser du
