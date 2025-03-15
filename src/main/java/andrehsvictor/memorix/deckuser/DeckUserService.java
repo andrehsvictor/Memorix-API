@@ -58,7 +58,7 @@ public class DeckUserService {
         AccessLevel accessLevelEnum = convertToAccessLevel(accessLevel);
         Deck deck = deckService.findById(deckId);
         Long userId = jwtService.getCurrentUserId();
-        if (!deck.getAuthor().getId().equals(userId)) {
+        if (!isUserAuthor(userId, deck)) {
             throw new ForbiddenOperationException("You are not allowed to access users of this deck");
         }
         return deckUserRepository.findAllByDeckIdAndAccessLevel(query, deckId, accessLevelEnum, pageable);
@@ -67,12 +67,13 @@ public class DeckUserService {
     @Transactional
     public void updateAccessLevel(Long userId, Long deckId, String accessLevel) {
         AccessLevel accessLevelEnum = convertToAccessLevel(accessLevel);
-        if (accessLevelEnum != null && accessLevelEnum.equals(AccessLevel.OWNER)) {
+        boolean isOwnerAccessLevel = accessLevelEnum != null && accessLevelEnum.equals(AccessLevel.OWNER);
+        if (isOwnerAccessLevel) {
             throw new ForbiddenOperationException("Decks can only have one owner");
         }
         Deck deck = deckService.findById(deckId);
         Long currentUserId = jwtService.getCurrentUserId();
-        if (!deck.getAuthor().getId().equals(currentUserId)) {
+        if (!isUserAuthor(currentUserId, deck)) {
             throw new ForbiddenOperationException("You are not allowed to update access level of this deck");
         }
         DeckUser deckUser = findByUserIdAndDeckId(userId, deckId);
@@ -87,6 +88,10 @@ public class DeckUserService {
 
     public DeckUserDto toDto(DeckUser deckUser) {
         return deckUserMapper.deckUserToDeckUserDto(deckUser);
+    }
+
+    private boolean isUserAuthor(Long userId, Deck deck) {
+        return deck.getAuthor().getId().equals(userId);
     }
 
     private AccessLevel convertToAccessLevel(String accessLevel) {
