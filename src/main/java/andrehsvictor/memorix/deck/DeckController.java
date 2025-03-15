@@ -95,7 +95,7 @@ public class DeckController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/api/v1/decks/{id}/likes")
+    @PutMapping("/api/v1/decks/{id}/likes")
     public ResponseEntity<Void> like(@PathVariable Long id) {
         deckService.like(id);
         return ResponseEntity.noContent().build();
