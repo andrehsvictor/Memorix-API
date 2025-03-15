@@ -31,7 +31,11 @@ public class DeckService {
     private final DeckMapper deckMapper;
     private final DeckUserService deckUserService;
 
-    public Page<Deck> findAll(String query, String visibility, String accessLevel, Pageable pageable) {
+    public Page<Deck> findAll(
+            String query,
+            String visibility,
+            String accessLevel,
+            Pageable pageable) {
         Long userId = jwtService.getCurrentUserId();
         query = query != null ? query.trim() : null;
         AccessLevel accessLevelEnum = convertToAccessLevel(accessLevel);
