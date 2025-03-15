@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import andrehsvictor.memorix.exception.BadRequestException;
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
@@ -27,6 +28,7 @@ public class UserService {
         return userMapper.userToUserDto(user);
     }
 
+    @Transactional
     public User create(CreateUserDto createUserDto) {
         User user = userMapper.createUserDtoToUser(createUserDto);
         setPassword(user, createUserDto.getPassword());
@@ -37,12 +39,14 @@ public class UserService {
         return userRepository.findAll(query, pageable);
     }
 
+    @Transactional
     public User update(Long id, UpdateUserDto updateUserDto) {
         User user = findById(id);
         userMapper.updateUserFromUpdateUserDto(updateUserDto, user);
         return userRepository.save(user);
     }
 
+    @Transactional
     public void updatePassword(Long id, UpdatePasswordDto updatePasswordDto) {
         User user = findById(id);
         if (!matchesPassword(updatePasswordDto.getOldPassword(), user.getPassword())) {
@@ -62,6 +66,7 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException(User.class, "email", email));
     }
 
+    @Transactional
     public void delete(Long id) {
         userRepository.deleteById(id);
     }
@@ -74,12 +79,14 @@ public class UserService {
         return findByEmail(email).isEmailVerified();
     }
 
+    @Transactional
     public void setEmailVerified(Long id, boolean verified) {
         User user = findById(id);
         user.setEmailVerified(verified);
         userRepository.save(user);
     }
 
+    @Transactional
     public void setPassword(Long id, String password) {
         User user = findById(id);
         setPassword(user, password);
