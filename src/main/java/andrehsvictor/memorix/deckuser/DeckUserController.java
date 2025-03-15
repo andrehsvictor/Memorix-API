@@ -4,8 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +30,7 @@ public class DeckUserController {
         return ResponseEntity.ok(deckUsers.map(deckUserService::toDto));
     }
 
-    @PutMapping("/api/v1/decks/{deckId}/users/{userId}/access-level")
+    @PatchMapping("/api/v1/decks/{deckId}/users/{userId}/access-level")
     public ResponseEntity<Void> updateAccessLevel(@PathVariable Long deckId,
             @PathVariable Long userId,
             @Valid @RequestBody UpdateAccessLevelDto updateAccessLevelDto) {
