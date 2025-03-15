@@ -29,19 +29,6 @@ public class DeckController {
 
     private final DeckService deckService;
 
-    /*
-     * /api/v1/decks GET - List all decks accessible by the current user
-     * /api/v1/decks POST - Create a new deck
-     * /api/v1/decks/{id} GET - Get a deck by ID
-     * /api/v1/decks/{id} DELETE - Delete a deck by ID
-     * /api/v1/decks/{id} PUT - Update a deck by ID
-     * /api/v1/users/{id}/decks GET - List all decks accessible by a user
-     * /api/v1/users/me/decks GET - List all decks from the current user
-     * /api/v1/decks/{id}/visibility PATCH - Update a deck's visibility
-     * /api/v1/users/me/decks/{id} POST - Add a deck to the current user
-     * /api/v1/users/me/decks/{id} DELETE - Remove a deck from the current user
-     */
-
     @GetMapping("/api/v1/decks")
     public ResponseEntity<Page<DeckDto>> findAll(@RequestParam(required = false, name = "q") String query,
             Pageable pageable) {
