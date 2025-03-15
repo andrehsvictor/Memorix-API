@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import andrehsvictor.memorix.exception.BadRequestException;
+import andrehsvictor.memorix.exception.ResourceConflictException;
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.jwt.JwtService;
 import andrehsvictor.memorix.user.dto.CreateUserDto;
@@ -31,25 +32,49 @@ public class UserService {
     @Transactional
     public User create(CreateUserDto createUserDto) {
         User user = userMapper.createUserDtoToUser(createUserDto);
+        boolean emailExists = existsByEmail(createUserDto.getEmail());
+        boolean usernameExists = existsByUsername(createUserDto.getUsername());
+        if (emailExists || usernameExists) {
+            throw new ResourceConflictException("Username or email already in use");
+        }
         setPassword(user, createUserDto.getPassword());
         return userRepository.save(user);
     }
 
     public Page<User> findAll(String query, Pageable pageable) {
+        query = query != null ? query.trim() : null;
         return userRepository.findAll(query, pageable);
     }
 
     @Transactional
     public User update(Long id, UpdateUserDto updateUserDto) {
         User user = findById(id);
+        boolean emailExists = updateUserDto.getEmail() != null && existsByEmail(updateUserDto.getEmail());
+        boolean usernameExists = updateUserDto.getUsername() != null && existsByUsername(updateUserDto.getUsername());
+        boolean emailChanged = updateUserDto.getEmail() != null && !updateUserDto.getEmail().equals(user.getEmail());
+        if (emailExists || usernameExists) {
+            throw new ResourceConflictException("Username or email already in use");
+        }
+        if (emailChanged) {
+            user.setEmailVerified(false);
+        }
         userMapper.updateUserFromUpdateUserDto(updateUserDto, user);
         return userRepository.save(user);
+    }
+
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
     }
 
     @Transactional
     public void updatePassword(Long id, UpdatePasswordDto updatePasswordDto) {
         User user = findById(id);
-        if (!matchesPassword(updatePasswordDto.getOldPassword(), user.getPassword())) {
+        boolean matches = matchesPassword(updatePasswordDto.getOldPassword(), user.getPassword());
+        if (!matches) {
             throw new BadRequestException("Old password is incorrect");
         }
         setPassword(user, updatePasswordDto.getNewPassword());
