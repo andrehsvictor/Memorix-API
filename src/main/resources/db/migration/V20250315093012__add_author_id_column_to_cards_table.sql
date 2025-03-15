@@ -1,0 +1,1 @@
+ALTER TABLE cards ADD COLUMN author_id INTEGER NOT NULL REFERENCES users (id);
