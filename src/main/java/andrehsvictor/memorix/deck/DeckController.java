@@ -36,7 +36,8 @@ public class DeckController {
     }
 
     @GetMapping("/api/v1/users/me/decks")
-    public ResponseEntity<Page<DeckDto>> findAllMine(@RequestParam(required = false, name = "q") String query,
+    public ResponseEntity<Page<DeckDto>> findAllMine(
+            @RequestParam(required = false, name = "q") String query,
             @Valid @RequestParam(required = false) @Pattern(regexp = "public|private") String visibility,
             @Valid @RequestParam(required = false) @Pattern(regexp = "owner|viewer|editor") String accessLevel,
             Pageable pageable) {
