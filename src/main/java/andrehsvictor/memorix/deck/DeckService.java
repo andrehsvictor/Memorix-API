@@ -1,5 +1,6 @@
 package andrehsvictor.memorix.deck;
 
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Lazy))
+@CacheConfig(cacheNames = { "deck" })
 public class DeckService {
 
     private final DeckRepository deckRepository;
@@ -31,6 +33,7 @@ public class DeckService {
 
     public Page<Deck> findAll(String query, String visibility, String accessLevel, Pageable pageable) {
         Long userId = jwtService.getCurrentUserId();
+        query = query != null ? query.trim() : null;
         AccessLevel accessLevelEnum = convertToAccessLevel(accessLevel);
         DeckVisibility visibilityEnum = convertToDeckVisibility(visibility);
         return deckRepository.findAllAccessibleByUserId(query, visibilityEnum, accessLevelEnum, userId, pageable);
@@ -45,6 +48,7 @@ public class DeckService {
         if (authorId.equals(userId)) {
             return findAll(query, null, AccessLevel.OWNER.name(), pageable);
         }
+        query = query != null ? query.trim() : null;
         return deckRepository.findAllByAuthorIdAndVisibility(query, authorId, DeckVisibility.PUBLIC, pageable);
     }
 
@@ -79,7 +83,9 @@ public class DeckService {
     public Deck update(Long id, UpdateDeckDto updateDeckDto) {
         Deck deck = findById(id);
         Long userId = jwtService.getCurrentUserId();
-        if (!isUserAuthor(userId, deck) || !hasAccessLevel(userId, id, AccessLevel.EDITOR)) {
+        boolean isOwnerOrEditor = hasAccessLevel(userId, id, AccessLevel.OWNER)
+                || hasAccessLevel(userId, id, AccessLevel.EDITOR);
+        if (!isOwnerOrEditor) {
             throw new ForbiddenOperationException("You are not the author or an editor of this deck");
         }
         deckMapper.updateDeckFromUpdateDeckDto(updateDeckDto, deck);
