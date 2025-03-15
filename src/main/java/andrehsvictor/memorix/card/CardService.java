@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import andrehsvictor.memorix.card.dto.CardDto;
+import andrehsvictor.memorix.card.dto.CardFilterDto;
 import andrehsvictor.memorix.card.dto.CreateCardDto;
 import andrehsvictor.memorix.card.dto.UpdateCardDto;
 import andrehsvictor.memorix.deck.Deck;
@@ -33,23 +34,29 @@ public class CardService {
         return cardMapper.cardToCardDto(card);
     }
 
-    public Page<Card> findAll(String query, boolean author, String username, Pageable pageable) {
+    public Page<Card> findAll(
+            CardFilterDto cardFilterDto,
+            Pageable pageable) {
         Long userId = jwtService.getCurrentUserId();
-        username = username != null && username.isBlank() ? null : username.trim();
-        query = query != null && query.isBlank() ? null : query.trim();
-        return cardRepository.findAllAcessibleByUserId(query, userId, author, username, pageable);
+        return cardRepository.findAllAcessibleByUserId(
+                cardFilterDto.getQ(),
+                userId,
+                cardFilterDto.isAuthor(),
+                cardFilterDto.getUsername(),
+                pageable);
     }
 
-    public Page<Card> findAllByDeckId(Long deckId, String query, boolean author, String username, Pageable pageable) {
+    public Page<Card> findAllByDeckId(
+            Long deckId,
+            CardFilterDto cardFilterDto,
+            Pageable pageable) {
         Long userId = jwtService.getCurrentUserId();
-        username = username != null && username.isBlank() ? null : username.trim();
-        query = query != null && query.isBlank() ? null : query.trim();
         return cardRepository.findAllAcessibleOrVisibleByDeckIdAndUserId(
-                query,
+                cardFilterDto.getQ(),
                 deckId,
                 userId,
-                author,
-                username,
+                cardFilterDto.isAuthor(),
+                cardFilterDto.getUsername(),
                 pageable);
 
     }
