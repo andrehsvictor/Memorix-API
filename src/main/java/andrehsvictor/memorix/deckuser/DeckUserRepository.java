@@ -26,16 +26,21 @@ public interface DeckUserRepository extends JpaRepository<DeckUser, DeckUserId> 
     void deleteAllByDeckIdAndAccessLevel(Long deckId, AccessLevel accessLevel);
 
     @Query("""
-            SELECT du FROM DeckUser du
+            SELECT du 
+            FROM DeckUser du
             WHERE du.deck.id = :deckId
             AND (:accessLevel IS NULL OR du.accessLevel = :accessLevel)
             AND (
-                (:query IS NULL OR LENGTH(TRIM(:query)) = 0)
+                :query IS NULL
                 OR LOWER(du.user.username) LIKE LOWER(CONCAT('%', :query, '%'))
                 OR LOWER(du.user.displayName) LIKE LOWER(CONCAT('%', :query, '%'))
                 OR LOWER(du.deck.title) LIKE LOWER(CONCAT('%', :query, '%'))
             )
             """)
-    Page<DeckUser> findAllByDeckIdAndAccessLevel(String query, Long deckId, AccessLevel accessLevel, Pageable pageable);
+    Page<DeckUser> findAllByDeckIdAndAccessLevel(
+            String query,
+            Long deckId,
+            AccessLevel accessLevel,
+            Pageable pageable);
 
 }
