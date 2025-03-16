@@ -174,12 +174,4 @@ public class DeckService {
         return deck.getAuthor().getId().equals(userId);
     }
 
-    private DeckVisibility convertToDeckVisibility(String visibility) {
-        return visibility != null ? DeckVisibility.fromString(visibility) : null;
-    }
-
-    private AccessLevel convertToAccessLevel(String accessLevel) {
-        return accessLevel != null ? AccessLevel.fromString(accessLevel) : null;
-    }
-
 }
