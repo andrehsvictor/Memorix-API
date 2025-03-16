@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import andrehsvictor.memorix.deckuser.dto.DeckUserDto;
 import andrehsvictor.memorix.deckuser.dto.UpdateAccessLevelDto;
+import andrehsvictor.memorix.util.EnumUtil;
+import andrehsvictor.memorix.util.StringUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +28,13 @@ public class DeckUserController {
             @RequestParam(required = false, name = "q") String query,
             @RequestParam(required = false) String accessLevel,
             Pageable pageable) {
-        Page<DeckUser> deckUsers = deckUserService.findAllByDeckId(query, id, accessLevel, pageable);
+        query = StringUtil.normalize(query);
+        AccessLevel accessLevelEnum = EnumUtil.convertStringToEnum(AccessLevel.class, accessLevel);
+        Page<DeckUser> deckUsers = deckUserService.findAllByDeckId(
+                query,
+                id,
+                accessLevelEnum,
+                pageable);
         return ResponseEntity.ok(deckUsers.map(deckUserService::toDto));
     }
 
@@ -34,7 +42,9 @@ public class DeckUserController {
     public ResponseEntity<Void> updateAccessLevel(@PathVariable Long deckId,
             @PathVariable Long userId,
             @Valid @RequestBody UpdateAccessLevelDto updateAccessLevelDto) {
-        deckUserService.updateAccessLevel(userId, deckId, updateAccessLevelDto.getAccessLevel());
+        AccessLevel accessLevel = EnumUtil.convertStringToEnum(AccessLevel.class,
+                updateAccessLevelDto.getAccessLevel());
+        deckUserService.updateAccessLevel(userId, deckId, accessLevel);
         return ResponseEntity.noContent().build();
     }
 
