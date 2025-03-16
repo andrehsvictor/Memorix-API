@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import andrehsvictor.memorix.card.dto.CardDto;
-import andrehsvictor.memorix.card.dto.CardFilterDto;
 import andrehsvictor.memorix.card.dto.CreateCardDto;
 import andrehsvictor.memorix.card.dto.UpdateCardDto;
 import andrehsvictor.memorix.deck.Deck;
@@ -35,28 +34,32 @@ public class CardService {
     }
 
     public Page<Card> findAll(
-            CardFilterDto cardFilterDto,
+            String query,
+            Boolean author,
+            String username,
             Pageable pageable) {
         Long userId = jwtService.getCurrentUserId();
-        return cardRepository.findAllAcessibleByUserId(
-                cardFilterDto.getQ(),
+        return cardRepository.findAllAccessibleByUserId(
+                query,
                 userId,
-                cardFilterDto.isAuthor(),
-                cardFilterDto.getUsername(),
+                author,
+                username,
                 pageable);
     }
 
     public Page<Card> findAllByDeckId(
             Long deckId,
-            CardFilterDto cardFilterDto,
+            String query,
+            Boolean author,
+            String username,
             Pageable pageable) {
         Long userId = jwtService.getCurrentUserId();
-        return cardRepository.findAllAcessibleOrVisibleByDeckIdAndUserId(
-                cardFilterDto.getQ(),
+        return cardRepository.findAllAccessibleOrVisibleByDeckIdAndUserId(
+                query,
                 deckId,
                 userId,
-                cardFilterDto.isAuthor(),
-                cardFilterDto.getUsername(),
+                author,
+                username,
                 pageable);
 
     }

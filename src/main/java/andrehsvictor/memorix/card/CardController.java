@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import andrehsvictor.memorix.card.dto.CardDto;
-import andrehsvictor.memorix.card.dto.CardFilterDto;
 import andrehsvictor.memorix.card.dto.CreateCardDto;
 import andrehsvictor.memorix.card.dto.UpdateCardDto;
+import andrehsvictor.memorix.util.StringUtil;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +29,16 @@ public class CardController {
 
     @GetMapping("/api/v1/cards")
     public ResponseEntity<Page<CardDto>> findAll(
-            CardFilterDto cardFilterDto,
+            @RequestParam(name = "q") String query,
+            @RequestParam Boolean author,
+            @RequestParam(name = "author.username") String username,
             Pageable pageable) {
+        query = StringUtil.normalize(query);
+        username = StringUtil.normalize(username);
         Page<CardDto> cards = cardService.findAll(
-                cardFilterDto,
+                query,
+                author,
+                username,
                 pageable)
                 .map(cardService::toDto);
         return ResponseEntity.ok(cards);
@@ -40,11 +47,17 @@ public class CardController {
     @GetMapping("/api/v1/decks/{deckId}/cards")
     public ResponseEntity<Page<CardDto>> findAllByDeckId(
             Long deckId,
-            CardFilterDto cardFilterDto,
+            @RequestParam(name = "q") String query,
+            @RequestParam Boolean author,
+            @RequestParam(name = "author.username") String username,
             Pageable pageable) {
+        query = StringUtil.normalize(query);
+        username = StringUtil.normalize(username);
         Page<CardDto> cards = cardService.findAllByDeckId(
                 deckId,
-                cardFilterDto,
+                query,
+                author,
+                username,
                 pageable)
                 .map(cardService::toDto);
         return ResponseEntity.ok(cards);
