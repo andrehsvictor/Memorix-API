@@ -54,20 +54,22 @@ public class DeckUserService {
         deckUserRepository.deleteByUserIdAndDeckId(userId, deckId);
     }
 
-    public Page<DeckUser> findAllByDeckId(String query, Long deckId, String accessLevel, Pageable pageable) {
-        AccessLevel accessLevelEnum = convertToAccessLevel(accessLevel);
+    public Page<DeckUser> findAllByDeckId(String query, Long deckId, AccessLevel accessLevel, Pageable pageable) {
         Deck deck = deckService.findById(deckId);
         Long userId = jwtService.getCurrentUserId();
         if (!isUserAuthor(userId, deck)) {
             throw new ForbiddenOperationException("You are not allowed to access users of this deck");
         }
-        return deckUserRepository.findAllByDeckIdAndAccessLevel(query, deckId, accessLevelEnum, pageable);
+        return deckUserRepository.findAllByDeckIdAndAccessLevel(
+                query,
+                deckId,
+                accessLevel,
+                pageable);
     }
 
     @Transactional
-    public void updateAccessLevel(Long userId, Long deckId, String accessLevel) {
-        AccessLevel accessLevelEnum = convertToAccessLevel(accessLevel);
-        boolean isOwnerAccessLevel = accessLevelEnum != null && accessLevelEnum.equals(AccessLevel.OWNER);
+    public void updateAccessLevel(Long userId, Long deckId, AccessLevel accessLevel) {
+        boolean isOwnerAccessLevel = accessLevel != null && accessLevel.equals(AccessLevel.OWNER);
         if (isOwnerAccessLevel) {
             throw new ForbiddenOperationException("Decks can only have one owner");
         }
@@ -77,7 +79,7 @@ public class DeckUserService {
             throw new ForbiddenOperationException("You are not allowed to update access level of this deck");
         }
         DeckUser deckUser = findByUserIdAndDeckId(userId, deckId);
-        deckUser.setAccessLevel(accessLevelEnum);
+        deckUser.setAccessLevel(accessLevel);
         deckUserRepository.save(deckUser);
     }
 
@@ -92,13 +94,6 @@ public class DeckUserService {
 
     private boolean isUserAuthor(Long userId, Deck deck) {
         return deck.getAuthor().getId().equals(userId);
-    }
-
-    private AccessLevel convertToAccessLevel(String accessLevel) {
-        if (accessLevel == null) {
-            return null;
-        }
-        return AccessLevel.valueOf(accessLevel.toUpperCase().trim().replace(" ", "_"));
     }
 
 }
