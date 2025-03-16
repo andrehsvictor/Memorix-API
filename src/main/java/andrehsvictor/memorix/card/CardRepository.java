@@ -7,8 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import andrehsvictor.memorix.card.dto.CardFilterDto;
-
 public interface CardRepository extends JpaRepository<Card, Long> {
 
     @Query("""
@@ -17,8 +15,11 @@ public interface CardRepository extends JpaRepository<Card, Long> {
             JOIN c.progresses p
             ON p.user.id = :userId
             WHERE (
-                (:#{#cardFilterDto.q} IS NULL OR
-                (:#{#cardFilterDto.q} LIKE )
+                (:query IS NULL OR LENGTH(TRIM(:query)) = 0)
+                OR LOWER(c.front) LIKE LOWER(CONCAT('%', :query, '%'))
+                OR LOWER(c.deck.name) LIKE LOWER(CONCAT('%', :query, '%'))
+                OR LOWER(c.author.username) LIKE LOWER(CONCAT('%', :query, '%'))
+                OR LOWER(c.author.displayName) LIKE LOWER(CONCAT('%', :query, '%'))
             )
             AND (
                 (:isAuthor IS NULL)
@@ -31,8 +32,10 @@ public interface CardRepository extends JpaRepository<Card, Long> {
             )
                 """)
     Page<Card> findAllAcessibleByUserId(
-            CardFilterDto cardFilterDto,
+            String query,
             Long userId,
+            boolean isAuthor,
+            String username,
             Pageable pageable);
 
     @Query("""
