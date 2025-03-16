@@ -33,14 +33,16 @@ public class DeckService {
 
     public Page<Deck> findAll(
             String query,
-            String visibility,
-            String accessLevel,
+            DeckVisibility visibility,
+            AccessLevel accessLevel,
             Pageable pageable) {
         Long userId = jwtService.getCurrentUserId();
-        query = query != null ? query.trim() : null;
-        AccessLevel accessLevelEnum = convertToAccessLevel(accessLevel);
-        DeckVisibility visibilityEnum = convertToDeckVisibility(visibility);
-        return deckRepository.findAllAccessibleByUserId(query, visibilityEnum, accessLevelEnum, userId, pageable);
+        return deckRepository.findAllAccessibleByUserId(
+                query,
+                visibility,
+                accessLevel,
+                userId,
+                pageable);
     }
 
     public Page<Deck> findAllPublic(String query, Pageable pageable) {
@@ -50,10 +52,16 @@ public class DeckService {
     public Page<Deck> findAllByAuthorId(String query, Long authorId, Pageable pageable) {
         Long userId = jwtService.getCurrentUserId();
         if (authorId.equals(userId)) {
-            return findAll(query, null, AccessLevel.OWNER.name(), pageable);
+            return findAll(query,
+                    null,
+                    AccessLevel.OWNER,
+                    pageable);
         }
-        query = query != null ? query.trim() : null;
-        return deckRepository.findAllByAuthorIdAndVisibility(query, authorId, DeckVisibility.PUBLIC, pageable);
+        return deckRepository.findAllByAuthorIdAndVisibility(
+                query,
+                authorId,
+                DeckVisibility.PUBLIC,
+                pageable);
     }
 
     public DeckDto toDto(Deck deck) {

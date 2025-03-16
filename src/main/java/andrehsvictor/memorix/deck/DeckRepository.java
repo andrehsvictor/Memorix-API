@@ -15,9 +15,10 @@ import andrehsvictor.memorix.deckuser.AccessLevel;
 public interface DeckRepository extends JpaRepository<Deck, Long> {
 
     @Query("""
-            SELECT d FROM Deck d
+            SELECT d
+            FROM Deck d
             WHERE (
-                (:query IS NULL OR LENGTH(TRIM(:query)) = 0)
+                :query IS NULL
                 OR LOWER(d.title) LIKE LOWER(CONCAT('%', :query, '%'))
                 OR LOWER(d.author.username) LIKE LOWER(CONCAT('%', :query, '%'))
                 OR LOWER(d.author.displayName) LIKE LOWER(CONCAT('%', :query, '%'))
@@ -27,20 +28,20 @@ public interface DeckRepository extends JpaRepository<Deck, Long> {
     Page<Deck> findAllByVisibility(String query, DeckVisibility visibility, Pageable pageable);
 
     @Query("""
-            SELECT DISTINCT d FROM Deck d
-            LEFT JOIN d.usersWithAccess du
-            ON d.id = du.deck.id
-            AND (
+            SELECT DISTINCT d 
+            FROM Deck d
+            LEFT JOIN d.usersWithAccess du 
+            ON du.user.id = :userId
+            WHERE (
                 d.author.id = :userId
-                OR du.user.id = :userId
+                OR du IS NOT NULL
+                OR d.visibility = 'PUBLIC'
             )
             AND (
-                (:query IS NULL OR LENGTH(TRIM(:query)) = 0)
-                OR (
-                    LOWER(d.title) LIKE LOWER(CONCAT('%', :query, '%'))
-                    OR LOWER(d.author.username) LIKE LOWER(CONCAT('%', :query, '%'))
-                    OR LOWER(d.author.displayName) LIKE LOWER(CONCAT('%', :query, '%'))
-                )
+                :query IS NULL
+                OR LOWER(d.title) LIKE LOWER(CONCAT('%', :query, '%'))
+                OR LOWER(d.author.username) LIKE LOWER(CONCAT('%', :query, '%'))
+                OR LOWER(d.author.displayName) LIKE LOWER(CONCAT('%', :query, '%'))
             )
             AND (:visibility IS NULL OR d.visibility = :visibility)
             AND (:accessLevel IS NULL OR du.accessLevel = :accessLevel)
@@ -53,7 +54,7 @@ public interface DeckRepository extends JpaRepository<Deck, Long> {
             WHERE d.author.id = :authorId
             AND d.visibility = :visibility
             AND (
-                (:query IS NULL OR LENGTH(TRIM(:query)) = 0)
+                :query IS NULL
                 OR LOWER(d.title) LIKE LOWER(CONCAT('%', :query, '%'))
             )
             """)

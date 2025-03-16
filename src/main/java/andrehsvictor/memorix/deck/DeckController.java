@@ -19,6 +19,9 @@ import andrehsvictor.memorix.deck.dto.CreateDeckDto;
 import andrehsvictor.memorix.deck.dto.DeckDto;
 import andrehsvictor.memorix.deck.dto.UpdateDeckDto;
 import andrehsvictor.memorix.deck.dto.UpdateDeckVisibilityDto;
+import andrehsvictor.memorix.deckuser.AccessLevel;
+import andrehsvictor.memorix.util.EnumUtil;
+import andrehsvictor.memorix.util.StringUtil;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +35,7 @@ public class DeckController {
     @GetMapping("/api/v1/decks")
     public ResponseEntity<Page<DeckDto>> findAll(@RequestParam(required = false, name = "q") String query,
             Pageable pageable) {
+        query = StringUtil.normalize(query);
         return ResponseEntity.ok(deckService.findAllPublic(query, pageable).map(deckService::toDto));
     }
 
@@ -41,7 +45,13 @@ public class DeckController {
             @Valid @RequestParam(required = false) @Pattern(regexp = "public|private") String visibility,
             @Valid @RequestParam(required = false) @Pattern(regexp = "owner|viewer|editor") String accessLevel,
             Pageable pageable) {
-        Page<Deck> decks = deckService.findAll(query, visibility, accessLevel, pageable);
+        DeckVisibility visibilityEnum = EnumUtil.convertStringToEnum(DeckVisibility.class, visibility);
+        AccessLevel accessLevelEnum = EnumUtil.convertStringToEnum(AccessLevel.class, accessLevel);
+        Page<Deck> decks = deckService.findAll(
+                query,
+                visibilityEnum,
+                accessLevelEnum,
+                pageable);
         return ResponseEntity.ok(decks.map(deckService::toDto));
     }
 
@@ -54,6 +64,7 @@ public class DeckController {
     @GetMapping("/api/v1/users/{id}/decks")
     public ResponseEntity<Page<DeckDto>> findAllByAuthorId(@PathVariable Long id,
             @RequestParam(required = false, name = "q") String query, Pageable pageable) {
+        query = StringUtil.normalize(query);
         return ResponseEntity.ok(deckService.findAllByAuthorId(query, id, pageable).map(deckService::toDto));
     }
 

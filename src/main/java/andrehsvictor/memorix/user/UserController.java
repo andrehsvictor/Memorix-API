@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import andrehsvictor.memorix.user.dto.UserDto;
+import andrehsvictor.memorix.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -17,6 +18,7 @@ public class UserController {
 
     @GetMapping("/api/v1/users")
     public Page<UserDto> findAll(@RequestParam(required = false, name = "q") String query, Pageable pageable) {
+        query = StringUtil.normalize(query);
         return userService.findAll(query, pageable).map(user -> userService.toDto(user));
     }
 

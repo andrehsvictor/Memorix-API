@@ -42,7 +42,6 @@ public class UserService {
     }
 
     public Page<User> findAll(String query, Pageable pageable) {
-        query = query != null ? query.trim() : null;
         return userRepository.findAll(query, pageable);
     }
 
