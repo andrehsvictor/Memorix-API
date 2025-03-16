@@ -5,7 +5,7 @@ public class EnumUtil {
         if (enumClass == null) {
             return null;
         }
-        if (value == null) {
+        if (value == null || value.isBlank()) {
             return null;
         }
         try {
