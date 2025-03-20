@@ -32,6 +32,7 @@
 		<mapstruct.version>1.6.3</mapstruct.version>
 		<springdoc.version>2.8.5</springdoc.version>
 		<rest-assured.version>5.5.1</rest-assured.version>
+		<redis.testcontainers.version>2.2.2</redis.testcontainers.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -115,6 +116,17 @@
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.redis</groupId>
+			<artifactId>testcontainers-redis</artifactId>
+			<version>${redis.testcontainers.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
