@@ -20,7 +20,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
                 OR LOWER(c.back) LIKE LOWER(CONCAT('%', :query, '%'))
                 OR LOWER(c.author.username) LIKE LOWER(CONCAT('%', :query, '%'))
                 OR LOWER(c.author.displayName) LIKE LOWER(CONCAT('%', :query, '%'))
-                OR LOWER(c.deck.name) LIKE LOWER(CONCAT('%', :query, '%'))
+                OR LOWER(c.deck.title) LIKE LOWER(CONCAT('%', :query, '%'))
                 OR LOWER(c.deck.author.username) LIKE LOWER(CONCAT('%', :query, '%'))
                 OR LOWER(c.deck.author.displayName) LIKE LOWER(CONCAT('%', :query, '%'))
             )
@@ -45,13 +45,13 @@ public interface CardRepository extends JpaRepository<Card, Long> {
             SELECT DISTINCT c
             FROM Card c
             LEFT JOIN c.progresses p WITH p.user.id = :userId
-            LEFT JOIN c.deck.usersWithAccess uwa WITH uwa.id = :userId
+            LEFT JOIN c.deck.usersWithAccess uwa WITH uwa.user.id = :userId
             WHERE c.deck.id = :deckId
             AND (
                 :query IS NULL
                 OR LOWER(c.front) LIKE LOWER(CONCAT('%', :query, '%'))
                 OR LOWER(c.back) LIKE LOWER(CONCAT('%', :query, '%'))
-                OR LOWER(c.deck.name) LIKE LOWER(CONCAT('%', :query, '%'))
+                OR LOWER(c.deck.title) LIKE LOWER(CONCAT('%', :query, '%'))
                 OR LOWER(c.author.username) LIKE LOWER(CONCAT('%', :query, '%'))
                 OR LOWER(c.author.displayName) LIKE LOWER(CONCAT('%', :query, '%'))
             )
