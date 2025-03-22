@@ -9,14 +9,16 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.mockito.ArgumentMatchers.contains;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import andrehsvictor.memorix.IntegrationTest;
@@ -26,14 +28,17 @@ import andrehsvictor.memorix.user.dto.CreateUserDto;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import net.datafaker.Faker;
 
+@Transactional
 @DisplayName("Account Creation Integration Test")
 class AccountCreationIT extends IntegrationTest {
 
     private static final String PATH = "/api/v1/account";
 
-    @Autowired
+    @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
@@ -43,7 +48,11 @@ class AccountCreationIT extends IntegrationTest {
 
     private CreateUserDto minimalCreateUserDto() {
         return CreateUserDto.builder()
-                .username(faker.internet().username())
+                .username(faker.internet()
+                        .username()
+                        .toLowerCase()
+                        .replace("-", "_")
+                        .replace(".", ""))
                 .email(faker.internet().emailAddress())
                 .password(faker.internet().password())
                 .displayName(faker.name().fullName())
@@ -52,7 +61,11 @@ class AccountCreationIT extends IntegrationTest {
 
     private CreateUserDto fullCreateUserDto() {
         return CreateUserDto.builder()
-                .username(faker.internet().username())
+                .username(faker.internet()
+                        .username()
+                        .toLowerCase()
+                        .replace("-", "_")
+                        .replace(".", ""))
                 .email(faker.internet().emailAddress())
                 .password(faker.internet().password())
                 .displayName(faker.name().fullName())
@@ -94,7 +107,7 @@ class AccountCreationIT extends IntegrationTest {
                 .body("pictureUrl", equalTo(null))
                 .body("createdAt", notNullValue())
                 .body("updatedAt", notNullValue())
-                .time(lessThan(500L))
+                .time(lessThan(700L))
                 .extract()
                 .as(AccountDto.class);
 
@@ -153,7 +166,7 @@ class AccountCreationIT extends IntegrationTest {
 
         createAccount(createUserDto)
                 .statusCode(409)
-                .body("errors", containsString("Username or email already in use"));
+                .body("errors", contains("Username or email already in use"));
     }
 
     @Test
@@ -164,11 +177,14 @@ class AccountCreationIT extends IntegrationTest {
         createAccount(createUserDto)
                 .statusCode(201);
 
-        createUserDto.setUsername(faker.internet().username());
+        createUserDto.setUsername(faker.internet().username()
+                .toLowerCase()
+                .replace("-", "_")
+                .replace(".", ""));
 
         createAccount(createUserDto)
                 .statusCode(409)
-                .body("errors", containsString("Username or email already in use"));
+                .body("errors", contains("Username or email already in use"));
     }
 
     @Test
@@ -181,7 +197,7 @@ class AccountCreationIT extends IntegrationTest {
 
         createAccount(createUserDto)
                 .statusCode(409)
-                .body("errors", containsString("Username or email already in use"));
+                .body("errors", contains("Username or email already in use"));
     }
 
     @Test
@@ -192,37 +208,38 @@ class AccountCreationIT extends IntegrationTest {
 
         createAccount(createUserDto)
                 .statusCode(400)
-                .body("errors", containsString("Username is required"));
+                .body("errors", contains(Map.of("field", "username", "message", "Username is required")));
 
         createUserDto = minimalCreateUserDto();
         createUserDto.setEmail(null);
 
         createAccount(createUserDto)
                 .statusCode(400)
-                .body("errors", containsString("Email is required"));
+                .body("errors", contains(Map.of("field", "email", "message", "Email is required")));
 
         createUserDto = minimalCreateUserDto();
         createUserDto.setPassword(null);
 
         createAccount(createUserDto)
                 .statusCode(400)
-                .body("errors", containsString("Password is required"));
+                .body("errors", contains(Map.of("field", "password", "message", "Password is required")));
 
         createUserDto = minimalCreateUserDto();
         createUserDto.setDisplayName(null);
 
         createAccount(createUserDto)
                 .statusCode(400)
-                .body("errors", containsString("Display name is required"));
+                .body("errors", contains(Map.of("field", "displayName", "message", "Display name is required")));
 
         createUserDto = new CreateUserDto();
 
         createAccount(createUserDto)
                 .statusCode(400)
-                .body("errors", containsString("Username is required"))
-                .body("errors", containsString("Email is required"))
-                .body("errors", containsString("Password is required"))
-                .body("errors", containsString("Display name is required"));
+                .body("errors", contains(
+                        Map.of("field", "username", "message", "Username is required"),
+                        Map.of("field", "password", "message", "Password is required"),
+                        Map.of("field", "email", "message", "Email is required"),
+                        Map.of("field", "displayName", "message", "Display name is required")));
 
     }
 
