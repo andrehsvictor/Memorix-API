@@ -4,21 +4,19 @@ import static io.restassured.RestAssured.given;
 // assertThat() from AssertJ below
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import andrehsvictor.memorix.IntegrationTest;
@@ -94,7 +92,7 @@ class AccountCreationIT extends IntegrationTest {
 
     @Test
     @DisplayName("Should create account when given minimal user data")
-    void givenMinimalCreateUserDto_whenCreate_thenAccountCreated() {
+    void givenValidCreateUserDto_whenCreate_thenAccountCreated() {
         CreateUserDto createUserDto = minimalCreateUserDto();
 
         AccountDto accountDto = createAccount(createUserDto)
@@ -188,7 +186,7 @@ class AccountCreationIT extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("Should not create account when username and email are already taken")
+    @DisplayName("Should not create account when username or email is already taken")
     void givenExistingUsernameAndEmail_whenCreate_thenConflict() {
         CreateUserDto createUserDto = minimalCreateUserDto();
 
@@ -235,7 +233,7 @@ class AccountCreationIT extends IntegrationTest {
 
         createAccount(createUserDto)
                 .statusCode(400)
-                .body("errors", contains(
+                .body("errors", containsInAnyOrder(
                         Map.of("field", "username", "message", "Username is required"),
                         Map.of("field", "password", "message", "Password is required"),
                         Map.of("field", "email", "message", "Email is required"),
@@ -252,19 +250,25 @@ class AccountCreationIT extends IntegrationTest {
         createAccount(createUserDto)
                 .statusCode(400)
                 .body("errors",
-                        containsString("Username must contain only lowercase letters, numbers and underscores"));
+                        containsInAnyOrder(Map.of(
+                                "field", "username", "message",
+                                "Username must contain only lowercase letters, numbers and underscores")));
 
         createUserDto.setUsername("a");
 
         createAccount(createUserDto)
                 .statusCode(400)
-                .body("errors", containsString("Username must be between 3 and 20 characters"));
+                .body("errors", contains(Map.of(
+                        "field", "username",
+                        "message", "Username must be between 3 and 20 characters")));
 
         createUserDto.setUsername("aaaaaaaaaaaaaaaaaaaaaaaaa");
 
         createAccount(createUserDto)
                 .statusCode(400)
-                .body("errors", containsString("Username must be between 3 and 20 characters"));
+                .body("errors", contains(Map.of(
+                        "field", "username",
+                        "message", "Username must be between 3 and 20 characters")));
     }
 
     @Test
@@ -275,13 +279,9 @@ class AccountCreationIT extends IntegrationTest {
 
         createAccount(createUserDto)
                 .statusCode(400)
-                .body("errors", containsString("Invalid email address"));
-
-        createUserDto.setEmail("a@b.c");
-
-        createAccount(createUserDto)
-                .statusCode(400)
-                .body("errors", containsString("Email must be between 5 and 100 characters"));
+                .body("errors", contains(Map.of(
+                        "field", "email",
+                        "message", "Invalid email address")));
 
         String email = faker.lorem().characters(101);
         email = email + "@example.com";
@@ -289,7 +289,10 @@ class AccountCreationIT extends IntegrationTest {
 
         createAccount(createUserDto)
                 .statusCode(400)
-                .body("errors", containsString("Email must be between 5 and 100 characters"));
+                .body("errors", containsInAnyOrder(Map.of(
+                        "field", "email",
+                        "message", "Email must be between 5 and 100 characters"),
+                        Map.of("field", "email", "message", "Invalid email address")));
 
     }
 
