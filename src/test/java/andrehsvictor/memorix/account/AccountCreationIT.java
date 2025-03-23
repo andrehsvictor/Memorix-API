@@ -19,25 +19,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import andrehsvictor.memorix.IntegrationTest;
+import andrehsvictor.memorix.BaseIntegrationTest;
 import andrehsvictor.memorix.account.dto.AccountDto;
 import andrehsvictor.memorix.user.User;
 import andrehsvictor.memorix.user.dto.CreateUserDto;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 import net.datafaker.Faker;
 
-@Transactional
 @DisplayName("Account Creation Integration Test")
-class AccountCreationIT extends IntegrationTest {
+class AccountCreationIT extends BaseIntegrationTest {
 
     private static final String PATH = "/api/v1/account";
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -87,7 +80,7 @@ class AccountCreationIT extends IntegrationTest {
 
     @AfterEach
     void tearDown() {
-        entityManager.createQuery("DELETE FROM User").executeUpdate();
+        clearAll(User.class);
     }
 
     @Test
