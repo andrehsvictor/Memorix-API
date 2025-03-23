@@ -1,5 +1,8 @@
 package andrehsvictor.memorix;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -21,32 +24,42 @@ public abstract class IntegrationTest {
 
     @Container
     @SuppressWarnings("resource")
-    private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(
+    private static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>(
             DockerImageName.parse("postgres:latest"))
             .withDatabaseName("memorix")
             .withUsername("memorix")
             .withPassword("memorix");
 
-    private static final RedisContainer redisContainer = new RedisContainer(DockerImageName.parse("redis:latest"));
+    @Container
+    @SuppressWarnings("resource")
+    private static final RedisContainer REDIS_CONTAINER = new RedisContainer(
+            DockerImageName.parse("redis:latest"))
+            .withExposedPorts(6379);
 
     @LocalServerPort
     private int port;
 
-    @DynamicPropertySource
-    static void configureDatasourceProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-        registry.add("spring.redis.host", redisContainer::getRedisHost);
-        registry.add("spring.redis.port", redisContainer::getRedisPort);
+    @BeforeAll
+    static void beforeAll() {
+        POSTGRESQL_CONTAINER.start();
+        REDIS_CONTAINER.start();
 
-        postgreSQLContainer.start();
-        redisContainer.start();
+        assertThat(POSTGRESQL_CONTAINER.isRunning()).isTrue();
+        assertThat(REDIS_CONTAINER.isRunning()).isTrue();
+    }
+
+    @DynamicPropertySource
+    static void configure(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", POSTGRESQL_CONTAINER::getJdbcUrl);
+        registry.add("spring.datasource.username", POSTGRESQL_CONTAINER::getUsername);
+        registry.add("spring.datasource.password", POSTGRESQL_CONTAINER::getPassword);
+        registry.add("spring.data.redis.host", REDIS_CONTAINER::getHost);
+        registry.add("spring.data.redis.port", REDIS_CONTAINER::getFirstMappedPort);
     }
 
     @BeforeEach
-    void setup() {
-        RestAssured.port = port;
+    void setUp() {
+        RestAssured.baseURI = String.format("http://localhost:%d", port);
     }
 
 }
