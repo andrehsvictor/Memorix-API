@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
@@ -29,6 +30,8 @@ public abstract class BaseIntegrationTest {
     private static final String POSTGRESQL_IMAGE = "postgres:alpine";
 
     private static final String REDIS_IMAGE = "redis:alpine";
+
+    private static final String TOKEN_ENDPOINT = "/api/v1/token";
 
     @PersistenceContext
     protected EntityManager entityManager;
@@ -48,7 +51,8 @@ public abstract class BaseIntegrationTest {
     @SuppressWarnings("resource")
     private static final GenericContainer<?> REDIS_CONTAINER = new GenericContainer<>(
             DockerImageName.parse(REDIS_IMAGE))
-            .withExposedPorts(6379);
+            .withExposedPorts(6379)
+            .waitingFor(Wait.forListeningPort());
 
     @LocalServerPort
     private int port;
@@ -72,7 +76,6 @@ public abstract class BaseIntegrationTest {
     void setUp() {
         RestAssured.baseURI = String.format("http://localhost:%d", port);
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-        redisTemplate.opsForValue().set("user:nextId", 1L);
     }
 
     protected void clearAll(Class<?>... entities) {
