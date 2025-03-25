@@ -1,7 +1,7 @@
 package andrehsvictor.memorix.account;
 
 import static io.restassured.RestAssured.given;
-// assertThat() from AssertJ below
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
