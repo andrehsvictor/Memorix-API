@@ -1,9 +1,5 @@
 package andrehsvictor.memorix.account;
 
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.account.dto.AccountDto;
@@ -20,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = { "account" })
 public class AccountService {
 
     private final AccountMapper accountMapper;
@@ -34,13 +29,11 @@ public class AccountService {
         return accountMapper.userToAccountDto(user);
     }
 
-    @Cacheable(key = "#root.methodName + ':' + #jwtService.getCurrentUserId()")
     public AccountDto get() {
         User user = userService.findById(jwtService.getCurrentUserId());
         return accountMapper.userToAccountDto(user);
     }
 
-    @CacheEvict(key = "root.methodName + ':' + #jwtService.getCurrentUserId()")
     public void delete() {
         userService.delete(jwtService.getCurrentUserId());
     }
@@ -69,7 +62,6 @@ public class AccountService {
         passwordResetService.resetPassword(resetPasswordDto.getToken(), resetPasswordDto.getPassword());
     }
 
-    @CachePut(key = "#root.methodName + ':' + #jwtService.getCurrentUserId()")
     public AccountDto update(UpdateUserDto updateUserDto) {
         User user = userService.update(jwtService.getCurrentUserId(), updateUserDto);
         return accountMapper.userToAccountDto(user);
