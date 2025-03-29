@@ -11,7 +11,8 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -26,7 +27,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import net.datafaker.Faker;
 
-@Transactional
 @Testcontainers
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public abstract class BaseIntegrationTest {
@@ -37,6 +37,9 @@ public abstract class BaseIntegrationTest {
 
     @Autowired
     protected EntityManager entityManager;
+
+    @Autowired
+    protected PlatformTransactionManager transactionManager;
 
     @Autowired
     protected RedisTemplate<String, Long> redisTemplate;
@@ -86,28 +89,57 @@ public abstract class BaseIntegrationTest {
     }
 
     protected void clearAll(Class<?>... entities) {
-        for (Class<?> entity : entities) {
-            String entityName;
-            if (entity.getAnnotation(Entity.class).name().isBlank()) {
-                entityName = entity.getSimpleName();
-            } else {
-                entityName = entity.getAnnotation(Entity.class).name();
+        // for (Class<?> entity : entities) {
+        // String entityName;
+        // if (entity.getAnnotation(Entity.class).name().isBlank()) {
+        // entityName = entity.getSimpleName();
+        // } else {
+        // entityName = entity.getAnnotation(Entity.class).name();
+        // }
+        // String query = String.format("DELETE FROM %s", entityName);
+        // entityManager.createQuery(query).executeUpdate();
+        // }
+        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+        transactionTemplate.execute(status -> {
+            for (Class<?> entity : entities) {
+                String entityName;
+                if (entity.getAnnotation(Entity.class).name().isBlank()) {
+                    entityName = entity.getSimpleName();
+                } else {
+                    entityName = entity.getAnnotation(Entity.class).name();
+                }
+                String query = String.format("DELETE FROM %s", entityName);
+                entityManager.createQuery(query).executeUpdate();
             }
-            String query = String.format("DELETE FROM %s", entityName);
-            entityManager.createQuery(query).executeUpdate();
-        }
+            return null;
+        });
     }
 
     protected User createRandomUserInDb() {
-        User user = new User();
-        user.setUsername(faker.internet().username());
-        user.setEmail(faker.internet().emailAddress());
-        user.setDisplayName(faker.name().fullName());
+        // User user = new User();
+        // user.setUsername(faker.internet().username());
+        // user.setEmail(faker.internet().emailAddress());
+        // user.setDisplayName(faker.name().fullName());
+        // String password = faker.internet().password();
+        // user.setPassword(PasswordUtil.hash(password));
+        // user = userRepository.save(user);
+        // user.setPassword(password);
+        // return user;
         String password = faker.internet().password();
-        user.setPassword(PasswordUtil.hash(password));
-        entityManager.persist(user);
-        user.setPassword(password);
-        return user;
+        User user = User.builder()
+                .username(faker.internet().username())
+                .email(faker.internet().emailAddress())
+                .displayName(faker.name().fullName())
+                .password(PasswordUtil.hash(password))
+                .build();
+        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+        return transactionTemplate.execute(status -> {
+            entityManager.persist(user);
+            entityManager.flush();
+            entityManager.refresh(user);
+            user.setPassword(password);
+            return user;
+        });
     }
 
 }
