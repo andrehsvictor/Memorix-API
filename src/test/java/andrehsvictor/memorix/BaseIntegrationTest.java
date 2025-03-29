@@ -89,16 +89,6 @@ public abstract class BaseIntegrationTest {
     }
 
     protected void clearAll(Class<?>... entities) {
-        // for (Class<?> entity : entities) {
-        // String entityName;
-        // if (entity.getAnnotation(Entity.class).name().isBlank()) {
-        // entityName = entity.getSimpleName();
-        // } else {
-        // entityName = entity.getAnnotation(Entity.class).name();
-        // }
-        // String query = String.format("DELETE FROM %s", entityName);
-        // entityManager.createQuery(query).executeUpdate();
-        // }
         TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
         transactionTemplate.execute(status -> {
             for (Class<?> entity : entities) {
@@ -116,15 +106,6 @@ public abstract class BaseIntegrationTest {
     }
 
     protected User createRandomUserInDb() {
-        // User user = new User();
-        // user.setUsername(faker.internet().username());
-        // user.setEmail(faker.internet().emailAddress());
-        // user.setDisplayName(faker.name().fullName());
-        // String password = faker.internet().password();
-        // user.setPassword(PasswordUtil.hash(password));
-        // user = userRepository.save(user);
-        // user.setPassword(password);
-        // return user;
         String password = faker.internet().password();
         User user = User.builder()
                 .username(faker.internet().username())
