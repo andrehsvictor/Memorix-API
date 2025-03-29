@@ -8,4 +8,6 @@ public interface ProgressRepository extends JpaRepository<Progress, Long> {
 
     Optional<Progress> findByUserIdAndCardId(Long userId, Long cardId);
 
+    boolean existsByUserIdAndCardId(Long userId, Long cardId);
+
 }

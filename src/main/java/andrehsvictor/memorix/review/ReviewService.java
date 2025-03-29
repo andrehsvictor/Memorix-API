@@ -8,6 +8,7 @@ import andrehsvictor.memorix.card.Card;
 import andrehsvictor.memorix.card.CardService;
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.jwt.JwtService;
+import andrehsvictor.memorix.progress.ProgressService;
 import andrehsvictor.memorix.review.dto.CreateReviewDto;
 import andrehsvictor.memorix.review.dto.ReviewDto;
 import andrehsvictor.memorix.user.User;
@@ -23,6 +24,7 @@ public class ReviewService {
     private final CardService cardService;
     private final UserService userService;
     private final JwtService jwtService;
+    private final ProgressService progressService;
 
     public ReviewDto toDto(Review review) {
         return reviewMapper.reviewToReviewDto(review);
@@ -55,6 +57,7 @@ public class ReviewService {
         User user = userService.findMyself();
         review.setUser(user);
         review.setCard(card);
+        progressService.progress(user.getId(), card.getId(), createReviewDto);
         return reviewRepository.save(review);
     }
 

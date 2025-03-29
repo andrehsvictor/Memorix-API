@@ -4,8 +4,15 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
+import andrehsvictor.memorix.card.Card;
+import andrehsvictor.memorix.card.CardService;
+import andrehsvictor.memorix.deckuser.DeckUserService;
+import andrehsvictor.memorix.exception.ForbiddenOperationException;
+import andrehsvictor.memorix.exception.ResourceConflictException;
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.review.dto.CreateReviewDto;
+import andrehsvictor.memorix.user.User;
+import andrehsvictor.memorix.user.UserService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -13,11 +20,18 @@ import lombok.RequiredArgsConstructor;
 public class ProgressService {
 
     private final ProgressRepository progressRepository;
+    private final CardService cardService;
+    private final UserService userService;
+    private final DeckUserService deckUserService;
 
     public Progress progress(Long userId, Long cardId, CreateReviewDto createReviewDto) {
         Progress progress = progressRepository.findByUserIdAndCardId(userId, cardId)
                 .orElseThrow(() -> new ResourceNotFoundException("Progress not found"));
         return updateProgress(progress, createReviewDto);
+    }
+
+    public boolean exists(Long userId, Long cardId) {
+        return progressRepository.existsByUserIdAndCardId(userId, cardId);
     }
 
     private Progress updateProgress(Progress progress, CreateReviewDto createReviewDto) {
@@ -67,6 +81,21 @@ public class ProgressService {
 
         progress.setNextReviewAt(LocalDateTime.now().plusDays(interval).toLocalDate().atStartOfDay());
 
+        return progressRepository.save(progress);
+    }
+
+    public Progress create(Long cardId) {
+        User user = userService.findMyself();
+        if (exists(user.getId(), cardId)) {
+            throw new ResourceConflictException("Progress already exists for this card");
+        }
+        Progress progress = new Progress();
+        progress.setUser(user);
+        Card card = cardService.findById(cardId);
+        if (!deckUserService.hasAccess(user.getId(), card.getDeck().getId())) {
+            throw new ForbiddenOperationException("You don't have permission to create a progress for this card");
+        }
+        progress.setCard(card);
         return progressRepository.save(progress);
     }
 

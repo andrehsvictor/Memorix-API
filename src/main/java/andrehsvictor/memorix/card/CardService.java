@@ -15,6 +15,7 @@ import andrehsvictor.memorix.deckuser.DeckUserService;
 import andrehsvictor.memorix.exception.ForbiddenOperationException;
 import andrehsvictor.memorix.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.jwt.JwtService;
+import andrehsvictor.memorix.progress.ProgressService;
 import andrehsvictor.memorix.user.UserService;
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +28,7 @@ public class CardService {
     private final JwtService jwtService;
     private final UserService userService;
     private final DeckService deckService;
+    private final ProgressService progressService;
     private final DeckUserService deckUserService;
 
     public CardDto toDto(Card card) {
@@ -82,7 +84,9 @@ public class CardService {
         Card card = cardMapper.createCardDtoToCard(createCardDto);
         card.setDeck(deck);
         card.setAuthor(userService.findById(userId));
-        return cardRepository.save(card);
+        card = cardRepository.save(card);
+        progressService.create(card.getId());
+        return card;
     }
 
     @Transactional
