@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Memorix ###
+certs/
+*.pem
+*.key
+prometheus.yml
+application-dev.yml
