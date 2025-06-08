@@ -9,6 +9,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +34,8 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = -7572304554717990729L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false, unique = true)
     private UUID id;
 
@@ -55,9 +60,9 @@ public class User implements Serializable {
     @Column(name = "picture_url", length = 255)
     private String pictureUrl;
 
-    // TODO: Add an Enum for provider
+    @Builder.Default
     @Column(name = "provider", nullable = false, length = 50)
-    private String provider;
+    private UserProvider provider = UserProvider.LOCAL;
 
     @Column(name = "provider_id", nullable = false, length = 100)
     private String providerId;
