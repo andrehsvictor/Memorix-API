@@ -25,7 +25,14 @@ spring:
         enabled: ${REDIS_SSL_ENABLED:false}
 
     mongodb:
-      uri: ${MONGODB_URI}
+      host: ${MONGODB_HOST}
+      port: ${MONGODB_PORT:27017}
+      username: ${MONGODB_USERNAME}
+      password: ${MONGODB_PASSWORD}
+      database: ${MONGODB_DATABASE}
+      uuid-representation: standard
+      ssl:
+        enabled: ${MONGODB_SSL_ENABLED:false}
 
   rabbitmq:
     host: ${RABBITMQ_HOST}
