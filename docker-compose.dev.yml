@@ -1,0 +1,74 @@
+services:
+  postgres:
+    container_name: memorix-postgres
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: memorix
+    ports:
+      - "5432:5432"
+
+  redis:
+    container_name: memorix-redis
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  mongodb:
+    image: mongo:alpine
+    container_name: memorix-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+      MONGO_INITDB_DATABASE: memorix
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: memorix-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
+
+  minio:
+    image: minio/minio:latest
+    container_name: memorix-minio
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    command: server /data
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: memorix-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    environment:
+      MH_STORAGE: "memory"
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: memorix-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: memorix-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USERNAME: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    depends_on:
+      - prometheus
