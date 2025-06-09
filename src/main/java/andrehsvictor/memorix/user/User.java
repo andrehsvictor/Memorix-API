@@ -64,6 +64,10 @@ public class User implements Serializable {
     @Column(name = "provider", nullable = false, length = 50)
     private UserProvider provider = UserProvider.LOCAL;
 
+    @Builder.Default
+    @Column(name = "role", nullable = false, length = 50)
+    private UserRole role = UserRole.USER;
+
     @Column(name = "provider_id", nullable = false, length = 100)
     private String providerId;
 
