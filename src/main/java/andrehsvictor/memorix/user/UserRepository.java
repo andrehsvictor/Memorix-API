@@ -23,6 +23,12 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     boolean existsByUsername(String username);
 
+    Optional<User> findByEmailVerificationToken(String token);
+
+    Optional<User> findByPasswordResetToken(String token);
+
+    Optional<User> findByEmailChangeToken(String token);
+
     @Query("""
             SELECT u FROM User u
             WHERE
