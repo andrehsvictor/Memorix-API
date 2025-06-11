@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -26,24 +27,36 @@ public class SecurityConfig {
             "/api/v1/auth/revoke"
     };
 
+    private static final String[] ACTUATOR_ALLOWED_PATHS = {
+            "/actuator/health",
+    };
+
+    private static final String[] ACTUATOR_RESTRICTED_PATHS = {
+            "/actuator/info",
+            "/actuator/prometheus",
+            "/actuator/metrics"
+    };
+
     @Bean
     @Order(1)
-    SecurityFilterChain prometheusSecurityFilterChain(
+    SecurityFilterChain actuatorSecurityFilterChain(
             HttpSecurity http) throws Exception {
+        http.securityMatcher("/actuator/**");
         http.csrf(AbstractHttpConfigurer::disable);
         http.sessionManagement(session -> session.sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(authorize -> {
-            authorize.requestMatchers("/actuator/prometheus").hasRole("MONITOR");
-            authorize.anyRequest().permitAll();
+            authorize.requestMatchers(ACTUATOR_ALLOWED_PATHS).permitAll();
+            authorize.requestMatchers(ACTUATOR_RESTRICTED_PATHS).hasRole("MONITOR");
+            authorize.anyRequest().denyAll();
         });
-        http.httpBasic(httpBasic -> {});
+        http.httpBasic(Customizer.withDefaults());
         return http.build();
     }
 
     @Bean
     @Order(2)
-    SecurityFilterChain defaultSecurityFilterChain(
+    SecurityFilterChain standardSecurityFilterChain(
             HttpSecurity http,
             JwtDecoder jwtDecoder,
             AccessTokenFilter accessTokenFilter) throws Exception {
