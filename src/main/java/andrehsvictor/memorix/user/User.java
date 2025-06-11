@@ -68,7 +68,7 @@ public class User implements Serializable {
     @Column(name = "role", nullable = false, length = 50)
     private UserRole role = UserRole.USER;
 
-    @Column(name = "provider_id", nullable = false, length = 100)
+    @Column(name = "provider_id", length = 100)
     private String providerId;
 
     @Column(name = "email_verification_token", length = 255)

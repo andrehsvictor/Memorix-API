@@ -2,13 +2,16 @@ package andrehsvictor.memorix.common.jwt;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.UUID;
 
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.common.exception.BadRequestException;
@@ -22,29 +25,20 @@ public class JwtService {
     private final JwtDecoder jwtDecoder;
     private final JwtLifetimeProperties jwtLifetimeProperties;
 
-    private static final String ACCESS_TOKEN_TYPE = "access";
-    private static final String REFRESH_TOKEN_TYPE = "refresh";
-
-    public Jwt issueAccessToken(UserDetails userDetails) {
-        return createToken(userDetails.getUsername(), ACCESS_TOKEN_TYPE,
-                jwtLifetimeProperties.getAccessTokenLifetime());
+    public UUID getCurrentUserUuid() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth instanceof JwtAuthenticationToken jwtAuthenticationToken) {
+            return UUID.fromString(jwtAuthenticationToken.getToken().getSubject());
+        }
+        return null;
     }
 
-    public Jwt issueRefreshToken(UserDetails userDetails) {
-        return createToken(userDetails.getUsername(), REFRESH_TOKEN_TYPE,
-                jwtLifetimeProperties.getRefreshTokenLifetime());
+    public Jwt issueAccessToken(String subject) {
+        return createToken(subject, "access", jwtLifetimeProperties.getAccessTokenLifetime());
     }
 
-    public Jwt issueAccessToken(Jwt refreshToken) {
-        validateRefreshToken(refreshToken);
-        return createToken(refreshToken.getSubject(), ACCESS_TOKEN_TYPE,
-                jwtLifetimeProperties.getAccessTokenLifetime());
-    }
-
-    public Jwt issueRefreshToken(Jwt refreshToken) {
-        validateRefreshToken(refreshToken);
-        return createToken(refreshToken.getSubject(), REFRESH_TOKEN_TYPE,
-                jwtLifetimeProperties.getRefreshTokenLifetime());
+    public Jwt issueRefreshToken(String subject) {
+        return createToken(subject, "refresh", jwtLifetimeProperties.getRefreshTokenLifetime());
     }
 
     public Jwt decode(String token) {
@@ -55,25 +49,23 @@ public class JwtService {
         }
     }
 
-    private Jwt createToken(String subject, String tokenType, Duration lifetime) {
+    public void validateRefreshToken(Jwt token) {
+        if (token == null || !"refresh".equals(token.getClaim("type"))) {
+            throw new BadRequestException("Invalid refresh token");
+        }
+    }
+
+    private Jwt createToken(String subject, String type, Duration lifetime) {
         Instant now = Instant.now();
-        Instant expiresAt = now.plus(lifetime);
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .subject(subject)
                 .issuedAt(now)
-                .expiresAt(expiresAt)
-                .claim("type", tokenType)
+                .expiresAt(now.plus(lifetime))
+                .id(UUID.randomUUID().toString())
+                .claim("type", type)
                 .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims));
-    }
-
-    private void validateRefreshToken(Jwt refreshToken) {
-        if (refreshToken == null ||
-                !REFRESH_TOKEN_TYPE.equals(refreshToken.getClaim("type"))) {
-            throw new BadRequestException(
-                    "Invalid refresh token. The token must be a valid refresh token.");
-        }
     }
 }

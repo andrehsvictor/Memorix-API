@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 public class UserDetailsImpl implements UserDetails {
 
     private static final long serialVersionUID = 2857301007989252531L;
-    
+
     private final User user;
 
     @Override
@@ -29,7 +29,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return user.getId().toString();
     }
 
     @Override
