@@ -34,17 +34,15 @@ public class JwtConfig {
     @Value("${memorix.jwt.rsa.public-key.path}")
     private RSAPublicKey publicKey;
 
-    private final List<OAuth2TokenValidator<Jwt>> validators;
-
     @Bean
-    public JwtDecoder jwtDecoder() {
+    JwtDecoder jwtDecoder(List<OAuth2TokenValidator<Jwt>> validators) {
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withPublicKey(publicKey).build();
         jwtDecoder.setJwtValidator(JwtValidators.createDefaultWithValidators(validators));
         return jwtDecoder;
     }
 
     @Bean
-    public JwtEncoder jwtEncoder() {
+    JwtEncoder jwtEncoder() {
         JWK jwk = new RSAKey.Builder(publicKey)
                 .privateKey(privateKey)
                 .build();
