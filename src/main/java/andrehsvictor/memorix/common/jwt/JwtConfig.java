@@ -28,10 +28,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtConfig {
 
-    @Value("${memorix.jwt.rsa.private-key-path}")
+    @Value("${memorix.jwt.rsa.private-key.path}")
     private RSAPrivateKey privateKey;
 
-    @Value("${memorix.jwt.rsa.public-key-path}")
+    @Value("${memorix.jwt.rsa.public-key.path}")
     private RSAPublicKey publicKey;
 
     private final List<OAuth2TokenValidator<Jwt>> validators;
