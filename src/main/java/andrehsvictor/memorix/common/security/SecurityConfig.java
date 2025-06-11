@@ -1,12 +1,16 @@
 package andrehsvictor.memorix.common.security;
 
-import org.springframework.boot.web.servlet.FilterRegistration;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,9 +19,45 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private static final String[] ALLOWED_PATHS_WITH_POST_METHOD = {
+            "/api/v1/auth/token",
+            "/api/v1/auth/google",
+            "/api/v1/auth/refresh",
+            "/api/v1/auth/revoke"
+    };
+
     @Bean
-    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        throw new UnsupportedOperationException("Security configuration is not implemented yet");
+    @Order(1)
+    SecurityFilterChain prometheusSecurityFilterChain(
+            HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable);
+        http.sessionManagement(session -> session.sessionCreationPolicy(
+                SessionCreationPolicy.STATELESS));
+        http.authorizeHttpRequests(authorize -> {
+            authorize.requestMatchers("/actuator/prometheus").hasRole("MONITOR");
+            authorize.anyRequest().permitAll();
+        });
+        http.httpBasic(httpBasic -> {});
+        return http.build();
+    }
+
+    @Bean
+    @Order(2)
+    SecurityFilterChain defaultSecurityFilterChain(
+            HttpSecurity http,
+            JwtDecoder jwtDecoder,
+            AccessTokenFilter accessTokenFilter) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable);
+        http.sessionManagement(session -> session.sessionCreationPolicy(
+                SessionCreationPolicy.STATELESS));
+        http.authorizeHttpRequests(authorize -> {
+            authorize.requestMatchers(HttpMethod.POST, ALLOWED_PATHS_WITH_POST_METHOD)
+                    .permitAll();
+            authorize.anyRequest().authenticated();
+        });
+        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder)));
+        http.addFilterAfter(accessTokenFilter, AuthorizationFilter.class);
+        return http.build();
     }
 
 }
