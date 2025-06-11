@@ -83,6 +83,12 @@ public class User implements Serializable {
     @Column(name = "password_reset_token_expires_at")
     private LocalDateTime passwordResetTokenExpiresAt;
 
+    @Column(name = "email_change_token", length = 255)
+    private String emailChangeToken;
+
+    @Column(name = "email_change_token_expires_at")
+    private LocalDateTime emailChangeTokenExpiresAt;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
