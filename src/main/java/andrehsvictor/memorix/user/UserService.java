@@ -2,9 +2,19 @@ package andrehsvictor.memorix.user;
 
 import java.util.UUID;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import andrehsvictor.memorix.common.exception.ResourceConflictException;
 import andrehsvictor.memorix.common.exception.ResourceNotFoundException;
+import andrehsvictor.memorix.common.jwt.JwtService;
+import andrehsvictor.memorix.user.dto.CreateUserDto;
+import andrehsvictor.memorix.user.dto.MeDto;
+import andrehsvictor.memorix.user.dto.UpdateUserDto;
+import andrehsvictor.memorix.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -12,6 +22,55 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
+    private final RabbitTemplate rabbitTemplate;
+
+    public UserDto toUserDto(User user) {
+        return userMapper.userToUserDto(user);
+    }
+
+    public MeDto toMeDto(User user) {
+        return userMapper.userToMeDto(user);
+    }
+
+    public User create(CreateUserDto createUserDto) {
+        if (userRepository.existsByEmail(createUserDto.getEmail())) {
+            throw new ResourceConflictException("User with email already exists: " + createUserDto.getEmail());
+        }
+        if (userRepository.existsByUsername(createUserDto.getUsername())) {
+            throw new ResourceConflictException("User with username already exists: " + createUserDto.getUsername());
+        }
+
+        User user = userMapper.createUserDtoToUser(createUserDto);
+        user.setEmailVerified(false);
+        user.setRole(UserRole.USER);
+        user.setProvider(UserProvider.LOCAL);
+        user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
+        user.setPictureUrl(createUserDto.getPictureUrl() != null ? createUserDto.getPictureUrl() : null);
+        return userRepository.save(user);
+    }
+
+    public User updateMe(UpdateUserDto updateUserDto) {
+        User user = getById(jwtService.getCurrentUserUuid());
+        // Update user fields from DTO, verifying if email and username are unique
+
+        // If the user changed the picture URL and the old one is from the Storage
+        // Service,
+        // we need to delete it, so we send a message using RabbitMQ
+        // rabbitTemplate.convertAndSend(
+        //         "file-service.v1.delete",
+        //         user.getPictureUrl());
+    }
+
+    public Page<User> getAllWithFilters(
+            String query,
+            String username,
+            String displayName,
+            Pageable pageable) {
+        return userRepository.findAllWithFilters(query, username, displayName, pageable);
+    }
 
     public User getByEmail(String email) {
         return userRepository.findByEmail(email)
