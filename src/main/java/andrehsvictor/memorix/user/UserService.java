@@ -2,7 +2,6 @@ package andrehsvictor.memorix.user;
 
 import java.util.UUID;
 
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +24,6 @@ public class UserService {
     private final UserMapper userMapper;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
-    private final RabbitTemplate rabbitTemplate;
 
     public UserDto toUserDto(User user) {
         return userMapper.userToUserDto(user);
@@ -42,26 +40,25 @@ public class UserService {
         if (userRepository.existsByUsername(createUserDto.getUsername())) {
             throw new ResourceConflictException("User with username already exists: " + createUserDto.getUsername());
         }
-
         User user = userMapper.createUserDtoToUser(createUserDto);
-        user.setEmailVerified(false);
-        user.setRole(UserRole.USER);
-        user.setProvider(UserProvider.LOCAL);
         user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
-        user.setPictureUrl(createUserDto.getPictureUrl() != null ? createUserDto.getPictureUrl() : null);
         return userRepository.save(user);
     }
 
     public User updateMe(UpdateUserDto updateUserDto) {
         User user = getById(jwtService.getCurrentUserUuid());
-        // Update user fields from DTO, verifying if email and username are unique
+        if (updateUserDto.getUsername() != null && !updateUserDto.getUsername().equals(user.getUsername())
+                && existsByUsername(updateUserDto.getUsername())) {
+            throw new ResourceConflictException("Username already exists: " + updateUserDto.getUsername());
+        }
 
+        // Update user fields from DTO, verifying if username is unique
         // If the user changed the picture URL and the old one is from the Storage
         // Service,
         // we need to delete it, so we send a message using RabbitMQ
         // rabbitTemplate.convertAndSend(
-        //         "file-service.v1.delete",
-        //         user.getPictureUrl());
+        // "file-service.v1.delete",
+        // user.getPictureUrl());
     }
 
     public Page<User> getAllWithFilters(

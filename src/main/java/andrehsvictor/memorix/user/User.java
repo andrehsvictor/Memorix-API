@@ -48,8 +48,9 @@ public class User implements Serializable {
     @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
 
+    @Builder.Default
     @Column(name = "email_verified", nullable = false)
-    private boolean emailVerified;
+    private boolean emailVerified = false;
 
     @Column(name = "password_hash", length = 255)
     private String password;
