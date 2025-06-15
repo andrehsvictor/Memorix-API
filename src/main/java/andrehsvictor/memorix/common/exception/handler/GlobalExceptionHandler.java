@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import andrehsvictor.memorix.common.exception.BadRequestException;
 import andrehsvictor.memorix.common.exception.ForbiddenOperationException;
+import andrehsvictor.memorix.common.exception.GoneException;
 import andrehsvictor.memorix.common.exception.ResourceConflictException;
 import andrehsvictor.memorix.common.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.common.exception.UnauthorizedException;
@@ -111,6 +112,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({ BadCredentialsException.class, AuthenticationException.class })
     public ResponseEntity<ErrorDto> handleAuthenticationException(Exception ex) {
         return createErrorResponse(HttpStatus.UNAUTHORIZED, "Authentication failed");
+    }
+
+    @ExceptionHandler(GoneException.class)
+    public ResponseEntity<ErrorDto> handleGoneException(GoneException ex) {
+        return createErrorResponse(HttpStatus.GONE, ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

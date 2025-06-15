@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import andrehsvictor.memorix.common.exception.BadRequestException;
 import andrehsvictor.memorix.common.exception.ResourceConflictException;
 import andrehsvictor.memorix.common.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.common.jwt.JwtService;
@@ -51,7 +52,6 @@ public class UserService {
                 && existsByUsername(updateUserDto.getUsername())) {
             throw new ResourceConflictException("Username already exists: " + updateUserDto.getUsername());
         }
-
         // Update user fields from DTO, verifying if username is unique
         // If the user changed the picture URL and the old one is from the Storage
         // Service,
@@ -59,6 +59,7 @@ public class UserService {
         // rabbitTemplate.convertAndSend(
         // "file-service.v1.delete",
         // user.getPictureUrl());
+        throw new UnsupportedOperationException("UpdateMe method not implemented yet");
     }
 
     public Page<User> getAllWithFilters(
@@ -87,6 +88,21 @@ public class UserService {
     public User getById(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "ID", id));
+    }
+
+    public User getByEmailVerificationToken(String token) {
+        return userRepository.findByEmailVerificationToken(token)
+                .orElseThrow(() -> new BadRequestException("Invalid email verification token: " + token));
+    }
+
+    public User getByPasswordResetToken(String token) {
+        return userRepository.findByPasswordResetToken(token)
+                .orElseThrow(() -> new BadRequestException("Invalid password reset token: " + token));
+    }
+
+    public User getByEmailChangeToken(String token) {
+        return userRepository.findByEmailChangeToken(token)
+                .orElseThrow(() -> new BadRequestException("Invalid email change token: " + token));
     }
 
     public User save(User user) {
