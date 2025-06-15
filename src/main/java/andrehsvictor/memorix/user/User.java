@@ -84,6 +84,9 @@ public class User implements Serializable {
     @Column(name = "password_reset_token_expires_at")
     private LocalDateTime passwordResetTokenExpiresAt;
 
+    @Column(name = "email_change", length = 100) 
+    private String emailChange;
+
     @Column(name = "email_change_token", length = 255)
     private String emailChangeToken;
 

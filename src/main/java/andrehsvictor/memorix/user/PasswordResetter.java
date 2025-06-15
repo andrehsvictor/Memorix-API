@@ -5,57 +5,51 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.common.email.EmailService;
 import andrehsvictor.memorix.common.exception.GoneException;
-import andrehsvictor.memorix.common.exception.ResourceConflictException;
 import andrehsvictor.memorix.common.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class EmailVerifier {
+public class PasswordResetter {
 
     private final UserService userService;
     private final FileUtil fileUtil;
     private final EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
     private final ActionTokenLifetimeProperties actionTokenLifetimeProperties;
 
-    public void sendVerificationEmail(String url, String email) {
+    public void sendPasswordResetEmail(String url, String email) {
         User user = userService.getByEmail(email);
-        if (user.isEmailVerified()) {
-            throw new ResourceConflictException("Email already verified: " + email);
-        }
 
         String token = UUID.randomUUID().toString();
-        Duration lifetime = actionTokenLifetimeProperties.getVerifyEmailLifetime();
+        Duration lifetime = actionTokenLifetimeProperties.getResetPasswordLifetime();
 
-        user.setEmailVerificationToken(token);
-        user.setEmailVerificationTokenExpiresAt(LocalDateTime.now().plus(lifetime));
+        user.setPasswordResetToken(token);
+        user.setPasswordResetTokenExpiresAt(LocalDateTime.now().plus(lifetime));
         userService.save(user);
 
         String urlWithToken = url + (url.contains("?") ? "&" : "?") + "token=" + token;
-        String body = fileUtil.processTemplate("classpath:templates/verify-email.html",
+        String body = fileUtil.processTemplate("classpath:templates/reset-password.html",
                 Map.of("url", urlWithToken, "expiration", formatDuration(lifetime)));
 
-        emailService.send(email, "Verify your email address - Memorix", body);
+        emailService.send(email, "Reset your password - Memorix", body);
     }
 
-    public void verifyEmail(String token) {
-        User user = userService.getByEmailVerificationToken(token);
+    public void resetPassword(String token, String password) {
+        User user = userService.getByPasswordResetToken(token);
 
-        if (user.getEmailVerificationTokenExpiresAt().isBefore(LocalDateTime.now())) {
-            throw new GoneException("Action token expired. Please request a new verification email.");
+        if (user.getPasswordResetTokenExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new GoneException("Password reset token expired. Please request a new password reset.");
         }
 
-        if (user.isEmailVerified()) {
-            throw new ResourceConflictException("Email already verified: " + user.getEmail());
-        }
-
-        user.setEmailVerified(true);
-        user.setEmailVerificationToken(null);
-        user.setEmailVerificationTokenExpiresAt(null);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setPasswordResetToken(null);
+        user.setPasswordResetTokenExpiresAt(null);
         userService.save(user);
     }
 
