@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.common.email.EmailService;
@@ -24,6 +25,7 @@ public class EmailChanger {
     private final JwtService jwtService;
     private final ActionTokenLifetimeProperties actionTokenLifetimeProperties;
 
+    @RabbitListener(queues = "email-actions.v1.change-email")
     public void sendEmailChangeRequest(String url, String email) {
         User user = userService.getById(jwtService.getCurrentUserUuid());
 

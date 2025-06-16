@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class PasswordResetter {
     private final PasswordEncoder passwordEncoder;
     private final ActionTokenLifetimeProperties actionTokenLifetimeProperties;
 
+    @RabbitListener(queues = "email-actions.v1.reset-password")
     public void sendPasswordResetEmail(String url, String email) {
         User user = userService.getByEmail(email);
 

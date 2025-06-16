@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.common.email.EmailService;
@@ -22,6 +23,7 @@ public class EmailVerifier {
     private final EmailService emailService;
     private final ActionTokenLifetimeProperties actionTokenLifetimeProperties;
 
+    @RabbitListener(queues = "email-actions.v1.verify-email")
     public void sendVerificationEmail(String url, String email) {
         User user = userService.getByEmail(email);
         if (user.isEmailVerified()) {

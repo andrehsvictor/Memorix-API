@@ -2,6 +2,7 @@ package andrehsvictor.memorix.user;
 
 import java.util.UUID;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +14,7 @@ import andrehsvictor.memorix.common.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.common.jwt.JwtService;
 import andrehsvictor.memorix.user.dto.CreateUserDto;
 import andrehsvictor.memorix.user.dto.MeDto;
+import andrehsvictor.memorix.user.dto.SendActionEmailDto;
 import andrehsvictor.memorix.user.dto.UpdateUserDto;
 import andrehsvictor.memorix.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final RabbitTemplate rabbitTemplate;
 
     public UserDto toUserDto(User user) {
         return userMapper.userToUserDto(user);
@@ -115,6 +118,16 @@ public class UserService {
 
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    public void sendActionEmail(SendActionEmailDto sendActionEmailDto) {
+        switch (sendActionEmailDto.getAction()) {
+            case VERIFY_EMAIL -> rabbitTemplate.convertAndSend("email-actions.v1.verify-email",
+                    sendActionEmailDto.getUrl(), sendActionEmailDto.getEmail());
+            case RESET_PASSWORD -> rabbitTemplate.convertAndSend("email-actions.v1.reset-password",
+                    sendActionEmailDto.getUrl(), sendActionEmailDto.getEmail());
+            default -> throw new BadRequestException("Invalid email action: " + sendActionEmailDto.getAction());
+        }
     }
 
 }
