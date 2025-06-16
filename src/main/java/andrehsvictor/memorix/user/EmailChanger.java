@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import andrehsvictor.memorix.common.email.EmailService;
 import andrehsvictor.memorix.common.exception.GoneException;
 import andrehsvictor.memorix.common.exception.ResourceConflictException;
+import andrehsvictor.memorix.common.exception.UnauthorizedException;
 import andrehsvictor.memorix.common.jwt.JwtService;
 import andrehsvictor.memorix.common.util.FileUtil;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,12 @@ public class EmailChanger {
 
     @RabbitListener(queues = "email-actions.v1.change-email")
     public void sendEmailChangeRequest(String url, String email) {
-        User user = userService.getById(jwtService.getCurrentUserUuid());
+        UUID userId = jwtService.getCurrentUserUuid();
+        if (userId == null) {
+            throw new UnauthorizedException("User not authenticated");
+        }
+
+        User user = userService.getById(userId);
 
         if (userService.existsByEmail(email)) {
             throw new ResourceConflictException("Email already in use: " + email);
@@ -60,7 +66,7 @@ public class EmailChanger {
         }
 
         user.setEmail(user.getEmailChange());
-        user.setEmailVerified(true); // New email is considered verified since they clicked the link
+        user.setEmailVerified(true);
         user.setEmailChange(null);
         user.setEmailChangeToken(null);
         user.setEmailChangeTokenExpiresAt(null);

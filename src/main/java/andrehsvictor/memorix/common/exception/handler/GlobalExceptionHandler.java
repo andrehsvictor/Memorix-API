@@ -100,7 +100,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ErrorDto> handleUnauthorizedException(UnauthorizedException ex) {
+    public ResponseEntity<?> handleUnauthorizedException(UnauthorizedException ex) {
+        if (ex.getMessage().isEmpty() || ex.getMessage().isBlank()) {
+            return createErrorResponse(HttpStatus.UNAUTHORIZED);
+        }
         return createErrorResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 
@@ -125,6 +128,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return createErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "An unexpected error occurred");
+    }
+
+    private ResponseEntity<Void> createErrorResponse(HttpStatus status) {
+        return new ResponseEntity<>(status);
     }
 
     private ResponseEntity<ErrorDto> createErrorResponse(HttpStatus status, String message) {
