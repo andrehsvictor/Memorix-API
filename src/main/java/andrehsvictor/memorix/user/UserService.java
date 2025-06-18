@@ -11,10 +11,12 @@ import org.springframework.stereotype.Service;
 import andrehsvictor.memorix.common.exception.BadRequestException;
 import andrehsvictor.memorix.common.exception.ResourceConflictException;
 import andrehsvictor.memorix.common.exception.ResourceNotFoundException;
-import andrehsvictor.memorix.common.jwt.JwtService;
+import andrehsvictor.memorix.user.dto.ChangeEmailDto;
 import andrehsvictor.memorix.user.dto.CreateUserDto;
+import andrehsvictor.memorix.user.dto.ResetPasswordDto;
 import andrehsvictor.memorix.user.dto.SendActionEmailDto;
 import andrehsvictor.memorix.user.dto.UserDto;
+import andrehsvictor.memorix.user.dto.VerifyEmailDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -23,9 +25,11 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final RabbitTemplate rabbitTemplate;
+    private final EmailVerifier emailVerifier;
+    private final EmailChanger emailChanger;
+    private final PasswordResetter passwordResetter;
 
     public UserDto toDto(User user) {
         return userMapper.userToUserDto(user);
@@ -108,6 +112,18 @@ public class UserService {
                     sendActionEmailDto.getUrl(), sendActionEmailDto.getEmail());
             default -> throw new BadRequestException("Invalid email action: " + sendActionEmailDto.getAction());
         }
+    }
+
+    public void verifyEmail(VerifyEmailDto verifyEmailDto) {
+        emailVerifier.verifyEmail(verifyEmailDto.getToken());
+    }
+
+    public void changeEmail(ChangeEmailDto changeEmailDto) {
+        emailChanger.changeEmail(changeEmailDto.getToken());
+    }
+
+    public void resetPassword(ResetPasswordDto resetPasswordDto) {
+        passwordResetter.resetPassword(resetPasswordDto.getToken(), resetPasswordDto.getPassword());
     }
 
 }
