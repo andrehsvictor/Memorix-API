@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.card.dto.CardDto;
+import andrehsvictor.memorix.card.dto.CardStatsDto;
 import andrehsvictor.memorix.card.dto.CreateCardDto;
 import andrehsvictor.memorix.card.dto.UpdateCardDto;
 import andrehsvictor.memorix.common.exception.ResourceNotFoundException;
@@ -27,6 +28,20 @@ public class CardService {
 
     public CardDto toDto(Card card) {
         return cardMapper.cardToCardDto(card);
+    }
+
+    public CardStatsDto getStats() {
+        UUID userId = jwtService.getCurrentUserUuid();
+        CardStatsDto stats = cardRepository.findCardStatsByUserId(userId);
+        return stats;
+    }
+
+    public CardStatsDto getStatsByDeckId(UUID deckId) {
+        if (!deckService.existsById(deckId)) {
+            throw new ResourceNotFoundException("Deck", "ID", deckId);
+        }
+        CardStatsDto stats = cardRepository.findCardStatsByDeckId(deckId);
+        return stats;
     }
 
     public Page<Card> getAll(Boolean due, Pageable pageable) {

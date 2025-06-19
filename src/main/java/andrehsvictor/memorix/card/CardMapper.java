@@ -8,6 +8,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import andrehsvictor.memorix.card.dto.CardDto;
 import andrehsvictor.memorix.card.dto.CreateCardDto;
@@ -19,6 +20,7 @@ import andrehsvictor.memorix.deck.dto.DeckDto;
 @Mapper(componentModel = "spring")
 public abstract class CardMapper {
 
+    @Autowired
     protected DeckService deckService;
 
     @Mapping(target = "deck", ignore = true)
