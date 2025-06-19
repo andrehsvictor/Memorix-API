@@ -68,6 +68,7 @@ public class CardService {
     public Card update(UUID id, UpdateCardDto updateCardDto) {
         Card card = getById(id);
         cardMapper.updateCardFromUpdateCardDto(updateCardDto, card);
+        card.setUpdatedAt(LocalDateTime.now());
         return cardRepository.save(card);
     }
 
