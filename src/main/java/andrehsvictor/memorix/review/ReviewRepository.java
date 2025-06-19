@@ -6,10 +6,28 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 public interface ReviewRepository extends MongoRepository<Review, UUID> {
 
-    Page<Review> findAllByUserId(UUID userId, Pageable pageable);
+    @Query("""
+            {
+                'userId': ?0,
+                $and: [
+                    { $or: [ { ?1: null }, { 'rating': { $gte: ?1 } } ] },
+                    { $or: [ { ?2: null }, { 'rating': { $lte: ?2 } } ] },
+                    { $or: [ { ?3: null }, { 'responseTime': { $gte: ?3 } } ] },
+                    { $or: [ { ?4: null }, { 'responseTime': { $lte: ?4 } } ] }
+                ]
+            }
+            """)
+    Page<Review> findAllByUserIdWithFilters(
+            UUID userId,
+            Integer minRating,
+            Integer maxRating,
+            Integer minResponseTime,
+            Integer maxResponseTime,
+            Pageable pageable);
 
     Page<Review> findAllByCardIdAndUserId(UUID cardId, UUID userId, Pageable pageable);
 
