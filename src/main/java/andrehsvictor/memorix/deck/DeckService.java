@@ -85,6 +85,7 @@ public class DeckService {
         if (deck.getCoverImageUrl() != null) {
             rabbitTemplate.convertAndSend("minio.v1.delete.url", deck.getCoverImageUrl());
         }
+        rabbitTemplate.convertAndSend("cards.v1.deleteAllByDeckId", deck.getId());
     }
 
     public boolean existsById(UUID id) {

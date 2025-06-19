@@ -72,7 +72,6 @@ public class MeService {
         rabbitTemplate.convertAndSend(
                 "minio.v1.delete.metadata",
                 Map.of("userId", userId.toString()));
-        // Must delete all cards and reviews associated with the user in MongoDB
-        throw new UnsupportedOperationException("Delete user is not implemented yet");
+        rabbitTemplate.convertAndSend("users.v1.delete", userId);
     }
 }

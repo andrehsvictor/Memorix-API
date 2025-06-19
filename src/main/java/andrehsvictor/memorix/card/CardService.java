@@ -3,6 +3,7 @@ package andrehsvictor.memorix.card;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -75,8 +76,14 @@ public class CardService {
         cardRepository.delete(card);
     }
 
-    public void deleteAllByDeckId(UUID deckId) {
-        
+    @RabbitListener(queues = { "cards.v1.delete", "decks.v1.delete" })
+    private void deleteAllByDeckId(UUID deckId) {
+        cardRepository.deleteByDeckId(deckId);
+    }
+
+    @RabbitListener(queues = { "cards.v1.deleteAllByUserId", "users.v1.delete" })
+    private void deleteAllByUserId(UUID userId) {
+        cardRepository.deleteByUserId(userId);
     }
 
 }
