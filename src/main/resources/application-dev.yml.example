@@ -33,8 +33,6 @@ spring:
   mail:
     host: localhost
     port: 1025
-    username: 
-    password: 
     properties:
       mail:
         smtp:
@@ -46,7 +44,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: health,prometheus
   endpoint:
     health:
       show-details: always
@@ -61,8 +59,28 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 memorix:
-  storage:
+  minio:
     endpoint: http://localhost:9000
     access-key: minio
     secret-key: minio123
     bucket-name: memorix
+  jwt:
+    rsa:
+      public-key:
+        path: file:certs/public.pem
+      private-key:
+        path: file:certs/private.pem
+    access-token:
+      lifetime: 15m
+    refresh-token:
+      lifetime: 1h
+  action-tokens:
+    reset-password:
+      lifetime: 15m
+    verify-email:
+      lifetime: 15m
+    change-email:
+      lifetime: 15m
+  cors:
+    allowed-origins: "*"
+    allowed-methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS,HEAD"
