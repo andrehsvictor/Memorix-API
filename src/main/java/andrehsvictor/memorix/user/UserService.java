@@ -126,4 +126,14 @@ public class UserService {
         passwordResetter.resetPassword(resetPasswordDto.getToken(), resetPasswordDto.getPassword());
     }
 
+    public void delete(UUID id) {
+        // Check if the user exists
+        // If the user has a picture URL and it is from the Storage Service,
+        // we need to delete it, so we send a message using RabbitMQ
+        // We will also need to delete the user's data from MongoDB
+        // rabbitTemplate.convertAndSend(
+        // "file-service.v1.delete",
+        throw new UnsupportedOperationException("Delete method not implemented yet");
+    }
+
 }

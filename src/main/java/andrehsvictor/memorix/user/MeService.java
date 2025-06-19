@@ -1,5 +1,8 @@
 package andrehsvictor.memorix.user;
 
+import java.util.Map;
+import java.util.UUID;
+
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,7 @@ public class MeService {
 
     private final UserService userService;
     private final JwtService jwtService;
+    private final UserMapper userMapper;
     private final RabbitTemplate rabbitTemplate;
 
     public User updateMe(UpdateUserDto updateUserDto) {
@@ -22,13 +26,27 @@ public class MeService {
                 && userService.existsByUsername(updateUserDto.getUsername())) {
             throw new ResourceConflictException("Username already exists: " + updateUserDto.getUsername());
         }
-        // Update user fields from DTO, verifying if username is unique
-        // If the user changed the picture URL and the old one is from the Storage
-        // Service,
-        // we need to delete it, so we send a message using RabbitMQ
-        // rabbitTemplate.convertAndSend(
-        // "file-service.v1.delete",
-        // user.getPictureUrl());
-        throw new UnsupportedOperationException("UpdateMe method not implemented yet");
+        boolean pictureChanged = updateUserDto.getPictureUrl() != null
+                && !updateUserDto.getPictureUrl().equals(user.getPictureUrl());
+        String oldPictureUrl = user.getPictureUrl();
+        userMapper.updateUserFromUpdateUserDto(updateUserDto, user);
+        userService.save(user);
+        if (pictureChanged && oldPictureUrl != null) {
+            rabbitTemplate.convertAndSend(
+                    "minio.v1.delete.url",
+                    oldPictureUrl);
+        }
+        return user;
+    }
+
+    public void deleteMe() {
+        User user = userService.getById(jwtService.getCurrentUserUuid());
+        UUID userId = user.getId();
+        userService.delete(userId);
+        rabbitTemplate.convertAndSend(
+                "minio.v1.delete.metadata",
+                Map.of("userId", userId.toString()));
+        // Must delete all cards and reviews associated with the user in MongoDB
+        throw new UnsupportedOperationException("Delete user is not implemented yet");
     }
 }

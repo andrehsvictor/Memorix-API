@@ -43,7 +43,7 @@ public class MinioService {
         }
     }
 
-    @RabbitListener(queues = "minio.v1.delete")
+    @RabbitListener(queues = "minio.v1.delete.url")
     public void delete(String url) {
         if (!isValidMinioUrl(url)) {
             log.warn("Invalid Minio URL, skipping deletion: {}", url);
