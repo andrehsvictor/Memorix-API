@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import andrehsvictor.memorix.common.email.EmailService;
 import andrehsvictor.memorix.common.exception.GoneException;
 import andrehsvictor.memorix.common.util.FileUtil;
+import andrehsvictor.memorix.user.dto.SendActionEmailDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,7 +26,9 @@ public class PasswordResetter {
     private final ActionTokenLifetimeProperties actionTokenLifetimeProperties;
 
     @RabbitListener(queues = "email-actions.v1.reset-password")
-    public void sendPasswordResetEmail(String url, String email) {
+    public void sendPasswordResetEmail(SendActionEmailDto dto) {
+        String email = dto.getEmail();
+        String url = dto.getUrl();
         User user = userService.getByEmail(email);
 
         String token = UUID.randomUUID().toString();

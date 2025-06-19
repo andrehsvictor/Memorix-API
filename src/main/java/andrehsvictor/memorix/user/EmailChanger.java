@@ -14,6 +14,7 @@ import andrehsvictor.memorix.common.exception.ResourceConflictException;
 import andrehsvictor.memorix.common.exception.UnauthorizedException;
 import andrehsvictor.memorix.common.jwt.JwtService;
 import andrehsvictor.memorix.common.util.FileUtil;
+import andrehsvictor.memorix.user.dto.SendActionEmailDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,7 +28,9 @@ public class EmailChanger {
     private final ActionTokenLifetimeProperties actionTokenLifetimeProperties;
 
     @RabbitListener(queues = "email-actions.v1.change-email")
-    public void sendEmailChangeRequest(String url, String email) {
+    public void sendEmailChangeRequest(SendActionEmailDto dto) {
+        String email = dto.getEmail();
+        String url = dto.getUrl();
         UUID userId = jwtService.getCurrentUserUuid();
         if (userId == null) {
             throw new UnauthorizedException("User not authenticated");

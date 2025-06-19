@@ -12,6 +12,7 @@ import andrehsvictor.memorix.common.email.EmailService;
 import andrehsvictor.memorix.common.exception.GoneException;
 import andrehsvictor.memorix.common.exception.ResourceConflictException;
 import andrehsvictor.memorix.common.util.FileUtil;
+import andrehsvictor.memorix.user.dto.SendActionEmailDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,7 +25,9 @@ public class EmailVerifier {
     private final ActionTokenLifetimeProperties actionTokenLifetimeProperties;
 
     @RabbitListener(queues = "email-actions.v1.verify-email")
-    public void sendVerificationEmail(String url, String email) {
+    public void sendVerificationEmail(SendActionEmailDto dto) {
+        String email = dto.getEmail();
+        String url = dto.getUrl();
         User user = userService.getByEmail(email);
         if (user.isEmailVerified()) {
             throw new ResourceConflictException("Email already verified: " + email);

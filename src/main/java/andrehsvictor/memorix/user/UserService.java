@@ -2,6 +2,7 @@ package andrehsvictor.memorix.user;
 
 import java.util.UUID;
 
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -105,11 +106,11 @@ public class UserService {
     public void sendActionEmail(SendActionEmailDto sendActionEmailDto) {
         switch (sendActionEmailDto.getAction()) {
             case VERIFY_EMAIL -> rabbitTemplate.convertAndSend("email-actions.v1.verify-email",
-                    sendActionEmailDto.getUrl(), sendActionEmailDto.getEmail());
+                    sendActionEmailDto);
             case RESET_PASSWORD -> rabbitTemplate.convertAndSend("email-actions.v1.reset-password",
-                    sendActionEmailDto.getUrl(), sendActionEmailDto.getEmail());
+                    sendActionEmailDto);
             case CHANGE_EMAIL -> rabbitTemplate.convertAndSend("email-actions.v1.change-email",
-                    sendActionEmailDto.getUrl(), sendActionEmailDto.getEmail());
+                    sendActionEmailDto);
             default -> throw new BadRequestException("Invalid email action: " + sendActionEmailDto.getAction());
         }
     }
