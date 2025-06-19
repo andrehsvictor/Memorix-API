@@ -2,16 +2,20 @@ package andrehsvictor.memorix.user;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import andrehsvictor.memorix.deck.Deck;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +33,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Table(name = "users")
 @EqualsAndHashCode(of = { "id", "username", "email" })
-@ToString(exclude = { "password", "emailVerificationToken", "passwordResetToken" })
+@ToString(exclude = { "password", "emailVerificationToken", "passwordResetToken", "emailChangeToken", "decks" })
 public class User implements Serializable {
 
     private static final long serialVersionUID = -7572304554717990729L;
@@ -84,7 +88,7 @@ public class User implements Serializable {
     @Column(name = "password_reset_token_expires_at")
     private LocalDateTime passwordResetTokenExpiresAt;
 
-    @Column(name = "email_change", length = 100) 
+    @Column(name = "email_change", length = 100)
     private String emailChange;
 
     @Column(name = "email_change_token", length = 255)
@@ -100,5 +104,9 @@ public class User implements Serializable {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user")
+    private Set<Deck> decks = new HashSet<>();
 
 }
