@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class CardService {
     private final DeckService deckService;
     private final JwtService jwtService;
     private final CardMapper cardMapper;
+    private final RabbitTemplate rabbitTemplate;
 
     public CardDto toDto(Card card) {
         return cardMapper.cardToCardDto(card);
@@ -90,6 +92,7 @@ public class CardService {
     public void delete(UUID id) {
         Card card = getById(id);
         cardRepository.delete(card);
+        rabbitTemplate.convertAndSend("reviews.v1.deleteAllByCardId", card.getId());
     }
 
     @RabbitListener(queues = { "cards.v1.delete", "decks.v1.delete" })
