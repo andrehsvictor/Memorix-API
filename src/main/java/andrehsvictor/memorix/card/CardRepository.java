@@ -1,6 +1,7 @@
 package andrehsvictor.memorix.card;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -12,7 +13,11 @@ import andrehsvictor.memorix.card.dto.CardStatsDto;
 
 public interface CardRepository extends MongoRepository<Card, UUID> {
 
+    Optional<Card> findByIdAndUserId(UUID id, UUID userId);
+
     Page<Card> findAllByUserId(UUID userId, Pageable pageable);
+
+    Page<Card> findAllByDeckId(UUID deckId, Pageable pageable);
 
     Page<Card> findAllByUserIdAndDueBefore(UUID userId, LocalDateTime due, Pageable pageable);
 

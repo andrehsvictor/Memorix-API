@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import andrehsvictor.memorix.common.exception.ResourceConflictException;
 import andrehsvictor.memorix.common.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.common.jwt.JwtService;
 import andrehsvictor.memorix.deck.dto.CreateDeckDto;
@@ -49,6 +50,10 @@ public class DeckService {
     }
 
     public Deck create(CreateDeckDto createDeckDto) {
+        UUID userId = jwtService.getCurrentUserUuid();
+        if (deckRepository.existsByNameAndUserId(createDeckDto.getName(), userId)) {
+            throw new ResourceConflictException("Deck with name '" + createDeckDto.getName() + "' already exists");
+        }
         Deck deck = deckMapper.createDeckDtoToDeck(createDeckDto);
         User user = userService.getById(jwtService.getCurrentUserUuid());
         deck.setUser(user);
@@ -80,5 +85,10 @@ public class DeckService {
         if (deck.getCoverImageUrl() != null) {
             rabbitTemplate.convertAndSend("minio.v1.delete.url", deck.getCoverImageUrl());
         }
+    }
+
+    public boolean existsById(UUID id) {
+        UUID userId = jwtService.getCurrentUserUuid();
+        return deckRepository.existsByIdAndUserId(id, userId);
     }
 }

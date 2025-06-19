@@ -12,6 +12,8 @@ public interface DeckRepository extends JpaRepository<Deck, UUID> {
 
     boolean existsByNameAndUserId(String name, UUID userId);
 
+    boolean existsByIdAndUserId(UUID id, UUID userId);
+
     Optional<Deck> findByIdAndUserId(UUID id, UUID userId);
 
     Optional<Deck> findByNameAndUserId(String name, UUID userId);
