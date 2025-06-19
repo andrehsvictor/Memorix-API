@@ -31,6 +31,9 @@ public class Review implements Serializable {
     @Indexed
     private UUID cardId;
 
+    @Indexed
+    private UUID userId;
+
     private Integer rating;
 
     private Integer responseTime; // in milliseconds
