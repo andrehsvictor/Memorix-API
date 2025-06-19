@@ -19,24 +19,29 @@ import io.restassured.RestAssured;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public abstract class AbstractIntegrationTest {
 
-    private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:alpine");
+    private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:alpine")
+            .withReuse(true);
 
-    private static final RabbitMQContainer rabbitMQContainer = new RabbitMQContainer("rabbitmq:management-alpine");
+    private static final RabbitMQContainer rabbitMQContainer = new RabbitMQContainer("rabbitmq:management-alpine")
+            .withReuse(true);
 
-    private static final MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:alpine");
+    private static final MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:alpine").withReuse(true);
 
     private static final GenericContainer<?> redisContainer = new GenericContainer<>("redis:alpine")
-            .withExposedPorts(6379);
+            .withExposedPorts(6379)
+            .withReuse(true);
 
     private static final GenericContainer<?> mailhogContainer = new GenericContainer<>("mailhog/mailhog:latest")
             .withExposedPorts(8025, 1025)
-            .withEnv("MH_STORAGE", "memory");
+            .withEnv("MH_STORAGE", "memory")
+            .withReuse(true);
 
     private static final GenericContainer<?> minioContainer = new GenericContainer<>("minio/minio:latest")
             .withExposedPorts(9000, 9001)
             .withEnv("MINIO_ROOT_USER", "minioadmin")
             .withEnv("MINIO_ROOT_PASSWORD", "minioadmin")
-            .withCommand("server", "/data", "--console-address", ":9001");
+            .withCommand("server", "/data", "--console-address", ":9001")
+            .withReuse(true);
 
     @LocalServerPort
     private Integer port;
