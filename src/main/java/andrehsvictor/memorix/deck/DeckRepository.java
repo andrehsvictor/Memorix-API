@@ -12,6 +12,8 @@ public interface DeckRepository extends JpaRepository<Deck, UUID> {
 
     boolean existsByNameAndUserId(String name, UUID userId);
 
+    Optional<Deck> findByIdAndUserId(UUID id, UUID userId);
+
     Optional<Deck> findByNameAndUserId(String name, UUID userId);
 
     @Query("""
@@ -27,6 +29,9 @@ public interface DeckRepository extends JpaRepository<Deck, UUID> {
             AND (:includeWithCoverImage IS NULL OR
                 (:includeWithCoverImage = TRUE AND d.coverImageUrl IS NOT NULL) OR
                 (:includeWithCoverImage = FALSE AND d.coverImageUrl IS NULL))
+            AND (:includeEmptyDecks IS NULL OR
+                (:includeEmptyDecks = TRUE AND d.cardCount = 0) OR
+                (:includeEmptyDecks = FALSE AND d.cardCount > 0))
             """)
     Page<Deck> findAllByUserIdWithFilters(
             UUID userId,
@@ -34,6 +39,7 @@ public interface DeckRepository extends JpaRepository<Deck, UUID> {
             String name,
             String description,
             Boolean includeWithCoverImage,
+            Boolean includeEmptyDecks,
             Pageable pageable);
 
 }
