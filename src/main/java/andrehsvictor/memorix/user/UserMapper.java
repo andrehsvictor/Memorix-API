@@ -1,8 +1,10 @@
 package andrehsvictor.memorix.user;
 
 import org.mapstruct.AfterMapping;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import andrehsvictor.memorix.user.dto.CreateUserDto;
 import andrehsvictor.memorix.user.dto.MeDto;
@@ -18,6 +20,7 @@ public interface UserMapper {
 
     User createUserDtoToUser(CreateUserDto createUserDto);
 
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     User updateUserFromUpdateUserDto(UpdateUserDto updateUserDto, @MappingTarget User user);
 
     @AfterMapping

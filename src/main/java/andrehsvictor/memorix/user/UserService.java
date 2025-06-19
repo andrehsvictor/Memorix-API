@@ -2,7 +2,6 @@ package andrehsvictor.memorix.user;
 
 import java.util.UUID;
 
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -128,13 +127,7 @@ public class UserService {
     }
 
     public void delete(UUID id) {
-        // Check if the user exists
-        // If the user has a picture URL and it is from the Storage Service,
-        // we need to delete it, so we send a message using RabbitMQ
-        // We will also need to delete the user's data from MongoDB
-        // rabbitTemplate.convertAndSend(
-        // "file-service.v1.delete",
-        throw new UnsupportedOperationException("Delete method not implemented yet");
+        userRepository.deleteById(id);
     }
 
 }
