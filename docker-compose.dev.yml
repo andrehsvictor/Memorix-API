@@ -26,7 +26,7 @@ services:
       MONGO_INITDB_DATABASE: memorix
 
   rabbitmq:
-    image: rabbitmq:management
+    image: rabbitmq:management-alpine
     container_name: memorix-rabbitmq
     ports:
       - "5672:5672"
