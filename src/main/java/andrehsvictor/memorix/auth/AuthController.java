@@ -24,7 +24,7 @@ public class AuthController {
     }
 
     @PostMapping("/api/v1/auth/google")
-    public TokenDto googleAuth(@Valid @RequestBody IdTokenDto idTokenDto) {
+    public TokenDto google(@Valid @RequestBody IdTokenDto idTokenDto) {
         return tokenService.google(idTokenDto);
     }
 
