@@ -75,4 +75,8 @@ public class CardService {
         cardRepository.delete(card);
     }
 
+    public void deleteAllByDeckId(UUID deckId) {
+        
+    }
+
 }
