@@ -24,7 +24,21 @@ public class SecurityConfig {
             "/api/v1/auth/token",
             "/api/v1/auth/google",
             "/api/v1/auth/refresh",
-            "/api/v1/auth/revoke"
+            "/api/v1/auth/revoke",
+            "/api/v1/users/send-action-email",
+            "/api/v1/users",
+            "/api/v1/users/verify-email",
+            "/api/v1/users/reset-password",
+    };
+
+    private static final String[] ALLOWED_PATHS_WITH_ANY_METHOD = {
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/v3/api-docs/**",
+    };
+
+    private static final String[] ALLOWED_PATHS_WITH_PUT_METHOD = {
+            "/api/v1/users/email"
     };
 
     private static final String[] ACTUATOR_ALLOWED_PATHS = {
@@ -65,6 +79,10 @@ public class SecurityConfig {
                 SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(authorize -> {
             authorize.requestMatchers(HttpMethod.POST, ALLOWED_PATHS_WITH_POST_METHOD)
+                    .permitAll();
+            authorize.requestMatchers(HttpMethod.PUT, ALLOWED_PATHS_WITH_PUT_METHOD)
+                    .permitAll();
+            authorize.requestMatchers(ALLOWED_PATHS_WITH_ANY_METHOD)
                     .permitAll();
             authorize.anyRequest().authenticated();
         });
