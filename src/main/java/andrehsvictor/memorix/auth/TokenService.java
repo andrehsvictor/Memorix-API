@@ -37,6 +37,7 @@ public class TokenService {
 
     public TokenDto refresh(RefreshTokenDto refreshTokenDto) {
         Jwt refreshToken = jwtService.decode(refreshTokenDto.getRefreshToken());
+        jwtService.validateRefreshToken(refreshToken);
         revokedTokenService.revoke(refreshToken);
         return createTokenPair(refreshToken.getSubject());
     }
