@@ -25,7 +25,9 @@ public class RevokedTokenService {
 
     public boolean isRevoked(Jwt jwt) {
         String tokenId = jwt.getId();
-        return redisTemplate.hasKey(PREFIX + tokenId);
+        Boolean hasKey = redisTemplate.hasKey(PREFIX + tokenId);
+        // Handle null return value from RedisTemplate
+        return Boolean.TRUE.equals(hasKey);
     }
 
 }

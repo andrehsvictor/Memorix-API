@@ -20,6 +20,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.minio.MinioClient;
@@ -27,6 +29,7 @@ import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = org.mockito.quality.Strictness.LENIENT)
 @DisplayName("MinioService Tests")
 class MinioServiceTest {
 

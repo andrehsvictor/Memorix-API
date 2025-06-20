@@ -112,10 +112,10 @@ class FileUtilTest {
         when(resource.exists()).thenReturn(true);
         when(resource.getInputStream()).thenReturn(new ByteArrayInputStream(template.getBytes()));
 
-        Map<String, String> placeholders = Map.of(
-                "name", "John",
-                "greeting", null
-        );
+        // Use a mutable map since Map.of() doesn't accept null values
+        Map<String, String> placeholders = new java.util.HashMap<>();
+        placeholders.put("name", "John");
+        placeholders.put("greeting", null);
 
         // When
         String result = fileUtil.processTemplate(testPath, placeholders);

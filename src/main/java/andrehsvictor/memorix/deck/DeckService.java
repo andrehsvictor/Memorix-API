@@ -55,7 +55,7 @@ public class DeckService {
             throw new ResourceConflictException("Deck with name '" + createDeckDto.getName() + "' already exists");
         }
         Deck deck = deckMapper.createDeckDtoToDeck(createDeckDto);
-        User user = userService.getById(jwtService.getCurrentUserUuid());
+        User user = userService.getById(userId); // Use the userId we already retrieved
         deck.setUser(user);
         return deckRepository.save(deck);
     }

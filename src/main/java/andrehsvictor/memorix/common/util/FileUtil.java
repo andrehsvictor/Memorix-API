@@ -27,6 +27,12 @@ public class FileUtil {
                 byte[] bytes = inputStream.readAllBytes();
                 return new String(bytes, StandardCharsets.UTF_8);
             }
+        } catch (RuntimeException e) {
+            // Rethrow runtime exceptions directly if they're originating from the check above
+            if (e.getMessage() != null && e.getMessage().startsWith("File not found:")) {
+                throw e;
+            }
+            throw new RuntimeException("Error reading file: " + path, e);
         } catch (Exception e) {
             throw new RuntimeException("Error reading file: " + path, e);
         }

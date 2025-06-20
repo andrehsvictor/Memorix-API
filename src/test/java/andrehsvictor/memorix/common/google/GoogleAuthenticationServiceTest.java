@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -207,11 +209,19 @@ class GoogleAuthenticationServiceTest {
         when(payload.getSubject()).thenReturn(testProviderId);
         when(payload.getEmailVerified()).thenReturn(true);
         when(payload.get("name")).thenReturn("Test User");
+        when(payload.get("picture")).thenReturn("https://example.com/picture.jpg");
         
         when(userService.getByProviderId(testProviderId)).thenThrow(new ResourceNotFoundException("User not found"));
         when(userService.getByEmail(testEmail)).thenThrow(new ResourceNotFoundException("User not found"));
-        when(userService.existsByUsername("test")).thenReturn(true); // Base username exists
-        when(userService.existsByUsername(anyString())).thenReturn(false); // Generated username is unique
+        
+        // Mock specific behavior for existsByUsername
+        // First call with exact "test" baseUsername returns true (username exists)
+        when(userService.existsByUsername(eq("test"))).thenReturn(true);
+        
+        // Any other calls with a string that's not "test" will return false (generated username doesn't exist)
+        // This is more specific than the previous anyString() matcher
+        when(userService.existsByUsername(argThat(arg -> arg != null && !arg.equals("test")))).thenReturn(false);
+        
         when(userService.save(any(User.class))).thenReturn(testUser);
 
         // When
@@ -219,5 +229,9 @@ class GoogleAuthenticationServiceTest {
 
         // Then
         verify(userService).save(any(User.class));
+        // Verify that existsByUsername was called with "test" 
+        verify(userService).existsByUsername(eq("test"));
+        // Verify that existsByUsername was called at least once with a non-"test" value
+        verify(userService).existsByUsername(argThat(arg -> arg != null && !arg.equals("test")));
     }
 }
