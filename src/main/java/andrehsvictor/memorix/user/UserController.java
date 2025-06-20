@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import andrehsvictor.memorix.user.dto.ChangeEmailDto;
+import andrehsvictor.memorix.user.dto.CreateUserDto;
 import andrehsvictor.memorix.user.dto.MeDto;
 import andrehsvictor.memorix.user.dto.ResetPasswordDto;
 import andrehsvictor.memorix.user.dto.SendActionEmailDto;
@@ -45,6 +46,12 @@ public class UserController {
             Pageable pageable) {
         return userService.getAllWithFilters(query, username, displayName, pageable)
                 .map(userService::toDto);
+    }
+
+    @PostMapping("/api/v1/users")
+    public MeDto create(@Valid @RequestBody CreateUserDto dto) {
+        User user = userService.create(dto);
+        return meService.toDto(user);
     }
 
     @GetMapping("/api/v1/users/{id}")
