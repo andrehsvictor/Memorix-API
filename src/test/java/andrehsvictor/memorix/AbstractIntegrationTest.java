@@ -25,7 +25,7 @@ public abstract class AbstractIntegrationTest {
     private static final RabbitMQContainer rabbitMQContainer = new RabbitMQContainer("rabbitmq:management-alpine")
             .withReuse(true);
 
-    private static final MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:alpine").withReuse(true);
+    private static final MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:latest").withReuse(true);
 
     private static final GenericContainer<?> redisContainer = new GenericContainer<>("redis:alpine")
             .withExposedPorts(6379)
