@@ -1,15 +1,18 @@
 package andrehsvictor.memorix.user.dto;
 
-import com.google.auto.value.AutoValue.Builder;
-
 import andrehsvictor.memorix.user.EmailAction;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SendActionEmailDto {
 
     @NotBlank(message = "URL cannot be blank")
@@ -22,5 +25,5 @@ public class SendActionEmailDto {
 
     @NotNull(message = "Action is required")
     private EmailAction action;
-    
+
 }
