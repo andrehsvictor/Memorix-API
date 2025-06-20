@@ -3,10 +3,13 @@ package andrehsvictor.memorix.review;
 import java.util.UUID;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import andrehsvictor.memorix.card.CardService;
+import andrehsvictor.memorix.card.dto.ReviewCardDto;
 import andrehsvictor.memorix.common.exception.BadRequestException;
 import andrehsvictor.memorix.common.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.common.jwt.JwtService;
@@ -21,6 +24,8 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
     private final JwtService jwtService;
+    private final CardService cardService;
+    private final RabbitTemplate rabbitTemplate;
 
     public ReviewDto toDto(Review review) {
         return reviewMapper.reviewToReviewDto(review);
@@ -52,11 +57,20 @@ public class ReviewService {
     }
 
     public Review create(UUID cardId, CreateReviewDto createReviewDto) {
+        if (!cardService.existsById(cardId)) {
+            throw new ResourceNotFoundException("Card", "ID", cardId);
+        }
         UUID userId = jwtService.getCurrentUserUuid();
         Review review = reviewMapper.createReviewDtoToReview(createReviewDto);
         review.setCardId(cardId);
         review.setUserId(userId);
-        return reviewRepository.save(review);
+        review = reviewRepository.save(review);
+        ReviewCardDto reviewCardDto = ReviewCardDto.builder()
+                .cardId(cardId)
+                .rating(createReviewDto.getRating())
+                .build();
+        rabbitTemplate.convertAndSend("cards.v1.review", reviewCardDto);
+        return review;
     }
 
     public Review getById(UUID id) {

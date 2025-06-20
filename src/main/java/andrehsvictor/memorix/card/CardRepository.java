@@ -13,6 +13,8 @@ import andrehsvictor.memorix.card.dto.CardStatsDto;
 
 public interface CardRepository extends MongoRepository<Card, UUID> {
 
+    boolean existsByIdAndUserId(UUID id, UUID userId);
+
     void deleteByDeckId(UUID deckId);
 
     void deleteByUserId(UUID userId);

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import andrehsvictor.memorix.card.dto.CardDto;
 import andrehsvictor.memorix.card.dto.CardStatsDto;
 import andrehsvictor.memorix.card.dto.CreateCardDto;
+import andrehsvictor.memorix.card.dto.ReviewCardDto;
 import andrehsvictor.memorix.card.dto.UpdateCardDto;
 import andrehsvictor.memorix.common.exception.ResourceNotFoundException;
 import andrehsvictor.memorix.common.jwt.JwtService;
@@ -95,6 +96,11 @@ public class CardService {
         rabbitTemplate.convertAndSend("reviews.v1.deleteAllByCardId", card.getId());
     }
 
+    public boolean existsById(UUID id) {
+        UUID userId = jwtService.getCurrentUserUuid();
+        return cardRepository.existsByIdAndUserId(id, userId);
+    }
+
     @RabbitListener(queues = { "cards.v1.delete", "decks.v1.delete" })
     private void deleteAllByDeckId(UUID deckId) {
         cardRepository.deleteByDeckId(deckId);
@@ -103,6 +109,38 @@ public class CardService {
     @RabbitListener(queues = { "cards.v1.deleteAllByUserId", "users.v1.delete" })
     private void deleteAllByUserId(UUID userId) {
         cardRepository.deleteByUserId(userId);
+    }
+
+    @RabbitListener(queues = "cards.v1.review")
+    private void review(ReviewCardDto reviewCardDto) {
+        Card card = getById(reviewCardDto.getCardId());
+        int rating = reviewCardDto.getRating();
+
+        if (rating < 3) {
+            card.setRepetition(0);
+            card.setInterval(1);
+            card.setDue(LocalDateTime.now().plusDays(1).toLocalDate().atStartOfDay());
+        } else {
+            card.setRepetition(card.getRepetition() + 1);
+
+            if (card.getRepetition() == 1) {
+                card.setInterval(1);
+            } else if (card.getRepetition() == 2) {
+                card.setInterval(6);
+            } else {
+                card.setInterval((int) Math.round(card.getInterval() * card.getEaseFactor()));
+            }
+            card.setDue(LocalDateTime.now().plusDays(card.getInterval()).toLocalDate().atStartOfDay());
+        }
+        double newEaseFactor = card.getEaseFactor() + (0.1 - (5 - rating) * (0.08 + (5 - rating) * 0.02));
+        if (newEaseFactor < 1.3) {
+            newEaseFactor = 1.3;
+        }
+        card.setEaseFactor(newEaseFactor);
+        card.setReviewCount(card.getReviewCount() + 1);
+        card.setUpdatedAt(LocalDateTime.now());
+
+        cardRepository.save(card);
     }
 
 }
