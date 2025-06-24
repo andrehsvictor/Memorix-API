@@ -45,10 +45,8 @@ public class UserManagementIT extends AbstractIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        // Limpar usuários existentes para evitar conflitos
         userRepository.deleteAll();
 
-        // Criar usuário de teste comum
         testUser = User.builder()
                 .email("test@example.com")
                 .username("testuser")
@@ -59,7 +57,6 @@ public class UserManagementIT extends AbstractIntegrationTest {
                 .build();
         testUser = userRepository.save(testUser);
 
-        // Criar usuário administrador para testes que exigem permissões elevadas
         adminUser = User.builder()
                 .email("admin@example.com")
                 .username("adminuser")
@@ -70,7 +67,6 @@ public class UserManagementIT extends AbstractIntegrationTest {
                 .build();
         adminUser = userRepository.save(adminUser);
 
-        // Obter tokens de acesso
         CredentialsDto userCredentials = CredentialsDto.builder()
                 .username(testUser.getUsername())
                 .password(password)
@@ -145,7 +141,6 @@ public class UserManagementIT extends AbstractIntegrationTest {
         assertThat(response.getUsername()).isEqualTo(newUsername);
         assertThat(response.getDisplayName()).isEqualTo(newDisplayName);
         
-        // Verificar se o usuário foi criado no banco de dados
         User createdUser = userRepository.findByUsername(newUsername).orElse(null);
         assertThat(createdUser).isNotNull();
         assertThat(createdUser.getEmail()).isEqualTo(newEmail);
@@ -156,7 +151,7 @@ public class UserManagementIT extends AbstractIntegrationTest {
     void createUser_ShouldReturn400_WhenUsernameAlreadyExists() {
         CreateUserDto createUserDto = CreateUserDto.builder()
                 .email("another@example.com")
-                .username(testUser.getUsername()) // Usar nome de usuário existente
+                .username(testUser.getUsername())
                 .password("ValidPassword123!")
                 .displayName("Another User")
                 .build();
@@ -174,7 +169,7 @@ public class UserManagementIT extends AbstractIntegrationTest {
     @DisplayName("Should return 400 when creating user with existing email")
     void createUser_ShouldReturn400_WhenEmailAlreadyExists() {
         CreateUserDto createUserDto = CreateUserDto.builder()
-                .email(testUser.getEmail()) // Usar e-mail existente
+                .email(testUser.getEmail())
                 .username("validusername")
                 .password("ValidPassword123!")
                 .displayName("Another User")
