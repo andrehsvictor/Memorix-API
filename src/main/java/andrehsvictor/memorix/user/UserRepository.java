@@ -31,12 +31,19 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query("""
             SELECT u FROM User u
-            WHERE
-            (:query IS NULL
-            OR LOWER(u.username) LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(u.displayName) LIKE LOWER(CONCAT('%', :query, '%')))
-            AND (:username IS NULL OR u.username = :username)
-            AND (:displayName IS NULL OR LOWER(u.displayName) = LOWER(:displayName))
+            WHERE (
+                LOWER(:query) IS NULL
+                OR LOWER(u.username) LIKE CONCAT('%', LOWER(:query), '%')
+                OR LOWER(u.displayName) LIKE CONCAT('%', LOWER(:query), '%')
+            )
+            AND (
+                :username IS NULL
+                OR u.username = :username
+            )
+            AND (
+                LOWER(:displayName) IS NULL
+                OR LOWER(u.displayName) = LOWER(:displayName)
+            )
             """)
     Page<User> findAllWithFilters(
             String query,
