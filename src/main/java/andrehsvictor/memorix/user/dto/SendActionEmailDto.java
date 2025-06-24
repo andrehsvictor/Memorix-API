@@ -1,5 +1,7 @@
 package andrehsvictor.memorix.user.dto;
 
+import java.io.Serializable;
+
 import andrehsvictor.memorix.user.EmailAction;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +15,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SendActionEmailDto {
+public class SendActionEmailDto implements Serializable {
+
+    private static final long serialVersionUID = -2816457549944893990L;
 
     @NotBlank(message = "URL cannot be blank")
     @Pattern(regexp = "^(https?://)?[a-zA-Z0-9.-]+(:\\d+)?(/.*)?$", message = "Invalid URL format")

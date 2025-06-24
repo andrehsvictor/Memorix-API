@@ -95,4 +95,16 @@ public abstract class AbstractIntegrationTest {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
+    protected String getMailhogUrl() {
+        return "http://" + mailhogContainer.getHost() + ":" + mailhogContainer.getMappedPort(8025);
+    }
+
+    protected String getMinioUrl() {
+        return "http://" + minioContainer.getHost() + ":" + minioContainer.getMappedPort(9000);
+    }
+
+    protected String getRabbitMQUrl() {
+        return "http://" + rabbitMQContainer.getHost() + ":" + rabbitMQContainer.getMappedPort(15672);
+    }
+
 }

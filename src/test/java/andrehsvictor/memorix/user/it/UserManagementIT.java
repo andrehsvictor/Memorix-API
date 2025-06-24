@@ -103,7 +103,7 @@ public class UserManagementIT extends AbstractIntegrationTest {
         given()
             .header("Authorization", "Bearer " + adminAccessToken)
             .contentType(ContentType.JSON)
-            .queryParam("username", "admin")
+            .queryParam("username", "adminuser")
         .when()
             .get("/api/v1/users")
         .then()
