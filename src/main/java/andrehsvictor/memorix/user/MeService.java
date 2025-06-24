@@ -4,19 +4,23 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.common.exception.BadRequestException;
 import andrehsvictor.memorix.common.exception.ResourceConflictException;
 import andrehsvictor.memorix.common.jwt.JwtService;
+import andrehsvictor.memorix.user.dto.ChangeEmailDto;
+import andrehsvictor.memorix.user.dto.EmailChangeDto;
 import andrehsvictor.memorix.user.dto.MeDto;
+import andrehsvictor.memorix.user.dto.SendEmailChangeEmailDto;
 import andrehsvictor.memorix.user.dto.UpdatePasswordDto;
 import andrehsvictor.memorix.user.dto.UpdateUserDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor = @__(@Lazy))
 public class MeService {
 
     private final UserService userService;
@@ -24,6 +28,7 @@ public class MeService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RabbitTemplate rabbitTemplate;
+    private final EmailChanger emailChanger;
 
     public MeDto toDto(User user) {
         return userMapper.userToMeDto(user);
@@ -73,5 +78,26 @@ public class MeService {
                 "minio.v1.delete.metadata",
                 Map.of("userId", userId.toString()));
         rabbitTemplate.convertAndSend("users.v1.delete", userId);
+    }
+
+    public void sendEmailChangeVerification(SendEmailChangeEmailDto sendEmailChangeEmailDto) {
+        User user = userService.getById(jwtService.getCurrentUserUuid());
+        if (user.getEmail().equals(sendEmailChangeEmailDto.getNewEmail())) {
+            throw new BadRequestException("New email is the same as current email");
+        }
+        if (userService.existsByEmail(sendEmailChangeEmailDto.getNewEmail())) {
+            throw new ResourceConflictException("Email already exists: " + sendEmailChangeEmailDto.getNewEmail());
+        }
+        EmailChangeDto emailChangeDto = EmailChangeDto.builder()
+                .userId(user.getId())
+                .email(sendEmailChangeEmailDto.getNewEmail())
+                .url(sendEmailChangeEmailDto.getUrl())
+                .build();
+        rabbitTemplate.convertAndSend(
+                "email-actions.v1.change-email", emailChangeDto);
+    }
+
+    public void changeEmail(ChangeEmailDto changeEmailDto) {
+        emailChanger.changeEmail(changeEmailDto.getToken());
     }
 }

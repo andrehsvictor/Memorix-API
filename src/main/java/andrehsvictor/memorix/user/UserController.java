@@ -18,6 +18,7 @@ import andrehsvictor.memorix.user.dto.CreateUserDto;
 import andrehsvictor.memorix.user.dto.MeDto;
 import andrehsvictor.memorix.user.dto.ResetPasswordDto;
 import andrehsvictor.memorix.user.dto.SendActionEmailDto;
+import andrehsvictor.memorix.user.dto.SendEmailChangeEmailDto;
 import andrehsvictor.memorix.user.dto.UpdatePasswordDto;
 import andrehsvictor.memorix.user.dto.UpdateUserDto;
 import andrehsvictor.memorix.user.dto.UserDto;
@@ -94,6 +95,12 @@ public class UserController {
     public MeDto updateMe(@Valid @RequestBody UpdateUserDto dto) {
         User user = meService.updateMe(dto);
         return meService.toDto(user);
+    }
+
+    @PostMapping("/api/v1/users/me/send-email-change-verification")
+    public ResponseEntity<Void> sendEmailChangeVerification(@Valid @RequestBody SendEmailChangeEmailDto dto) {
+        meService.sendEmailChangeVerification(dto);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/api/v1/users/me")

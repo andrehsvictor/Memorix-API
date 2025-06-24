@@ -11,10 +11,8 @@ import org.springframework.stereotype.Service;
 import andrehsvictor.memorix.common.email.EmailService;
 import andrehsvictor.memorix.common.exception.GoneException;
 import andrehsvictor.memorix.common.exception.ResourceConflictException;
-import andrehsvictor.memorix.common.exception.UnauthorizedException;
-import andrehsvictor.memorix.common.jwt.JwtService;
 import andrehsvictor.memorix.common.util.FileUtil;
-import andrehsvictor.memorix.user.dto.SendActionEmailDto;
+import andrehsvictor.memorix.user.dto.EmailChangeDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,17 +22,13 @@ public class EmailChanger {
     private final UserService userService;
     private final FileUtil fileUtil;
     private final EmailService emailService;
-    private final JwtService jwtService;
     private final ActionTokenLifetimeProperties actionTokenLifetimeProperties;
 
     @RabbitListener(queues = "email-actions.v1.change-email")
-    public void sendEmailChangeRequest(SendActionEmailDto dto) {
+    public void sendEmailChangeRequest(EmailChangeDto dto) {
         String email = dto.getEmail();
         String url = dto.getUrl();
-        UUID userId = jwtService.getCurrentUserUuid();
-        if (userId == null) {
-            throw new UnauthorizedException("User not authenticated");
-        }
+        UUID userId = dto.getUserId();
 
         User user = userService.getById(userId);
 

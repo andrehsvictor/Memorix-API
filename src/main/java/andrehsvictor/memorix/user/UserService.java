@@ -109,8 +109,6 @@ public class UserService {
                     sendActionEmailDto);
             case RESET_PASSWORD -> rabbitTemplate.convertAndSend("email-actions.v1.reset-password",
                     sendActionEmailDto);
-            case CHANGE_EMAIL -> rabbitTemplate.convertAndSend("email-actions.v1.change-email",
-                    sendActionEmailDto);
             default -> throw new BadRequestException("Invalid email action: " + sendActionEmailDto.getAction());
         }
     }
