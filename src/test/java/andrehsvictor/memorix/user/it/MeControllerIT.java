@@ -40,10 +40,8 @@ public class MeControllerIT extends AbstractIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        // Limpar usuários existentes para evitar conflitos
         userRepository.deleteAll();
         
-        // Criar usuário de teste
         testUser = User.builder()
                 .email("test@example.com")
                 .username("testuser")
@@ -55,7 +53,6 @@ public class MeControllerIT extends AbstractIntegrationTest {
         
         testUser = userRepository.save(testUser);
         
-        // Obter token de acesso
         CredentialsDto credentialsDto = CredentialsDto.builder()
             .username(testUser.getUsername())
             .password(initialPassword)
@@ -119,7 +116,6 @@ public class MeControllerIT extends AbstractIntegrationTest {
         assertThat(response.getUsername()).isEqualTo(newUsername);
         assertThat(response.getDisplayName()).isEqualTo(newDisplayName);
         
-        // Verificar se as alterações foram persistidas no banco de dados
         User updatedUser = userRepository.findById(testUser.getId()).orElseThrow();
         assertThat(updatedUser.getUsername()).isEqualTo(newUsername);
         assertThat(updatedUser.getDisplayName()).isEqualTo(newDisplayName);
@@ -128,7 +124,6 @@ public class MeControllerIT extends AbstractIntegrationTest {
     @Test
     @DisplayName("Should return 400 when update data is invalid")
     void updateMe_ShouldReturn400_WhenDataIsInvalid() {
-        // Username vazio, o que deve ser inválido
         UpdateUserDto updateDto = UpdateUserDto.builder()
             .username("")
             .displayName("Valid Name")
@@ -163,7 +158,6 @@ public class MeControllerIT extends AbstractIntegrationTest {
         .then()
             .statusCode(HttpStatus.NO_CONTENT.value());
         
-        // Verificar se a senha foi realmente alterada no banco de dados
         User updatedUser = userRepository.findById(testUser.getId()).orElseThrow();
         assertThat(passwordEncoder.matches(newPassword, updatedUser.getPassword())).isTrue();
     }
@@ -199,7 +193,6 @@ public class MeControllerIT extends AbstractIntegrationTest {
         .then()
             .statusCode(HttpStatus.NO_CONTENT.value());
         
-        // Verificar se o usuário foi realmente excluído
         assertThat(userRepository.findById(testUser.getId())).isEmpty();
     }
 }
