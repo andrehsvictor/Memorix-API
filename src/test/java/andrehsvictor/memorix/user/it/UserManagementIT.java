@@ -39,7 +39,6 @@ public class UserManagementIT extends AbstractIntegrationTest {
 
     private User testUser;
     private User adminUser;
-    private String userAccessToken;
     private String adminAccessToken;
     private final String password = "Password123!";
 
@@ -66,13 +65,6 @@ public class UserManagementIT extends AbstractIntegrationTest {
                 .emailVerified(true)
                 .build();
         adminUser = userRepository.save(adminUser);
-
-        CredentialsDto userCredentials = CredentialsDto.builder()
-                .username(testUser.getUsername())
-                .password(password)
-                .build();
-        TokenDto userTokenDto = tokenService.request(userCredentials);
-        userAccessToken = userTokenDto.getAccessToken();
 
         CredentialsDto adminCredentials = CredentialsDto.builder()
                 .username(adminUser.getUsername())

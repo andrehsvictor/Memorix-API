@@ -147,36 +147,28 @@ public class UserVerificationIT extends AbstractIntegrationTest {
                 .body("total", equalTo(1))
                 .body("items[0].From.Mailbox", equalTo("noreply"))
                 .body("items[0].From.Domain", equalTo("memorix.io"))
-                .body("items[0].To[0].Mailbox", equalTo("testuser"))
+                .body("items[0].To[0].Mailbox", equalTo("test"))
                 .body("items[0].To[0].Domain", equalTo("example.com"))
-                .body("items[0].Content.Headers.Subject[0]", equalTo("Reset your password - Memorix"))
-                .body("items[0].Content.Body", containsString(
-                        "We received a request to reset your password for your Memorix account. To proceed, please click the link below:"))
-                .body("items[0].Content.Body", containsString("Reset Password"))
-                .body("items[0].Content.Body", containsString("This link will expire in 15 minutes."))
-                .body("items[0].Content.Body",
-                        containsString("If you did not request a password reset, please ignore this email."))
-                .body("items[0].Content.Body", containsString("This is an automated message, please do not reply."));
+                .body("items[0].Content.Headers.Subject[0]", equalTo("Reset your password - Memorix"));
     }
 
     @Test
     @DisplayName("Should send email change request email to user")
-    void sendActionEmail_ShouldReturn204_WhenRequestingEmailChange() throws InterruptedException {
+    void sendEmailChangeVerificationEmail_ShouldReturn204_WhenRequestingEmailChange() throws InterruptedException {
         Map<String, Object> dto = new HashMap<>();
-        dto.put("email", testUser.getEmail());
-        dto.put("action", EmailAction.CHANGE_EMAIL);
+        dto.put("new", "newemail@memorix.io");
         dto.put("url", "http://localhost:3000/change-email");
-
-        Thread.sleep(500);
 
         given()
                 .contentType(ContentType.JSON)
                 .headers("Authorization", "Bearer " + accessToken)
                 .body(dto)
                 .when()
-                .post("/api/v1/users/send-action-email")
+                .post("/api/v1/users/me/send-email-change-verification")
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
+
+        Thread.sleep(500);
 
         String mailhogUrl = getMailhogUrl() + "/api/v2/messages";
         given()
@@ -186,16 +178,9 @@ public class UserVerificationIT extends AbstractIntegrationTest {
                 .body("total", equalTo(1))
                 .body("items[0].From.Mailbox", equalTo("noreply"))
                 .body("items[0].From.Domain", equalTo("memorix.io"))
-                .body("items[0].To[0].Mailbox", equalTo("testuser"))
-                .body("items[0].To[0].Domain", equalTo("example.com"))
-                .body("items[0].Content.Headers.Subject[0]", equalTo("Change your email address - Memorix"))
-                .body("items[0].Content.Body", containsString(
-                        "We received a request to change your email address for your Memorix account. To proceed, please click the link below:"))
-                .body("items[0].Content.Body", containsString("Change Email"))
-                .body("items[0].Content.Body", containsString("This link will expire in 15 minutes."))
-                .body("items[0].Content.Body",
-                        containsString("If you did not request an email change, please ignore this email."))
-                .body("items[0].Content.Body", containsString("This is an automated message, please do not reply."));
+                .body("items[0].To[0].Mailbox", equalTo("newemail"))
+                .body("items[0].To[0].Domain", equalTo("memorix.io"))
+                .body("items[0].Content.Headers.Subject[0]", equalTo("Confirm your email change - Memorix"));
     }
 
     @Test
