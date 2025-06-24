@@ -1,4 +1,4 @@
-package andrehsvictor.memorix.user;
+package andrehsvictor.memorix.user.it;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,6 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import andrehsvictor.memorix.AbstractIntegrationTest;
+import andrehsvictor.memorix.user.EmailAction;
+import andrehsvictor.memorix.user.User;
+import andrehsvictor.memorix.user.UserRepository;
+import andrehsvictor.memorix.user.UserRole;
 import andrehsvictor.memorix.user.dto.ChangeEmailDto;
 import andrehsvictor.memorix.user.dto.ResetPasswordDto;
 import andrehsvictor.memorix.user.dto.VerifyEmailDto;

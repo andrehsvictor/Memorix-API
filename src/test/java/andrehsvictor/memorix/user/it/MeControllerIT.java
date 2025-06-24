@@ -1,4 +1,4 @@
-package andrehsvictor.memorix.user;
+package andrehsvictor.memorix.user.it;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,6 +19,9 @@ import andrehsvictor.memorix.AbstractIntegrationTest;
 import andrehsvictor.memorix.auth.TokenService;
 import andrehsvictor.memorix.auth.dto.CredentialsDto;
 import andrehsvictor.memorix.auth.dto.TokenDto;
+import andrehsvictor.memorix.user.User;
+import andrehsvictor.memorix.user.UserRepository;
+import andrehsvictor.memorix.user.UserRole;
 import andrehsvictor.memorix.user.dto.MeDto;
 import andrehsvictor.memorix.user.dto.UpdatePasswordDto;
 import andrehsvictor.memorix.user.dto.UpdateUserDto;
