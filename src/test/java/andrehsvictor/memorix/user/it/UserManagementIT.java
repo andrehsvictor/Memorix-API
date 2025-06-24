@@ -23,7 +23,6 @@ import andrehsvictor.memorix.user.UserRepository;
 import andrehsvictor.memorix.user.UserRole;
 import andrehsvictor.memorix.user.dto.CreateUserDto;
 import andrehsvictor.memorix.user.dto.MeDto;
-import andrehsvictor.memorix.user.dto.UserDto;
 import io.restassured.http.ContentType;
 
 @DisplayName("User Management Integration Tests")

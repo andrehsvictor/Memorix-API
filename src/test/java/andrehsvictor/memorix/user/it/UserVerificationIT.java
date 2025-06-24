@@ -19,9 +19,6 @@ import andrehsvictor.memorix.user.EmailAction;
 import andrehsvictor.memorix.user.User;
 import andrehsvictor.memorix.user.UserRepository;
 import andrehsvictor.memorix.user.UserRole;
-import andrehsvictor.memorix.user.dto.ChangeEmailDto;
-import andrehsvictor.memorix.user.dto.ResetPasswordDto;
-import andrehsvictor.memorix.user.dto.VerifyEmailDto;
 import io.restassured.http.ContentType;
 
 @DisplayName("User Verification Integration Tests")
