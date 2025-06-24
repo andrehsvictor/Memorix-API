@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.common.exception.BadRequestException;
+import andrehsvictor.memorix.common.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -45,7 +46,7 @@ public class JwtService {
         try {
             return jwtDecoder.decode(token);
         } catch (Exception e) {
-            throw new BadRequestException("Invalid JWT token: " + e.getMessage());
+            throw new UnauthorizedException();
         }
     }
 
