@@ -87,6 +87,7 @@ public class SecurityConfig {
             AccessTokenFilter accessTokenFilter) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(Customizer.withDefaults());
+        http.securityMatcher("/**");
         http.sessionManagement(session -> session.sessionCreationPolicy(
                 SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(authorize -> {
@@ -99,7 +100,7 @@ public class SecurityConfig {
             authorize.anyRequest().authenticated();
         });
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder)));
-        http.addFilterAfter(accessTokenFilter, AuthorizationFilter.class);
+        http.addFilterBefore(accessTokenFilter, AuthorizationFilter.class);
         return http.build();
     }
 
