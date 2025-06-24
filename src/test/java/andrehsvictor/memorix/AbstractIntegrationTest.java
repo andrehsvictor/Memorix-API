@@ -15,7 +15,6 @@ import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.containers.wait.strategy.WaitStrategy;
 
 import io.restassured.RestAssured;
 
@@ -87,9 +86,7 @@ public abstract class AbstractIntegrationTest {
                 () -> "http://" + minioContainer.getHost() + ":" + minioContainer.getMappedPort(9000));
         registry.add("memorix.minio.access-key", () -> "minioadmin");
         registry.add("memorix.minio.secret-key", () -> "minioadmin");
-        registry.add("memorix.minio.bucket-name", () -> "memorix-test");
-
-        System.out.println("Redis port: " + redisContainer.getMappedPort(6379));
+        registry.add("memorix.minio.bucket-name", () -> "memorix");
     }
 
     @BeforeEach
