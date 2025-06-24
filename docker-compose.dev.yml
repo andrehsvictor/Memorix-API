@@ -16,7 +16,7 @@ services:
       - "6379:6379"
 
   mongodb:
-    image: mongo:alpine
+    image: mongo:latest
     container_name: memorix-mongo
     ports:
       - "27017:27017"

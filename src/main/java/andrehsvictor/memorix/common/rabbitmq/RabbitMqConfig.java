@@ -12,7 +12,6 @@ public class RabbitMqConfig {
     @Bean
     RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
         RabbitAdmin rabbitAdmin = new RabbitAdmin(connectionFactory);
-        rabbitAdmin.setAutoStartup(true);
         return rabbitAdmin;
     }
 
@@ -34,6 +33,11 @@ public class RabbitMqConfig {
     @Bean
     Queue cardsDeleteQueue() {
         return new Queue("cards.v1.delete", true);
+    }
+
+    @Bean
+    Queue cardsReviewQueue() {
+        return new Queue("cards.v1.review", true);
     }
 
     @Bean

@@ -13,6 +13,8 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.RabbitMQContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.containers.wait.strategy.WaitStrategy;
 
 import io.restassured.RestAssured;
 
@@ -29,6 +31,7 @@ public abstract class AbstractIntegrationTest {
 
     private static final GenericContainer<?> redisContainer = new GenericContainer<>("redis:alpine")
             .withExposedPorts(6379)
+            .waitingFor(Wait.forListeningPort())
             .withReuse(true);
 
     private static final GenericContainer<?> mailhogContainer = new GenericContainer<>("mailhog/mailhog:latest")
@@ -70,6 +73,8 @@ public abstract class AbstractIntegrationTest {
         registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
         registry.add("spring.rabbitmq.host", rabbitMQContainer::getHost);
         registry.add("spring.rabbitmq.port", rabbitMQContainer::getAmqpPort);
+        registry.add("spring.rabbitmq.username", rabbitMQContainer::getAdminUsername);
+        registry.add("spring.rabbitmq.password", rabbitMQContainer::getAdminPassword);
         registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
         registry.add("spring.redis.host", redisContainer::getHost);
         registry.add("spring.redis.port", () -> redisContainer.getMappedPort(6379).toString());
@@ -81,6 +86,8 @@ public abstract class AbstractIntegrationTest {
         registry.add("memorix.minio.access-key", () -> "minioadmin");
         registry.add("memorix.minio.secret-key", () -> "minioadmin");
         registry.add("memorix.minio.bucket-name", () -> "memorix-test");
+
+        System.out.println("Redis port: " + redisContainer.getMappedPort(6379));
     }
 
     @BeforeEach
