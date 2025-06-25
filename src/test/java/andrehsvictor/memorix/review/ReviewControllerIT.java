@@ -1,4 +1,4 @@
-package andrehsvictor.memorix.review.it;
+package andrehsvictor.memorix.review;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,8 +24,6 @@ import andrehsvictor.memorix.card.Card;
 import andrehsvictor.memorix.card.CardRepository;
 import andrehsvictor.memorix.deck.Deck;
 import andrehsvictor.memorix.deck.DeckRepository;
-import andrehsvictor.memorix.review.Review;
-import andrehsvictor.memorix.review.ReviewRepository;
 import andrehsvictor.memorix.review.dto.CreateReviewDto;
 import andrehsvictor.memorix.review.dto.ReviewDto;
 import andrehsvictor.memorix.user.User;
