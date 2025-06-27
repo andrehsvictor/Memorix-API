@@ -20,9 +20,6 @@ public class ImageService {
     private static final Integer MAX_FILE_SIZE = 10 * 1024 * 1024;
 
     public ImageDto upload(MultipartFile file) {
-        if (file.isEmpty()) {
-            throw new BadRequestException("File cannot be empty");
-        }
         if (file.getSize() > MAX_FILE_SIZE) {
             throw new BadRequestException("File size exceeds the maximum limit of 10MB");
         }
