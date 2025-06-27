@@ -7,7 +7,6 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -143,16 +142,15 @@ public class ImageControllerIT extends AbstractIntegrationTest {
     void uploadImage_ShouldReturn413_WhenFileTooLarge() throws IOException {
         // Given
         File largeImageFile = new File("src/test/resources/11mb.png");
-        byte[] largeImageContent = Files.readAllBytes(largeImageFile.toPath());
 
         // When & Then
         given()
                 .header("Authorization", "Bearer " + accessToken)
-                .multiPart("file", "large-image.png", largeImageContent, "image/png")
+                .multiPart("file", largeImageFile, "image/png")
                 .when()
                 .post("/api/v1/images")
                 .then()
-                .statusCode(HttpStatus.PAYLOAD_TOO_LARGE.value()); // 413 - server-level size limit
+                .statusCode(HttpStatus.PAYLOAD_TOO_LARGE.value());
     }
 
     @Test
@@ -235,7 +233,8 @@ public class ImageControllerIT extends AbstractIntegrationTest {
     @Test
     @DisplayName("Should handle large valid image file under limit")
     void uploadImage_ShouldReturnImageDto_WhenLargeValidImageUnderLimit() throws IOException {
-        // Create a smaller test file that won't trigger server-level limits but tests our app logic
+        // Create a smaller test file that won't trigger server-level limits but tests
+        // our app logic
         byte[] largeImageContent = new byte[512 * 1024]; // 512KB file - under both server and app limits
         // Fill with some pattern to simulate image data
         for (int i = 0; i < largeImageContent.length; i++) {
