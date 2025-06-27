@@ -9,7 +9,7 @@ on:
     types: [ published ]
 
 env:
-  DOCKER_IMAGE: andrehsvictor/memorix-api
+  DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/memorix
   JAVA_VERSION: '21'
   MAVEN_OPTS: -Xmx3072m
 
