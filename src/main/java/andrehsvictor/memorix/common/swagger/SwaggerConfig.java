@@ -18,7 +18,6 @@ public class SwaggerConfig {
 
     private static final String BEARER_TOKEN_SCHEME = "bearer";
     private static final String JWT_BEARER_FORMAT = "JWT";
-    private static final String AUTHORIZATION_SCOPE_DESCRIPTION = "Full access to API";
     private static final String SECURITY_SCHEME_NAME = "bearerAuth";
 
     @Bean

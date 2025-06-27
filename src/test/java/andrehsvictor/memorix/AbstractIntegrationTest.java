@@ -40,7 +40,7 @@ public abstract class AbstractIntegrationTest {
             .withEnv("MH_STORAGE", "memory")
             .withReuse(true);
 
-    private static final GenericContainer<?> minioContainer = new GenericContainer<>("minio/minio:latest")
+    private static final GenericContainer<?> minioContainer = new GenericContainer<>("quay.io/minio/minio:latest")
             .withExposedPorts(9000, 9001)
             .withEnv("MINIO_ROOT_USER", "minioadmin")
             .withEnv("MINIO_ROOT_PASSWORD", "minioadmin")
