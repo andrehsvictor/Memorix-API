@@ -26,6 +26,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import andrehsvictor.memorix.common.exception.BadRequestException;
+import andrehsvictor.memorix.common.exception.UnauthorizedException;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("JwtService Tests")
@@ -147,16 +148,15 @@ class JwtServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when token is invalid")
-    void decode_ShouldThrowBadRequestException_WhenTokenInvalid() {
+    @DisplayName("Should throw UnauthorizedException when token is invalid")
+    void decode_ShouldThrowUnauthorizedException_WhenTokenInvalid() {
         // Given
         when(jwtDecoder.decode(testTokenValue))
                 .thenThrow(new RuntimeException("Invalid token"));
 
         // When & Then
         assertThatThrownBy(() -> jwtService.decode(testTokenValue))
-                .isInstanceOf(BadRequestException.class)
-                .hasMessageContaining("Invalid JWT token");
+                .isInstanceOf(UnauthorizedException.class);
 
         verify(jwtDecoder).decode(testTokenValue);
     }
