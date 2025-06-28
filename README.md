@@ -24,7 +24,7 @@
 
 #### Stack Principal
 - **Java 21** com Virtual Threads para alta performance
-- **Spring Boot 3.5** - Framework principal
+- **Spring Boot 3.5.3** - Framework principal
 - **Spring Security** - Autenticação e autorização
 - **PostgreSQL** - Banco de dados principal
 - **MongoDB** - Armazenamento de flashcards e reviews
@@ -55,7 +55,7 @@
 
 1. **Clone o repositório:**
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/andrehsvictor/Memorix-API.git
 cd Memorix-API
 ```
 
@@ -115,7 +115,13 @@ src/main/java/andrehsvictor/memorix/
 - `POST /api/v1/users` - Registro de usuário
 - `GET /api/v1/users/me` - Perfil do usuário
 - `PUT /api/v1/users/me` - Atualizar perfil
+- `PUT /api/v1/users/me/password` - Atualizar senha
+- `DELETE /api/v1/users/me` - Deletar conta
 - `POST /api/v1/users/verify-email` - Verificar email
+- `POST /api/v1/users/send-action-email` - Enviar email de ação
+- `POST /api/v1/users/me/send-email-change-verification` - Enviar verificação de mudança de email
+- `PUT /api/v1/users/email` - Alterar email
+- `POST /api/v1/users/reset-password` - Redefinir senha
 
 #### Baralhos
 - `GET /api/v1/decks` - Listar baralhos
@@ -126,11 +132,21 @@ src/main/java/andrehsvictor/memorix/
 
 #### Flashcards
 - `GET /api/v1/cards` - Listar todos os cartões
+- `GET /api/v1/cards/stats` - Estatísticas gerais dos cartões
+- `GET /api/v1/cards/{cardId}` - Obter cartão específico
 - `GET /api/v1/decks/{deckId}/cards` - Cartões por baralho
+- `GET /api/v1/decks/{deckId}/cards/stats` - Estatísticas de cartões por baralho
 - `POST /api/v1/decks/{deckId}/cards` - Criar cartão
-- `PUT /api/v1/cards/{id}` - Atualizar cartão
-- `DELETE /api/v1/cards/{id}` - Deletar cartão
-- `GET /api/v1/cards/stats` - Estatísticas dos cartões
+- `PUT /api/v1/cards/{cardId}` - Atualizar cartão
+- `DELETE /api/v1/cards/{cardId}` - Deletar cartão
+
+#### Reviews (Revisões)
+- `GET /api/v1/reviews` - Listar todas as revisões
+- `GET /api/v1/cards/{cardId}/reviews` - Revisões por cartão
+- `POST /api/v1/cards/{cardId}/reviews` - Criar revisão
+
+#### Imagens
+- `POST /api/v1/images` - Upload de imagem
 
 ### 🧪 Testes
 
@@ -142,7 +158,7 @@ src/main/java/andrehsvictor/memorix/
 ./mvnw test -Dspring.profiles.active=test
 
 # Coverage report
-./mvnw jacoco:report
+./mvnw test jacoco:report
 ```
 
 ### 📊 Monitoramento
@@ -199,7 +215,7 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalh
 
 #### Main Stack
 - **Java 21** with Virtual Threads for high performance
-- **Spring Boot 3.5** - Main framework
+- **Spring Boot 3.5.3** - Main framework
 - **Spring Security** - Authentication and authorization
 - **PostgreSQL** - Main database
 - **MongoDB** - Flashcards and reviews storage
@@ -230,7 +246,7 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalh
 
 1. **Clone the repository:**
 ```bash
-git clone <repository-url>
+git clone https://github.com/andrehsvictor/Memorix-API.git
 cd Memorix-API
 ```
 
@@ -290,7 +306,13 @@ src/main/java/andrehsvictor/memorix/
 - `POST /api/v1/users` - User registration
 - `GET /api/v1/users/me` - User profile
 - `PUT /api/v1/users/me` - Update profile
+- `PUT /api/v1/users/me/password` - Update password
+- `DELETE /api/v1/users/me` - Delete account
 - `POST /api/v1/users/verify-email` - Verify email
+- `POST /api/v1/users/send-action-email` - Send action email
+- `POST /api/v1/users/me/send-email-change-verification` - Send email change verification
+- `PUT /api/v1/users/email` - Change email
+- `POST /api/v1/users/reset-password` - Reset password
 
 #### Decks
 - `GET /api/v1/decks` - List decks
@@ -301,11 +323,21 @@ src/main/java/andrehsvictor/memorix/
 
 #### Flashcards
 - `GET /api/v1/cards` - List all cards
+- `GET /api/v1/cards/stats` - General card statistics
+- `GET /api/v1/cards/{cardId}` - Get specific card
 - `GET /api/v1/decks/{deckId}/cards` - Cards by deck
+- `GET /api/v1/decks/{deckId}/cards/stats` - Card statistics by deck
 - `POST /api/v1/decks/{deckId}/cards` - Create card
-- `PUT /api/v1/cards/{id}` - Update card
-- `DELETE /api/v1/cards/{id}` - Delete card
-- `GET /api/v1/cards/stats` - Card statistics
+- `PUT /api/v1/cards/{cardId}` - Update card
+- `DELETE /api/v1/cards/{cardId}` - Delete card
+
+#### Reviews
+- `GET /api/v1/reviews` - List all reviews
+- `GET /api/v1/cards/{cardId}/reviews` - Reviews by card
+- `POST /api/v1/cards/{cardId}/reviews` - Create review
+
+#### Images
+- `POST /api/v1/images` - Upload image
 
 ### 🧪 Testing
 
@@ -317,7 +349,7 @@ src/main/java/andrehsvictor/memorix/
 ./mvnw test -Dspring.profiles.active=test
 
 # Coverage report
-./mvnw jacoco:report
+./mvnw test jacoco:report
 ```
 
 ### 📊 Monitoring
@@ -354,13 +386,13 @@ This project is under the MIT license. See the `LICENSE` file for more details.
 
 - 📖 [API Documentation (Swagger)](http://localhost:8080/swagger-ui.html)
 - 📊 [Monitoring Dashboard](http://localhost:3000)
-- 🐳 [Docker Hub](https://hub.docker.com)
-- 🚀 [Live Demo](#) <!-- Add your demo URL here -->
+- 🐳 [GitHub Repository](https://github.com/andrehsvictor/Memorix-API)
+- 🚀 [Live Demo](https://memorix-api.onrender.com) <!-- Add your demo URL here -->
 
 ## 📱 Tech Stack Summary
 
 ![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.3-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
@@ -371,7 +403,7 @@ This project is under the MIT license. See the `LICENSE` file for more details.
 
 ## 🎯 Project Status
 
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
+![Build Status](https://github.com/andrehsvictor/Memorix-API/workflows/CI%2FCD%20Pipeline/badge.svg)
 ![Coverage](https://img.shields.io/badge/coverage-85%25-green)
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-0.0.1--SNAPSHOT-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)

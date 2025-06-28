@@ -9,6 +9,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
 import andrehsvictor.memorix.common.email.EmailService;
+import andrehsvictor.memorix.common.exception.BadRequestException;
 import andrehsvictor.memorix.common.exception.GoneException;
 import andrehsvictor.memorix.common.exception.ResourceConflictException;
 import andrehsvictor.memorix.common.util.FileUtil;
@@ -31,6 +32,11 @@ public class EmailChanger {
         UUID userId = dto.getUserId();
 
         User user = userService.getById(userId);
+
+        if (user.getProvider() != UserProvider.LOCAL) {
+            throw new BadRequestException(
+                    "Email change is only allowed for local accounts. Current provider: " + user.getProvider());
+        }
 
         if (userService.existsByEmail(email)) {
             throw new ResourceConflictException("Email already in use: " + email);

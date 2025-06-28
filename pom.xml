@@ -13,7 +13,7 @@
 	<artifactId>memorix</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>memorix</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Memorix - A comprehensive flashcard learning system API with spaced repetition algorithms</description>
 	<url />
 	<licenses>
 		<license />
