@@ -77,8 +77,8 @@ public abstract class AbstractIntegrationTest {
         registry.add("spring.rabbitmq.username", rabbitMQContainer::getAdminUsername);
         registry.add("spring.rabbitmq.password", rabbitMQContainer::getAdminPassword);
         registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
-        registry.add("spring.redis.host", redisContainer::getHost);
-        registry.add("spring.redis.port", () -> redisContainer.getMappedPort(6379).toString());
+        registry.add("spring.data.redis.host", redisContainer::getHost);
+        registry.add("spring.data.redis.port", () -> redisContainer.getMappedPort(6379).toString());
         registry.add("spring.mail.host", mailhogContainer::getHost);
         registry.add("spring.mail.port", () -> mailhogContainer.getMappedPort(1025).toString());
 
