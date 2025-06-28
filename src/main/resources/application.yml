@@ -40,17 +40,6 @@ spring:
 server:
   port: 8080
 
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-    tags-sorter: alpha
-    operations-sorter: alpha
-    doc-expansion: none
-    disable-swagger-default-url: true
-  show-actuator: false
-
 management:
   endpoints:
     web:
