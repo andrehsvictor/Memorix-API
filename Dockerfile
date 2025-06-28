@@ -4,7 +4,7 @@ COPY pom.xml .
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-FROM ghcr.io/distroless/java-21-debian12:latest
+FROM gcr.io/distroless/java21-debian12:latest
 WORKDIR /app
 COPY --from=base /app/target/*.jar memorix.jar
 EXPOSE 8080
