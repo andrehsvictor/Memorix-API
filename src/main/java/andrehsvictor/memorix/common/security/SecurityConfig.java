@@ -45,6 +45,7 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/v3/api-docs/**",
+            "/v3/api-docs",
     };
 
     private static final String[] ALLOWED_PATHS_WITH_PUT_METHOD = {
