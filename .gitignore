@@ -39,3 +39,4 @@ build/
 application-dev.yml
 prometheus.yml
 .env
+datasource.yml
