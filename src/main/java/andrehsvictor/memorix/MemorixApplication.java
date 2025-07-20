@@ -4,9 +4,11 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import andrehsvictor.memorix.user.User;
+import andrehsvictor.memorix.user.UserProvider;
 import andrehsvictor.memorix.user.UserRepository;
 import andrehsvictor.memorix.user.UserRole;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ public class MemorixApplication implements ApplicationRunner {
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final Environment environment;
 
 	public static void main(String[] args) {
 		SpringApplication.run(MemorixApplication.class, args);
@@ -34,9 +37,8 @@ public class MemorixApplication implements ApplicationRunner {
 	 * This user is used for application health monitoring and Prometheus metrics.
 	 */
 	private void createMonitorUserInDevelopment() {
-		String activeProfile = System.getenv("SPRING_PROFILES_ACTIVE");
 
-		if (!"dev".equals(activeProfile)) {
+		if (!"dev".equals(environment.getProperty("spring.profiles.active"))) {
 			return;
 		}
 
@@ -49,7 +51,9 @@ public class MemorixApplication implements ApplicationRunner {
 
 		try {
 			User monitorUser = User.builder()
+					.displayName("Monitor User")
 					.username(monitorUsername)
+					.provider(UserProvider.LOCAL)
 					.password(passwordEncoder.encode("monitor"))
 					.email("monitor@memorix.io")
 					.role(UserRole.MONITOR)
