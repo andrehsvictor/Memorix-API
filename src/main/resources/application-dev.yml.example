@@ -17,12 +17,8 @@ spring:
       timeout: 2000ms
 
     mongodb:
-      host: localhost
-      port: 27017
-      username: mongo
-      password: mongo
-      database: memorix
       uuid-representation: standard
+      uri: mongodb://mongo:mongo@localhost:27017/memorix?authSource=admin
 
   rabbitmq:
     host: localhost
