@@ -188,15 +188,15 @@ public class ImageControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should return 400 when no file is provided")
-    void uploadImage_ShouldReturn400_WhenNoFileProvided() {
+    @DisplayName("Should return 415 when no file is provided")
+    void uploadImage_ShouldReturn415_WhenNoFileProvided() {
         // When & Then
         given()
                 .header("Authorization", "Bearer " + accessToken)
                 .when()
                 .post("/api/v1/images")
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()); // 415
     }
 
     @Test
