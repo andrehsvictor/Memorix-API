@@ -30,10 +30,9 @@ public class ImageController {
             @ApiResponse(responseCode = "400", description = "Invalid file format or size"),
             @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid or missing JWT token")
     })
-    @PostMapping(value = "/api/v1/images")
+    @PostMapping(value = "/api/v1/images", consumes = "multipart/form-data")
     public ImageDto upload(
-            @Parameter(description = "Image file to upload (supported formats: JPG, PNG, GIF, WebP)", required = true, schema = @Schema(type = "string", format = "binary")) @RequestParam(required = false) MultipartFile file) {
-
+            @Parameter(description = "Image file to upload (supported formats: JPG, PNG, GIF, WebP)", required = true, content = @Content(mediaType = "multipart/form-data")) @RequestParam("file") MultipartFile file) {
         return imageService.upload(file);
     }
 }
