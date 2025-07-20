@@ -13,8 +13,8 @@ fi
 
 docker-compose -f docker-compose.dev.yml up
 
-# Wait 2 seconds for the services to start
-sleep 2
+# Wait 5 seconds for the services to start
+sleep 5
 
 # Run the application
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
