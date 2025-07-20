@@ -10,3 +10,6 @@ scrape_configs:
         labels:
           service: memorix
           environment: dev
+    basic_auth:
+      username: monitor
+      password: monitor
