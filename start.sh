@@ -11,10 +11,11 @@ else
     echo "[INFO] RSA keys generated successfully."
 fi
 
-docker-compose -f docker-compose.dev.yml up
+docker compose -f docker-compose.dev.yml up -d
 
 # Wait 5 seconds for the services to start
 sleep 5
 
-# Run the application
+# Start spring boot application
+./mvnw clean compile -DskipTests
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
