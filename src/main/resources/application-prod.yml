@@ -26,11 +26,7 @@ spring:
         enabled: ${REDIS_SSL_ENABLED:false}
 
     mongodb:
-      host: ${MONGODB_HOST}
-      port: ${MONGODB_PORT:27017}
-      username: ${MONGODB_USERNAME}
-      password: ${MONGODB_PASSWORD}
-      database: ${MONGODB_DATABASE}
+      uri: ${MONGODB_URI}
       uuid-representation: standard
       ssl:
         enabled: ${MONGODB_SSL_ENABLED:false}
