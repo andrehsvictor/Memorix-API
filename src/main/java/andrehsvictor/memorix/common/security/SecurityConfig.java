@@ -73,7 +73,7 @@ public class SecurityConfig {
                 SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(authorize -> {
             authorize.requestMatchers(ACTUATOR_ALLOWED_PATHS).permitAll();
-            authorize.requestMatchers(ACTUATOR_RESTRICTED_PATHS).hasRole("MONITOR");
+            authorize.requestMatchers(ACTUATOR_RESTRICTED_PATHS).hasAuthority("MONITOR");
             authorize.anyRequest().denyAll();
         });
         http.httpBasic(Customizer.withDefaults());
