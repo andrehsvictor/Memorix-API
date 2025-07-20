@@ -3,6 +3,11 @@ name: CI/CD Pipeline
 on:
   push:
     branches: [ main ]
+    tags: [ 'v*.*.*' ]
+    paths: 
+      - 'Dockerfile'
+      - 'pom.xml'
+      - 'src/**'
   pull_request:
     branches: [ main ]
   release:
